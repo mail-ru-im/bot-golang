@@ -25,18 +25,18 @@ func main() {
 
 ## Roadmap
 
--[x] Send message
+- [x] Send message
 
--[ ] Events subscription
+- [ ] Events subscription
 
--[ ] Send files
+- [ ] Send files
 
--[ ] Godoc
+- [ ] Godoc
 
--[ ] Tests
+- [ ] Tests
 
--[ ] Send voice
+- [ ] Send voice
 
--[ ] Delete message
+- [ ] Delete message
 
--[ ] Edit message
+- [ ] Edit message
