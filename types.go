@@ -20,19 +20,26 @@ type EventPayload struct {
 	Timestamp int      `json:"timestamp"`
 }
 
+type PartMessage struct {
+	From      Contact `json:"from"`
+	MsgID     string  `json:"msgId"`
+	Text      string  `json:"text"`
+	Timestamp int     `json:"timestamp"`
+}
+
 type PartPayload struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	UserID    string `json:"userId"`
-	FileID    string `json:"fileId"`
-	Caption   string `json:"caption"`
-	Type      string `json:"type"`
-	Message   interface{} `json:"message"`
+	FirstName string      `json:"firstName"`
+	LastName  string      `json:"lastName"`
+	UserID    string      `json:"userId"`
+	FileID    string      `json:"fileId"`
+	Caption   string      `json:"caption"`
+	Type      string      `json:"type"`
+	Message   PartMessage `json:"message"`
 }
 
 type Event struct {
-	EventID int     `json:"eventId"`
-	Type    string  `json:"type"`
+	EventID int          `json:"eventId"`
+	Type    string       `json:"type"`
 	Payload EventPayload `json:"payload"`
 }
 

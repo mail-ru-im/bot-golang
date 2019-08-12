@@ -88,13 +88,19 @@ func (h *MockHandler) GetEvents(w http.ResponseWriter) {
 				  {
 					"type": "forward",
 					"payload": {
-					  "message": "Some message to forward"
+					  "message": {
+						"msgId": "12354",
+						"text": "test1"
+						}
 					}
 				  },
 				  {
 					"type": "reply",
 					"payload": {
-					  "message": "Some message to reply"
+					  "message": {
+						"msgId": "12354",
+						"text": "test"
+						}
 					}
 				  }
 				]

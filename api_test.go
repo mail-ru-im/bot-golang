@@ -103,13 +103,19 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					{
 						Type: "forward",
 						Payload: PartPayload{
-							Message: "Some message to forward",
+							Message: PartMessage{
+								MsgID:     "12354",
+								Text:      "test1",
+							},
 						},
 					},
 					{
 						Type: "reply",
 						Payload: PartPayload{
-							Message: "Some message to reply",
+							Message: PartMessage{
+								MsgID:     "12354",
+								Text:      "test",
+							},
 						},
 					},
 				},
