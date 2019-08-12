@@ -3,8 +3,10 @@ package goicqbot
 import (
 	"context"
 	"github.com/DmitryDorofeev/goicqbot/api"
-	"log"
-	"time"
+)
+
+const (
+	NEW_MESSAGE_EVENT = "newMessage"
 )
 
 type Bot struct {
@@ -13,42 +15,28 @@ type Bot struct {
 	updater *api.Updater
 }
 
-type Update struct {
-	Type    string
-	Payload map[string]string
-}
-
 func (b *Bot) SendMessage(chatID string, text string) error {
 	return b.client.SendMessage(chatID, text)
 }
 
-func (b *Bot) runUpdatesCheck(ch chan<- Update) {
-	for {
-		updates, err := b.updater.GetUpdates()
-		if err != nil {
-			log.Println(err)
-			log.Println("Failed to get updates, retrying in 3 seconds...")
-			time.Sleep(time.Second * 3)
+func (b *Bot) GetUpdatesChannel() <-chan api.Event {
+	updates := make(chan api.Event, 0)
 
-			continue
-		}
-
-		for _, update := range updates {
-			ch <- Update{Type: update.Type}
-		}
-	}
-}
-
-func (b *Bot) GetUpdatesChannel() <-chan Update {
-	updates := make(chan Update, 0)
-
-	go b.runUpdatesCheck(updates)
+	go b.updater.RunUpdatesCheck(updates)
 
 	return updates
 }
 
-func NewBot(token string) *Bot {
-	client := api.NewClient("https://api.icq.net/bot/v1", token)
+func NewBot(token string, opts ...BotOption) *Bot {
+	apiUrl := "https://api.icq.net/bot/v1"
+
+	for _, option := range opts {
+		switch option.Type() {
+		case "api_url":
+			apiUrl = option.String()
+		}
+	}
+	client := api.NewClient(apiUrl, token)
 	updater := api.NewUpdater(client, 0)
 
 	return &Bot{
