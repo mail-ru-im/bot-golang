@@ -1,6 +1,7 @@
-package api
+package goicqbot
 
 import (
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"net/http"
@@ -18,6 +19,7 @@ func TestClient_Do_OK(t *testing.T) {
 		baseURL: testServer.URL,
 		token:   "test",
 		client:  http.DefaultClient,
+		logger:  &logrus.Logger{},
 	}
 
 	bytes, err := client.Do("/", url.Values{})
@@ -35,6 +37,7 @@ func TestClient_Do_Error(t *testing.T) {
 		baseURL: testServer.URL,
 		token:   "",
 		client:  http.DefaultClient,
+		logger:  &logrus.Logger{},
 	}
 
 	expected := `{"ok":false, "description":"Missing required parameter 'token'"}`
@@ -205,6 +208,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		baseURL: testServer.URL,
 		token:   "test_token",
 		client:  http.DefaultClient,
+		logger:  &logrus.Logger{},
 	}
 
 	events, err := client.GetEvents(0, 0)

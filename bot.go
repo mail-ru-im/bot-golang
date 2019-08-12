@@ -2,7 +2,7 @@ package goicqbot
 
 import (
 	"context"
-	"github.com/DmitryDorofeev/goicqbot/api"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -11,16 +11,23 @@ const (
 
 type Bot struct {
 	ctx     context.Context
-	client  *api.Client
-	updater *api.Updater
+	client  *Client
+	updater *Updater
+	logger  *logrus.Logger
 }
 
-func (b *Bot) SendMessage(chatID string, text string) error {
-	return b.client.SendMessage(chatID, text)
+type Message struct {
+	Text       string
+	ChatID     string
+	ReplyMsgID string
 }
 
-func (b *Bot) GetUpdatesChannel() <-chan api.Event {
-	updates := make(chan api.Event, 0)
+func (b *Bot) SendMessage(message Message) error {
+	return b.client.SendMessage(message)
+}
+
+func (b *Bot) GetUpdatesChannel() <-chan Event {
+	updates := make(chan Event, 0)
 
 	go b.updater.RunUpdatesCheck(updates)
 
@@ -28,19 +35,30 @@ func (b *Bot) GetUpdatesChannel() <-chan api.Event {
 }
 
 func NewBot(token string, opts ...BotOption) *Bot {
+	debug := false
 	apiUrl := "https://api.icq.net/bot/v1"
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
 
 	for _, option := range opts {
 		switch option.Type() {
 		case "api_url":
 			apiUrl = option.String()
+		case "debug":
+			debug = option.Bool()
 		}
 	}
-	client := api.NewClient(apiUrl, token)
-	updater := api.NewUpdater(client, 0)
+
+	if debug {
+		logger.SetLevel(logrus.DebugLevel)
+	}
+
+	client := NewClient(apiUrl, token, logger)
+	updater := NewUpdater(client, 0, logger)
 
 	return &Bot{
 		client:  client,
 		updater: updater,
+		logger:  logger,
 	}
 }

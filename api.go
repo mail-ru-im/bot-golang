@@ -1,8 +1,9 @@
-package api
+package goicqbot
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ type Client struct {
 	client  *http.Client
 	token   string
 	baseURL string
-	debug   bool
+	logger  *logrus.Logger
 }
 
 type Response struct {
@@ -50,6 +51,8 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 		return []byte{}, fmt.Errorf("cannot read body: %s", err)
 	}
 
+	c.logger.Debug(string(bytes))
+
 	response := &Response{}
 	if err := json.Unmarshal(bytes, response); err != nil {
 		return []byte{}, fmt.Errorf("cannot decode json: %s", err)
@@ -62,10 +65,11 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 	return bytes, nil
 }
 
-func (c *Client) SendMessage(chatID string, text string) error {
+func (c *Client) SendMessage(message Message) error {
 	params := url.Values{
-		"chatId": []string{chatID},
-		"text":   []string{text},
+		"chatId":     []string{message.ChatID},
+		"text":       []string{message.Text},
+		"replyMsgId": []string{message.ReplyMsgID},
 	}
 	_, err := c.Do("/messages/sendText", params)
 
@@ -91,10 +95,11 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	return events.Events, nil
 }
 
-func NewClient(baseURL string, token string) *Client {
+func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
 	return &Client{
 		token:   token,
 		baseURL: baseURL,
 		client:  http.DefaultClient,
+		logger:  logger,
 	}
 }

@@ -1,4 +1,4 @@
-package api
+package goicqbot
 
 type EventsResponse struct {
 	OK     bool     `json:"ok"`
@@ -27,7 +27,7 @@ type PartPayload struct {
 	FileID    string `json:"fileId"`
 	Caption   string `json:"caption"`
 	Type      string `json:"type"`
-	Message   string `json:"message"`
+	Message   interface{} `json:"message"`
 }
 
 type Event struct {
