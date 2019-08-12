@@ -21,14 +21,14 @@ import "github.com/DmitryDorofeev/goicqbot"
 func main() {
     bot := goicqbot.NewBot(BOT_TOKEN)
 
-    bot.sendMessage("chat_id", "Hello")
+    bot.sendMessage(goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
 }
 ```
 
 ### Send message
 
 ```go
-bot.SendMessage("mychat@agent.chat", "text")
+bot.SendMessage(goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
 ```
 
 ### Passing options
@@ -39,13 +39,18 @@ You can override bot's API URL:
 bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotApiUrl("https://agent.mail.ru/bot/v1"))
 ```
 
+And debug all api requests and responses:
+
+```go
+bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotDebug(true))
+```
 
 
 ## Roadmap
 
 - [x] Send message
 
-- [ ] Events subscription
+- [x] Events subscription
 
 - [ ] Send files
 
