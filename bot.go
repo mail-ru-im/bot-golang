@@ -16,12 +16,6 @@ type Bot struct {
 	logger  *logrus.Logger
 }
 
-type Message struct {
-	Text       string
-	ChatID     string
-	ReplyMsgID string
-}
-
 func (b *Bot) SendMessage(message Message) error {
 	return b.client.SendMessage(message)
 }

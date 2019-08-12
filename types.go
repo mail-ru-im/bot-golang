@@ -53,3 +53,26 @@ type ChatInfo struct {
 	Type   string `json:"type"`
 	Title  string `json:"title"`
 }
+
+// Message represents a text message in ICQ
+type Message struct {
+
+	// Text of the message
+	Text          string
+
+	// Chat where to send the message
+	ChatID        string
+
+	// Id of replied message
+	// You can't use it with ForwardMsgID or ForwardChatID
+	ReplyMsgID    string
+
+	// Id of forwarded message
+	// You can't use it with ReplyMsgID
+	ForwardMsgID  string
+
+	// Id of a chat from which you forward the message
+	// You can't use it with ReplyMsgID
+	// You should use it with ForwardMsgID
+	ForwardChatID string
+}
