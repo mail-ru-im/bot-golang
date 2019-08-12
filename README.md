@@ -31,6 +31,16 @@ func main() {
 bot.SendMessage(goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
 ```
 
+### Subscribe events
+
+```go
+updates := bot.GetUpdatesChannel()
+
+for update := range updates {
+	// your awesome logic here
+}
+```
+
 ### Passing options
 
 You can override bot's API URL:
