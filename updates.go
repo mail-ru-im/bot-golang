@@ -1,6 +1,7 @@
 package goicqbot
 
 import (
+	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"log"
@@ -14,24 +15,30 @@ type Updater struct {
 	PollTime    int
 }
 
-func (u *Updater) RunUpdatesCheck(ch chan<- Event) {
+func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 	_, err := u.GetLastEvents(0)
 	if err != nil {
 		log.Printf("cannot make initial request to events: %s", err)
 	}
 
 	for {
-		events, err := u.GetLastEvents(u.PollTime)
-		if err != nil {
-			log.Println(err)
-			log.Println("Failed to get updates, retrying in 3 seconds...")
-			time.Sleep(time.Second * 3)
+		select {
+		case <-ctx.Done():
+			close(ch)
+			return
+		default:
+			events, err := u.GetLastEvents(u.PollTime)
+			if err != nil {
+				u.logger.Info(err)
+				u.logger.Info("Failed to get updates, retrying in 3 seconds...")
+				time.Sleep(time.Second * 3)
 
-			continue
-		}
+				continue
+			}
 
-		for _, event := range events {
-			ch <- *event
+			for _, event := range events {
+				ch <- *event
+			}
 		}
 	}
 }

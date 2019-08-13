@@ -21,21 +21,24 @@ import "github.com/DmitryDorofeev/goicqbot"
 func main() {
     bot := goicqbot.NewBot(BOT_TOKEN)
 
-    bot.sendMessage(goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
+    bot.SendMessage(&goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
 }
 ```
 
 ### Send message
 
 ```go
-bot.SendMessage(goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
+message := &goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"}
+bot.SendMessage(message)
+
+fmt.Println(message.MsgID)
 ```
 
 ### Subscribe events
 
 ```go
-updates := bot.GetUpdatesChannel()
-
+ctx, finish := context.WithCancel(context.Background())
+updates := bot.GetUpdatesChannel(ctx)
 for update := range updates {
 	// your awesome logic here
 }
@@ -62,14 +65,14 @@ bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotDebug(true))
 
 - [x] Events subscription
 
+- [x] Tests
+
+- [x] Godoc
+
+- [x] Edit message
+
 - [ ] Send files
-
-- [ ] Godoc
-
-- [ ] Tests
 
 - [ ] Send voice
 
 - [ ] Delete message
-
-- [ ] Edit message
