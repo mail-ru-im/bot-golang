@@ -14,7 +14,7 @@ const (
 )
 
 var (
-	sleepTimeStr = dura.Parse(sleepTime).String()
+	sleepTimeStr = dura.Parse(sleepTime)
 )
 
 type Updater struct {
