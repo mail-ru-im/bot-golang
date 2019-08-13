@@ -1,6 +1,8 @@
 <img src="https://github.com/mail-ru-im/bot-python/blob/master/logo.png" width="100" height="100">
 
 # Golang interface for ICQ bot API
+[![CircleCI](https://circleci.com/gh/DmitryDorofeev/goicqbot.svg?style=svg)](https://circleci.com/gh/DmitryDorofeev/goicqbot)
+
 
  - *Brand new Bot API!*
 
