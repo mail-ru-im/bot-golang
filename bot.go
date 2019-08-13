@@ -2,6 +2,7 @@ package goicqbot
 
 import (
 	"context"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,14 +31,14 @@ func (b *Bot) GetUpdatesChannel() <-chan Event {
 
 func NewBot(token string, opts ...BotOption) *Bot {
 	debug := false
-	apiUrl := "https://api.icq.net/bot/v1"
+	apiURL := "https://api.icq.net/bot/v1"
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 
 	for _, option := range opts {
 		switch option.Type() {
 		case "api_url":
-			apiUrl = option.String()
+			apiURL = option.String()
 		case "debug":
 			debug = option.Bool()
 		}
@@ -47,7 +48,7 @@ func NewBot(token string, opts ...BotOption) *Bot {
 		logger.SetLevel(logrus.DebugLevel)
 	}
 
-	client := NewClient(apiUrl, token, logger)
+	client := NewClient(apiURL, token, logger)
 	updater := NewUpdater(client, 0, logger)
 
 	return &Bot{

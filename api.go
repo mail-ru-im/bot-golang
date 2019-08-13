@@ -1,14 +1,14 @@
 package goicqbot
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Client struct {
@@ -18,26 +18,21 @@ type Client struct {
 	logger  *logrus.Logger
 }
 
-type Response struct {
-	OK          bool   `json:"ok"`
-	Description string `json:"description,omitempty"`
-}
-
 func (c *Client) Do(path string, params url.Values) ([]byte, error) {
-	apiUrl, err := url.Parse(c.baseURL + path)
+	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
 	if err != nil {
-		return []byte{}, fmt.Errorf("cannot parse url: %s", err)
+		return nil, fmt.Errorf("cannot parse url: %s", err)
 	}
 
-	apiUrl.RawQuery = params.Encode()
+	apiURL.RawQuery = params.Encode()
 	req := &http.Request{
-		URL: apiUrl,
+		URL: apiURL,
 	}
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return []byte{}, fmt.Errorf("cannot make request to bot api: %s", err)
+		return nil, fmt.Errorf("cannot make request to bot api: %s", err)
 	}
 
 	defer func() {
@@ -48,14 +43,15 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return []byte{}, fmt.Errorf("cannot read body: %s", err)
+		return nil, fmt.Errorf("cannot read body: %s", err)
 	}
 
 	c.logger.Debug(string(bytes))
 
 	response := &Response{}
-	if err := json.Unmarshal(bytes, response); err != nil {
-		return []byte{}, fmt.Errorf("cannot decode json: %s", err)
+
+	if err := response.UnmarshalJSON(bytes); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal json: %s", err)
 	}
 
 	if !response.OK {
@@ -67,9 +63,9 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 
 func (c *Client) SendMessage(message Message) error {
 	params := url.Values{
-		"chatId":     []string{message.ChatID},
-		"text":       []string{message.Text},
-		"replyMsgId": []string{message.ReplyMsgID},
+		"chatId":     {message.ChatID},
+		"text":       {message.Text},
+		"replyMsgId": {message.ReplyMsgID},
 	}
 	_, err := c.Do("/messages/sendText", params)
 
@@ -78,8 +74,8 @@ func (c *Client) SendMessage(message Message) error {
 
 func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	params := url.Values{
-		"lastEventId": []string{strconv.Itoa(lastEventID)},
-		"pollTime":    []string{strconv.Itoa(pollTime)},
+		"lastEventId": {strconv.Itoa(lastEventID)},
+		"pollTime":    {strconv.Itoa(pollTime)},
 	}
 	events := EventsResponse{}
 
@@ -88,7 +84,7 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 		return events.Events, fmt.Errorf("error while making request: %s", err)
 	}
 
-	if err := json.Unmarshal(body, &events); err != nil {
+	if err := events.UnmarshalJSON(body); err != nil {
 		return events.Events, fmt.Errorf("cannot parse events: %s", err)
 	}
 

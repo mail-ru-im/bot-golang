@@ -7,21 +7,21 @@ type BotOption interface {
 	Bool() bool
 }
 
-type BotApiUrl string
+type BotApiURL string
 
-func (o BotApiUrl) Type() string {
+func (o BotApiURL) Type() string {
 	return "api_url"
 }
 
-func (o BotApiUrl) String() string {
+func (o BotApiURL) String() string {
 	return string(o)
 }
 
-func (o BotApiUrl) Int() int {
+func (o BotApiURL) Int() int {
 	return 0
 }
 
-func (o BotApiUrl) Bool() bool {
+func (o BotApiURL) Bool() bool {
 	return false
 }
 
