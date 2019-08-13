@@ -69,6 +69,21 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 	return bytes, nil
 }
 
+func (c *Client) GetInfo() (*BotInfo, error) {
+	bytes, err := c.Do("/self/get", url.Values{})
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving information: %s", err)
+	}
+
+	info := &BotInfo{}
+	err = json.Unmarshal(bytes, info)
+	if err != nil {
+		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
+	}
+
+	return info, nil
+}
+
 func (c *Client) SendMessage(message *Message) error {
 	params := url.Values{
 		"chatId": []string{message.ChatID},

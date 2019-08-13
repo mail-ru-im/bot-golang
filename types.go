@@ -1,5 +1,13 @@
 package goicqbot
 
+type BotInfo struct {
+	UserID    string   `json:"userId"`
+	Nick      string   `json:"nick"`
+	FirstName string   `json:"firstName"`
+	About     string   `json:"about"`
+	Photo     []string `json:"photo"`
+}
+
 type EventsResponse struct {
 	OK     bool     `json:"ok"`
 	Events []*Event `json:"events"`
