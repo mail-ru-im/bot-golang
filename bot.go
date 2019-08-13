@@ -13,6 +13,7 @@ import (
 
 const (
 	NEW_MESSAGE_EVENT = "newMessage"
+	apiURL            = "https://api.icq.net/bot/v1"
 )
 
 // Bot is the main structure for interaction with ICQ API.

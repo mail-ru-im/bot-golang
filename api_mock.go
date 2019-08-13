@@ -2,13 +2,14 @@ package goicqbot
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 type MockHandler struct {
 	http.Handler
+	logger *logrus.Logger
 }
 
 func (h *MockHandler) SendMessage(w http.ResponseWriter) {
@@ -18,7 +19,9 @@ func (h *MockHandler) SendMessage(w http.ResponseWriter) {
 	})
 
 	if err != nil {
-		fmt.Printf("cannot encode json: %s\n", err)
+		h.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("cannot encode json")
 	}
 }
 
@@ -30,7 +33,9 @@ func (h *MockHandler) TokenError(w http.ResponseWriter) {
 	})
 
 	if err != nil {
-		fmt.Printf("cannot encode json: %s\n", err)
+		h.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("cannot encode json")
 	}
 }
 
@@ -242,7 +247,9 @@ func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		})
 
 		if err != nil {
-			log.Println("cannot encode response")
+			h.logger.WithFields(logrus.Fields{
+				"err": err,
+			}).Error("cannot encode response")
 		}
 	}
 

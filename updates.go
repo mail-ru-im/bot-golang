@@ -3,10 +3,18 @@ package goicqbot
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
+	dura "github.com/hako/durafmt"
 	"github.com/sirupsen/logrus"
+)
+
+const (
+	sleepTime = time.Second * 3
+)
+
+var (
+	sleepTimeStr = dura.Parse(sleepTime).String()
 )
 
 type Updater struct {
@@ -19,7 +27,9 @@ type Updater struct {
 func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 	_, err := u.GetLastEvents(0)
 	if err != nil {
-		log.Printf("cannot make initial request to events: %s", err)
+		u.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Debug("cannot make initial request to events")
 	}
 
 	for {
@@ -30,9 +40,11 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 		default:
 			events, err := u.GetLastEvents(u.PollTime)
 			if err != nil {
-				u.logger.Info(err)
-				u.logger.Info("Failed to get updates, retrying in 3 seconds...")
-				time.Sleep(time.Second * 3)
+				u.logger.WithFields(logrus.Fields{
+					"err":            err,
+					"retry interval": sleepTimeStr,
+				}).Errorf("Failed to get updates, retrying in %s ...", sleepTimeStr)
+				time.Sleep(sleepTime)
 
 				continue
 			}
@@ -47,7 +59,10 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 func (u *Updater) GetLastEvents(pollTime int) ([]*Event, error) {
 	events, err := u.client.GetEvents(u.lastEventID, pollTime)
 	if err != nil {
-		u.logger.Debug(events)
+		u.logger.WithFields(logrus.Fields{
+			"err":    err,
+			"events": events,
+		}).Debug("events getting error")
 		return events, fmt.Errorf("cannot get events: %s", err)
 	}
 
