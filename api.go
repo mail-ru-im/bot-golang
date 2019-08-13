@@ -136,7 +136,7 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 		"lastEventId": []string{strconv.Itoa(lastEventID)},
 		"pollTime":    []string{strconv.Itoa(pollTime)},
 	}
-	events := EventsResponse{}
+	events := eventsResponse{}
 
 	body, err := c.Do("/events/get", params)
 	if err != nil {

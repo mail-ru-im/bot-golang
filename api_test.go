@@ -104,8 +104,8 @@ func TestClient_GetEvents_OK(t *testing.T) {
 						Type: "forward",
 						Payload: PartPayload{
 							Message: PartMessage{
-								MsgID:     "12354",
-								Text:      "test1",
+								MsgID: "12354",
+								Text:  "test1",
 							},
 						},
 					},
@@ -113,8 +113,8 @@ func TestClient_GetEvents_OK(t *testing.T) {
 						Type: "reply",
 						Payload: PartPayload{
 							Message: PartMessage{
-								MsgID:     "12354",
-								Text:      "test",
+								MsgID: "12354",
+								Text:  "test",
 							},
 						},
 					},
@@ -195,6 +195,18 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					Type:   "group",
 					Title:  "The best group",
 				},
+				NewMembers: []Contact{
+					{
+						UserID:    "1234567890",
+						FirstName: "Name",
+						LastName:  "SurName",
+					},
+				},
+				AddedBy: Contact{
+					UserID:    "9876543210",
+					FirstName: "Name",
+					LastName:  "SurName",
+				},
 			},
 		},
 		{
@@ -205,6 +217,18 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					ChatID: "681869378@chat.agent",
 					Type:   "group",
 					Title:  "The best group",
+				},
+				LeftMembers: []Contact{
+					{
+						UserID:    "1234567890",
+						FirstName: "Name",
+						LastName:  "SurName",
+					},
+				},
+				RemovedBy: Contact{
+					UserID:    "9876543210",
+					FirstName: "Name",
+					LastName:  "SurName",
 				},
 			},
 		},

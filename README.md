@@ -2,6 +2,12 @@
 
 # Golang interface for ICQ bot API
 
+ - *Brand new Bot API!*
+
+ - *Zero-configuration library*
+
+ - *Simple and clear interface*
+
 ## Install
 ```bash
 go get github.com/DmitryDorofeev/goicqbot
@@ -48,7 +54,8 @@ for update := range updates {
 
 ### Passing options
 
-You can override bot's API URL:
+You don't need this.
+But if you do, you can override bot's API URL:
 
 ```go
 bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotApiUrl("https://agent.mail.ru/bot/v1"))

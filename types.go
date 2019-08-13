@@ -1,14 +1,23 @@
 package goicqbot
 
 type BotInfo struct {
-	UserID    string   `json:"userId"`
-	Nick      string   `json:"nick"`
-	FirstName string   `json:"firstName"`
-	About     string   `json:"about"`
-	Photo     []string `json:"photo"`
+	// Id of the bot
+	UserID string `json:"userId"`
+
+	// Nickname of the bot
+	Nick string `json:"nick"`
+
+	// Name of the bot
+	FirstName string `json:"firstName"`
+
+	// Information about the box
+	About string `json:"about"`
+
+	// A slice of avatars
+	Photo []string `json:"photo"`
 }
 
-type EventsResponse struct {
+type eventsResponse struct {
 	OK     bool     `json:"ok"`
 	Events []*Event `json:"events"`
 }
@@ -20,12 +29,36 @@ type Contact struct {
 }
 
 type EventPayload struct {
-	MsgID     string   `json:"msgId"`
-	Chat      ChatInfo `json:"chat"`
-	From      Contact  `json:"from"`
-	Text      string   `json:"text"`
-	Parts     []Part   `json:"parts"`
-	Timestamp int      `json:"timestamp"`
+	// Id of the message.
+	// Presented in newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage events.
+	MsgID string `json:"msgId"`
+
+	// Chat info.
+	// Presented in all events.
+	Chat ChatInfo `json:"chat"`
+
+	// Author of the message
+	// Presented in newMessage and editedMessage events.
+	From Contact `json:"from"`
+
+	// Text of the message.
+	// Presented in newMessage, editedMessage and pinnedMessage events.
+	Text string `json:"text"`
+
+	// Parts of the message.
+	// Presented only in newMessage event.
+	Parts []Part `json:"parts"`
+
+	// Timestamp of the event.
+	Timestamp int `json:"timestamp"`
+
+	LeftMembers []Contact `json:"leftMembers"`
+
+	NewMembers []Contact `json:"newMembers"`
+
+	AddedBy Contact `json:"addedBy"`
+
+	RemovedBy Contact `json:"removedBy"`
 }
 
 type PartMessage struct {
@@ -46,26 +79,33 @@ type PartPayload struct {
 }
 
 type Event struct {
-	EventID int          `json:"eventId"`
-	Type    string       `json:"type"`
+	// Id of the event
+	EventID int `json:"eventId"`
+
+	// Type of the event: newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage, newChatMembers
+	Type string `json:"type"`
+
+	// Payload of the event
 	Payload EventPayload `json:"payload"`
 }
 
 type Part struct {
-	Type    string      `json:"type"`
+	// Type of the part
+	Type string `json:"type"`
+
+	// Payload of the part
 	Payload PartPayload `json:"payload"`
 }
 
 type ChatInfo struct {
+	// Id of the chat
 	ChatID string `json:"chatId"`
-	Type   string `json:"type"`
-	Title  string `json:"title"`
-}
 
-type MessageResponse struct {
-	OK     bool   `json:"ok"`
-	MsgID  string `json:"msgId"`
-	FileID string `json:"fileId"`
+	// Type of the chat: channel or group
+	Type string `json:"type"`
+
+	// Title of the chat
+	Title string `json:"title"`
 }
 
 // Message represents a text message in ICQ
