@@ -60,6 +60,10 @@ func NewBot(token string, opts ...BotOption) *Bot {
 	debug := false
 	apiURL := "https://api.icq.net/bot/v1"
 	logger := logrus.New()
+	logger.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
 
 	for _, option := range opts {
 		switch option.Type() {
