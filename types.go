@@ -2,36 +2,72 @@ package goicqbot
 
 //go:generate easyjson -all types.go
 
-//easyjson:json
 type Response struct {
 	OK          bool   `json:"ok"`
 	Description string `json:"description,omitempty"`
 }
 
-//easyjson:json
-type EventsResponse struct {
+type BotInfo struct {
+	// Id of the bot
+	UserID string `json:"userId"`
+
+	// Nickname of the bot
+	Nick string `json:"nick"`
+
+	// Name of the bot
+	FirstName string `json:"firstName"`
+
+	// Information about the box
+	About string `json:"about"`
+
+	// A slice of avatars
+	Photo []string `json:"photo"`
+}
+
+type eventsResponse struct {
 	OK     bool     `json:"ok"`
 	Events []*Event `json:"events"`
 }
 
-//easyjson:json
 type Contact struct {
 	UserID    string `json:"userId"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 }
 
-//easyjson:json
 type EventPayload struct {
-	MsgID     string   `json:"msgId"`
-	Chat      ChatInfo `json:"chat"`
-	From      Contact  `json:"from"`
-	Text      string   `json:"text"`
-	Parts     []Part   `json:"parts"`
-	Timestamp int      `json:"timestamp"`
+	// Id of the message.
+	// Presented in newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage events.
+	MsgID string `json:"msgId"`
+
+	// Chat info.
+	// Presented in all events.
+	Chat ChatInfo `json:"chat"`
+
+	// Author of the message
+	// Presented in newMessage and editedMessage events.
+	From Contact `json:"from"`
+
+	// Text of the message.
+	// Presented in newMessage, editedMessage and pinnedMessage events.
+	Text string `json:"text"`
+
+	// Parts of the message.
+	// Presented only in newMessage event.
+	Parts []Part `json:"parts"`
+
+	// Timestamp of the event.
+	Timestamp int `json:"timestamp"`
+
+	LeftMembers []Contact `json:"leftMembers"`
+
+	NewMembers []Contact `json:"newMembers"`
+
+	AddedBy Contact `json:"addedBy"`
+
+	RemovedBy Contact `json:"removedBy"`
 }
 
-//easyjson:json
 type PartMessage struct {
 	From      Contact `json:"from"`
 	MsgID     string  `json:"msgId"`
@@ -39,7 +75,6 @@ type PartMessage struct {
 	Timestamp int     `json:"timestamp"`
 }
 
-//easyjson:json
 type PartPayload struct {
 	FirstName string      `json:"firstName"`
 	LastName  string      `json:"lastName"`
@@ -50,45 +85,60 @@ type PartPayload struct {
 	Message   PartMessage `json:"message"`
 }
 
-//easyjson:json
 type Event struct {
-	EventID int          `json:"eventId"`
-	Type    string       `json:"type"`
+	// Id of the event
+	EventID int `json:"eventId"`
+
+	// Type of the event: newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage, newChatMembers
+	Type string `json:"type"`
+
+	// Payload of the event
 	Payload EventPayload `json:"payload"`
 }
 
-//easyjson:json
 type Part struct {
-	Type    string      `json:"type"`
+	// Type of the part
+	Type string `json:"type"`
+
+	// Payload of the part
 	Payload PartPayload `json:"payload"`
 }
 
-//easyjson:json
 type ChatInfo struct {
+	// Id of the chat
 	ChatID string `json:"chatId"`
-	Type   string `json:"type"`
-	Title  string `json:"title"`
+
+	// Type of the chat: channel or group
+	Type string `json:"type"`
+
+	// Title of the chat
+	Title string `json:"title"`
 }
 
 // Message represents a text message in ICQ
 type Message struct {
+	// Id of the message (for editing)
+	MsgID string `json:"msgId"`
 
-	// Text of the message
-	Text string
+	// Id of file to send
+	FileID string `json:"fileId"`
+
+	// Text of the message or caption for file
+	Text string `json:"text"`
 
 	// Chat where to send the message
-	ChatID string
+	ChatID string `json:"chatId"`
 
 	// Id of replied message
 	// You can't use it with ForwardMsgID or ForwardChatID
-	ReplyMsgID string
+	ReplyMsgID string `json:"replyMsgId"`
 
 	// Id of forwarded message
 	// You can't use it with ReplyMsgID
-	ForwardMsgID string
+	ForwardMsgID string `json:"forwardMsgId"`
 
 	// Id of a chat from which you forward the message
 	// You can't use it with ReplyMsgID
 	// You should use it with ForwardMsgID
-	ForwardChatID string
+	ForwardChatID string `json:"replyChatId"`
 }
