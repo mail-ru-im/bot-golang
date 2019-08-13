@@ -3,7 +3,6 @@
 # Golang interface for ICQ bot API
 [![CircleCI](https://circleci.com/gh/DmitryDorofeev/goicqbot.svg?style=svg)](https://circleci.com/gh/DmitryDorofeev/goicqbot)
 
-
  - *Brand new Bot API!*
 
  - *Zero-configuration library*
@@ -35,16 +34,25 @@ func main() {
 }
 ```
 
-### Send message
+### Send and edit message
+
+You can create and edit messages like a piece of cake.
 
 ```go
 message := &goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"}
 bot.SendMessage(message)
 
 fmt.Println(message.MsgID)
+
+message.Text = "new text"
+
+bot.EditMessage(message)
+// AWESOME!
 ```
 
 ### Subscribe events
+
+Get all updates from the channel. Use context for cancellation.
 
 ```go
 ctx, finish := context.WithCancel(context.Background())
