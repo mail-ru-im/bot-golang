@@ -31,6 +31,14 @@ func (b *Bot) GetInfo() (*BotInfo, error) {
 	return b.client.GetInfo()
 }
 
+// NewTextMessage returns new text message
+func (c *Bot) NewTextMessage(chatID string, text string) *Message {
+	return &Message{
+		ChatID: chatID,
+		Text:   text,
+	}
+}
+
 // SendMessage sends a message, passed as an argument.
 // This method fills the argument with ID of sent message and returns an error if any.
 func (b *Bot) SendMessage(message *Message) error {

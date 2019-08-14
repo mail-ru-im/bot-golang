@@ -18,7 +18,7 @@ go get github.com/DmitryDorofeev/goicqbot
 
 Create your own bot by sending the /newbot command to Metabot and follow the instructions.
 
-Note a bot can only reply after the user has added it to his contact list, or if the user was the first to start a dialogue.
+Note a bot can only reply after the user has added it to his contacts list, or if the user was the first to start a dialogue.
 
 ### Create your bot
 
@@ -34,7 +34,7 @@ func main() {
 }
 ```
 
-### Send and edit message
+### Send and edit messages
 
 You can create and edit messages like a piece of cake.
 
