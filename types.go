@@ -42,7 +42,7 @@ type EventPayload struct {
 
 	// Chat info.
 	// Presented in all events.
-	Chat ChatInfo `json:"chat"`
+	Chat Chat `json:"chat"`
 
 	// Author of the message
 	// Presented in newMessage and editedMessage events.
@@ -102,43 +102,4 @@ type Part struct {
 
 	// Payload of the part
 	Payload PartPayload `json:"payload"`
-}
-
-type ChatInfo struct {
-	// Id of the chat
-	ChatID string `json:"chatId"`
-
-	// Type of the chat: channel or group
-	Type string `json:"type"`
-
-	// Title of the chat
-	Title string `json:"title"`
-}
-
-// Message represents a text message in ICQ
-type Message struct {
-	// Id of the message (for editing)
-	MsgID string `json:"msgId"`
-
-	// Id of file to send
-	FileID string `json:"fileId"`
-
-	// Text of the message or caption for file
-	Text string `json:"text"`
-
-	// Chat where to send the message
-	ChatID string `json:"chatId"`
-
-	// Id of replied message
-	// You can't use it with ForwardMsgID or ForwardChatID
-	ReplyMsgID string `json:"replyMsgId"`
-
-	// Id of forwarded message
-	// You can't use it with ReplyMsgID
-	ForwardMsgID string `json:"forwardMsgId"`
-
-	// Id of a chat from which you forward the message
-	// You can't use it with ReplyMsgID
-	// You should use it with ForwardMsgID
-	ForwardChatID string `json:"replyChatId"`
 }

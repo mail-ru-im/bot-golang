@@ -31,11 +31,24 @@ func (b *Bot) GetInfo() (*BotInfo, error) {
 	return b.client.GetInfo()
 }
 
+// GetInfo returns information about bot:
+// id, name, about, avatar
+func (b *Bot) GetChatInfo(chatID string) (*BotInfo, error) {
+	return b.client.GetInfo()
+}
+
 // NewTextMessage returns new text message
-func (c *Bot) NewTextMessage(chatID string, text string) *Message {
+func (b *Bot) NewTextMessage(chatID string, text string) *Message {
 	return &Message{
-		ChatID: chatID,
-		Text:   text,
+		Chat: Chat{ID: chatID},
+		Text: text,
+	}
+}
+
+func (b *Bot) NewChat(id string) *Chat {
+	return &Chat{
+		client: b.client,
+		ID:  id,
 	}
 }
 

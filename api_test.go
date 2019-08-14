@@ -61,10 +61,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Type:    "newMessage",
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "channel",
-					Title:  "The best channel",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "channel",
+					Title: "The best channel",
 				},
 				From: Contact{
 					UserID:    "1234567890",
@@ -128,10 +128,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Type:    "editedMessage",
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "channel",
-					Title:  "The best channel",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "channel",
+					Title: "The best channel",
 				},
 				From: Contact{
 					UserID:    "1234567890",
@@ -147,10 +147,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Type:    "deletedMessage",
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "channel",
-					Title:  "The best channel",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "channel",
+					Title: "The best channel",
 				},
 				Timestamp: 1546290000,
 			},
@@ -160,10 +160,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Type:    "pinnedMessage",
 			Payload: EventPayload{
 				MsgID: "6720509406122810000",
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "group",
-					Title:  "The best group",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "group",
+					Title: "The best group",
 				},
 				From: Contact{
 					UserID:    "9876543210",
@@ -179,10 +179,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Type:    "unpinnedMessage",
 			Payload: EventPayload{
 				MsgID: "6720509406122810000",
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "group",
-					Title:  "The best group",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "group",
+					Title: "The best group",
 				},
 				Timestamp: 1564740530,
 			},
@@ -191,10 +191,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			EventID: 6,
 			Type:    "newChatMembers",
 			Payload: EventPayload{
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "group",
-					Title:  "The best group",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "group",
+					Title: "The best group",
 				},
 				NewMembers: []Contact{
 					{
@@ -214,10 +214,10 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			EventID: 7,
 			Type:    "leftChatMembers",
 			Payload: EventPayload{
-				Chat: ChatInfo{
-					ChatID: "681869378@chat.agent",
-					Type:   "group",
-					Title:  "The best group",
+				Chat: Chat{
+					ID:    "681869378@chat.agent",
+					Type:  "group",
+					Title: "The best group",
 				},
 				LeftMembers: []Contact{
 					{

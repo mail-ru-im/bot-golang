@@ -1,6 +1,7 @@
 package goicqbot
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -91,7 +92,7 @@ func (c *Client) GetInfo() (*BotInfo, error) {
 
 func (c *Client) SendMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.ChatID},
+		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
 	}
 
@@ -109,7 +110,7 @@ func (c *Client) SendMessage(message *Message) error {
 		return fmt.Errorf("error while sending text: %s", err)
 	}
 
-	if err := message.UnmarshalJSON(bytes); err != nil {
+	if err := json.Unmarshal(bytes, message); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
 	}
 
@@ -118,8 +119,8 @@ func (c *Client) SendMessage(message *Message) error {
 
 func (c *Client) EditMessage(message *Message) error {
 	params := url.Values{
-		"msgId":  []string{message.MsgID},
-		"chatId": []string{message.ChatID},
+		"msgId":  []string{message.ID},
+		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
 	}
 	bytes, err := c.Do("/messages/editText", params)
@@ -127,8 +128,21 @@ func (c *Client) EditMessage(message *Message) error {
 		return fmt.Errorf("error while editing text: %s", err)
 	}
 
-	if err := message.UnmarshalJSON(bytes); err != nil {
+	if err := json.Unmarshal(bytes, message); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteMessage(message *Message) error {
+	params := url.Values{
+		"msgId":  []string{message.ID},
+		"chatId": []string{message.Chat.ID},
+	}
+	_, err := c.Do("/messages/deleteMessages", params)
+	if err != nil {
+		return fmt.Errorf("error while deleting message: %s", err)
 	}
 
 	return nil
