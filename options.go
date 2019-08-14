@@ -5,13 +5,13 @@ type BotOption interface {
 	Value() interface{}
 }
 
-type BotApiUrl string
+type BotApiURL string
 
-func (o BotApiUrl) Type() string {
+func (o BotApiURL) Type() string {
 	return "api_url"
 }
 
-func (o BotApiUrl) Value() interface{} {
+func (o BotApiURL) Value() interface{} {
 	return string(o)
 }
 

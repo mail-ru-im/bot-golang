@@ -1,13 +1,13 @@
 package goicqbot
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Client struct {
@@ -17,49 +17,55 @@ type Client struct {
 	logger  *logrus.Logger
 }
 
-type Response struct {
-	OK          bool   `json:"ok"`
-	Description string `json:"description,omitempty"`
-}
-
 func (c *Client) Do(path string, params url.Values) ([]byte, error) {
-	apiUrl, err := url.Parse(c.baseURL + path)
+	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
 	if err != nil {
-		return []byte{}, fmt.Errorf("cannot parse url: %s", err)
+		return nil, fmt.Errorf("cannot parse url: %s", err)
 	}
 
-	apiUrl.RawQuery = params.Encode()
+	apiURL.RawQuery = params.Encode()
 	req := &http.Request{
-		URL: apiUrl,
+		URL: apiURL,
 	}
 
-	c.logger.Debugf("requesting: %s", apiUrl)
+	c.logger.WithFields(logrus.Fields{
+		"api_url": apiURL,
+	}).Debug("requesting api")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		c.logger.Debugf("request error: %s", err)
+		c.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("request error")
 		return []byte{}, fmt.Errorf("cannot make request to bot api: %s", err)
 	}
 
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			c.logger.Debugf("cannot close body: %s", err)
+			c.logger.WithFields(logrus.Fields{
+				"err": err,
+			}).Error("cannot close body")
 		}
 	}()
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		c.logger.Debugf("cannot read body: %s", err)
+		c.logger.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("cannot read body")
 		return []byte{}, fmt.Errorf("cannot read body: %s", err)
 	}
 
-	c.logger.Debug("got response from API: ", string(bytes))
+	c.logger.WithFields(logrus.Fields{
+		"response": string(bytes),
+	}).Debug("got response from API")
 
 	response := &Response{}
-	if err := json.Unmarshal(bytes, response); err != nil {
-		return []byte{}, fmt.Errorf("cannot decode json: %s", err)
+
+	if err := response.UnmarshalJSON(bytes); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal json: %s", err)
 	}
 
 	if !response.OK {
@@ -76,8 +82,7 @@ func (c *Client) GetInfo() (*BotInfo, error) {
 	}
 
 	info := &BotInfo{}
-	err = json.Unmarshal(bytes, info)
-	if err != nil {
+	if err := info.UnmarshalJSON(bytes); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
 	}
 
@@ -90,11 +95,11 @@ func (c *Client) SendMessage(message *Message) error {
 		"text":   []string{message.Text},
 	}
 
-	if (message.ReplyMsgID != "") {
+	if message.ReplyMsgID != "" {
 		params.Set("replyMsgId", message.ReplyMsgID)
 	}
 
-	if (message.ForwardMsgID != "") {
+	if message.ForwardMsgID != "" {
 		params.Set("forwardMsgId", message.ForwardMsgID)
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
@@ -104,8 +109,7 @@ func (c *Client) SendMessage(message *Message) error {
 		return fmt.Errorf("error while sending text: %s", err)
 	}
 
-	err = json.Unmarshal(bytes, message)
-	if err != nil {
+	if err := message.UnmarshalJSON(bytes); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
 	}
 
@@ -123,8 +127,7 @@ func (c *Client) EditMessage(message *Message) error {
 		return fmt.Errorf("error while editing text: %s", err)
 	}
 
-	err = json.Unmarshal(bytes, message)
-	if err != nil {
+	if err := message.UnmarshalJSON(bytes); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
 	}
 
@@ -133,8 +136,8 @@ func (c *Client) EditMessage(message *Message) error {
 
 func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	params := url.Values{
-		"lastEventId": []string{strconv.Itoa(lastEventID)},
-		"pollTime":    []string{strconv.Itoa(pollTime)},
+		"lastEventId": {strconv.Itoa(lastEventID)},
+		"pollTime":    {strconv.Itoa(pollTime)},
 	}
 	events := eventsResponse{}
 
@@ -143,7 +146,7 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 		return events.Events, fmt.Errorf("error while making request: %s", err)
 	}
 
-	if err := json.Unmarshal(body, &events); err != nil {
+	if err := events.UnmarshalJSON(body); err != nil {
 		return events.Events, fmt.Errorf("cannot parse events: %s", err)
 	}
 

@@ -3,15 +3,17 @@ package goicqbot
 /*
 💥 GoICQBot is zero-configuration library with convenient interface.
 Crafted with love in @mail for your awesome bots.
- */
+*/
 
 import (
 	"context"
+
 	"github.com/sirupsen/logrus"
 )
 
 const (
 	NEW_MESSAGE_EVENT = "newMessage"
+	apiURL            = "https://api.icq.net/bot/v1"
 )
 
 // Bot is the main structure for interaction with ICQ API.
@@ -56,13 +58,17 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 // In general you don't need to configure this bot, therefore all options are optional arguments.
 func NewBot(token string, opts ...BotOption) *Bot {
 	debug := false
-	apiUrl := "https://api.icq.net/bot/v1"
+	apiURL := "https://api.icq.net/bot/v1"
 	logger := logrus.New()
+	logger.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
 
 	for _, option := range opts {
 		switch option.Type() {
 		case "api_url":
-			apiUrl = option.Value().(string)
+			apiURL = option.Value().(string)
 		case "debug":
 			debug = option.Value().(bool)
 		}
@@ -72,7 +78,7 @@ func NewBot(token string, opts ...BotOption) *Bot {
 		logger.SetLevel(logrus.DebugLevel)
 	}
 
-	client := NewClient(apiUrl, token, logger)
+	client := NewClient(apiURL, token, logger)
 	updater := NewUpdater(client, 0, logger)
 
 	return &Bot{

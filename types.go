@@ -1,5 +1,12 @@
 package goicqbot
 
+//go:generate easyjson -all types.go
+
+type Response struct {
+	OK          bool   `json:"ok"`
+	Description string `json:"description,omitempty"`
+}
+
 type BotInfo struct {
 	// Id of the bot
 	UserID string `json:"userId"`
@@ -111,27 +118,27 @@ type ChatInfo struct {
 // Message represents a text message in ICQ
 type Message struct {
 	// Id of the message (for editing)
-	MsgID string
+	MsgID string `json:"msgId"`
 
 	// Id of file to send
-	FileID string
+	FileID string `json:"fileId"`
 
 	// Text of the message or caption for file
-	Text string
+	Text string `json:"text"`
 
 	// Chat where to send the message
-	ChatID string
+	ChatID string `json:"chatId"`
 
 	// Id of replied message
 	// You can't use it with ForwardMsgID or ForwardChatID
-	ReplyMsgID string
+	ReplyMsgID string `json:"replyMsgId"`
 
 	// Id of forwarded message
 	// You can't use it with ReplyMsgID
-	ForwardMsgID string
+	ForwardMsgID string `json:"forwardMsgId"`
 
 	// Id of a chat from which you forward the message
 	// You can't use it with ReplyMsgID
 	// You should use it with ForwardMsgID
-	ForwardChatID string
+	ForwardChatID string `json:"replyChatId"`
 }
