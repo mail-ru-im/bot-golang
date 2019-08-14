@@ -40,15 +40,16 @@ func (b *Bot) GetChatInfo(chatID string) (*BotInfo, error) {
 // NewTextMessage returns new text message
 func (b *Bot) NewTextMessage(chatID string, text string) *Message {
 	return &Message{
-		Chat: Chat{ID: chatID},
-		Text: text,
+		client: b.client,
+		Chat:   Chat{ID: chatID},
+		Text:   text,
 	}
 }
 
 func (b *Bot) NewChat(id string) *Chat {
 	return &Chat{
 		client: b.client,
-		ID:  id,
+		ID:     id,
 	}
 }
 

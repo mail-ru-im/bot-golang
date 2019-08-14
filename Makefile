@@ -5,7 +5,7 @@ $(GOPATH)/bin/easyjson:
 
 .PHONY: test
 test:
-	go test -v --cover ./...
+	go test -v --cover -coverprofile=cover.out ./...
 
 .PHONY: generate
 generate: $(GOPATH)/bin/easyjson

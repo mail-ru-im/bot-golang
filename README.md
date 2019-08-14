@@ -30,24 +30,28 @@ import "github.com/DmitryDorofeev/goicqbot"
 func main() {
     bot := goicqbot.NewBot(BOT_TOKEN)
 
-    bot.SendMessage(&goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"})
+    message := bot.NewTextMessage("awesomechat@agent.chat", "text")
+    message.Send()
 }
 ```
 
 ### Send and edit messages
 
-You can create and edit messages like a piece of cake.
+You can create, edit and reply to messages like a piece of cake.
 
 ```go
-message := &goicqbot.Message{Text: "text", ChatID: "awesomechat@agent.chat"}
-bot.SendMessage(message)
+message := bot.NewTextMessage("awesomechat@agent.chat", "text")
+message.Send()
 
 fmt.Println(message.MsgID)
 
 message.Text = "new text"
 
-bot.EditMessage(message)
+message.Edit()
 // AWESOME!
+
+message.Reply("hey, what did you write before???")
+// SO HOT!
 ```
 
 ### Subscribe events

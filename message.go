@@ -45,7 +45,7 @@ func (m *Message) Send() error {
 		return fmt.Errorf("message should have chat id")
 	}
 
-	if m.Text == "" || m.FileID == "" {
+	if m.Text == "" && m.FileID == "" {
 		return fmt.Errorf("cannot send message or file without data")
 	}
 
