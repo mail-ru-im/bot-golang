@@ -23,7 +23,7 @@ func TestClient_Do_OK(t *testing.T) {
 		logger:  &logrus.Logger{},
 	}
 
-	bytes, err := client.Do("/", url.Values{})
+	bytes, err := client.Do("/", url.Values{}, nil)
 
 	assert.NoError(err)
 	assert.JSONEq(`{"ok":true}`, string(bytes))
@@ -43,7 +43,7 @@ func TestClient_Do_Error(t *testing.T) {
 
 	expected := `{"ok":false, "description":"Missing required parameter 'token'"}`
 
-	bytes, err := client.Do("/", url.Values{})
+	bytes, err := client.Do("/", url.Values{}, nil)
 
 	assert.EqualError(err, "error status from API: Missing required parameter 'token'")
 	assert.JSONEq(expected, string(bytes))

@@ -213,7 +213,7 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 		"lastEventId": {strconv.Itoa(lastEventID)},
 		"pollTime":    {strconv.Itoa(pollTime)},
 	}
-	events := eventsResponse{}
+	events := &eventsResponse{}
 
 	body, err := c.Do("/events/get", params, nil)
 	if err != nil {
