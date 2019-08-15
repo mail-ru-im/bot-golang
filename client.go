@@ -79,7 +79,7 @@ func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, erro
 		}
 	}()
 
-	bytes, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
 			"err": err,
@@ -88,30 +88,30 @@ func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, erro
 	}
 
 	c.logger.WithFields(logrus.Fields{
-		"response": string(bytes),
+		"response": string(responseBody),
 	}).Debug("got response from API")
 
 	response := &Response{}
 
-	if err := json.Unmarshal(bytes, response); err != nil {
+	if err := json.Unmarshal(responseBody, response); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal json: %s", err)
 	}
 
 	if !response.OK {
-		return bytes, fmt.Errorf("error status from API: %s", response.Description)
+		return responseBody, fmt.Errorf("error status from API: %s", response.Description)
 	}
 
-	return bytes, nil
+	return responseBody, nil
 }
 
 func (c *Client) GetInfo() (*BotInfo, error) {
-	bytes, err := c.Do("/self/get", url.Values{}, nil)
+	response, err := c.Do("/self/get", url.Values{}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error while receiving information: %s", err)
 	}
 
 	info := &BotInfo{}
-	if err := json.Unmarshal(bytes, info); err != nil {
+	if err := json.Unmarshal(response, info); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
 	}
 
@@ -133,12 +133,12 @@ func (c *Client) SendMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
-	bytes, err := c.Do("/messages/sendText", params, nil)
+	response, err := c.Do("/messages/sendText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while sending text: %s", err)
 	}
 
-	if err := json.Unmarshal(bytes, message); err != nil {
+	if err := json.Unmarshal(response, message); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
 	}
 
@@ -151,12 +151,12 @@ func (c *Client) EditMessage(message *Message) error {
 		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
 	}
-	bytes, err := c.Do("/messages/editText", params, nil)
+	response, err := c.Do("/messages/editText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while editing text: %s", err)
 	}
 
-	if err := json.Unmarshal(bytes, message); err != nil {
+	if err := json.Unmarshal(response, message); err != nil {
 		return fmt.Errorf("cannot unmarshal response from API: %s", err)
 	}
 
@@ -176,33 +176,38 @@ func (c *Client) DeleteMessage(message *Message) error {
 	return nil
 }
 
-func (c *Client) UploadFile(message *Message) error {
+func (c *Client) SendFile(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
+		"fileId": {message.FileID},
 	}
 
-	bytes, err := c.Do("/messages/sendFile", params, message.File)
+	response, err := c.Do("/messages/sendFile", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
 	}
 
-	if err := json.Unmarshal(bytes, message); err != nil {
+	if err := json.Unmarshal(response, message); err != nil {
 		return fmt.Errorf("cannot unmarshal response: %s", err)
 	}
 
 	return nil
 }
 
-func (c *Client) SendFile(message *Message) error {
+func (c *Client) UploadFile(message *Message) error {
 	params := url.Values{
-		"chatId": {message.Chat.ID},
-		"fileId": {message.FileID},
+		"chatId":  {message.Chat.ID},
+		"caption": {message.Text},
 	}
 
-	_, err := c.Do("/messages/sendFile", params, nil)
+	response, err := c.Do("/messages/sendFile", params, message.File)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
+	}
+
+	if err := json.Unmarshal(response, message); err != nil {
+		return fmt.Errorf("cannot unmarshal response: %s", err)
 	}
 
 	return nil
@@ -215,12 +220,12 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	}
 	events := &eventsResponse{}
 
-	body, err := c.Do("/events/get", params, nil)
+	response, err := c.Do("/events/get", params, nil)
 	if err != nil {
 		return events.Events, fmt.Errorf("error while making request: %s", err)
 	}
 
-	if err := json.Unmarshal(body, events); err != nil {
+	if err := json.Unmarshal(response, events); err != nil {
 		return events.Events, fmt.Errorf("cannot parse events: %s", err)
 	}
 

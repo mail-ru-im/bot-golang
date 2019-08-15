@@ -51,15 +51,19 @@ func (m *Message) Send() error {
 		return fmt.Errorf("message should have chat id")
 	}
 
-	if m.Text == "" && m.FileID == "" && m.File == nil {
-		return fmt.Errorf("cannot send message or file without data")
+	if m.FileID != "" {
+		return m.client.SendFile(m)
 	}
 
 	if m.File != nil {
 		return m.client.UploadFile(m)
 	}
 
-	return m.client.SendMessage(m)
+	if m.Text != "" {
+		return m.client.SendMessage(m)
+	}
+
+	return fmt.Errorf("cannot send message or file without data")
 }
 
 // Edit method edits your message.
