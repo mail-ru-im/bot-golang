@@ -2,9 +2,34 @@ package goicqbot
 
 //go:generate easyjson -all types.go
 
+type EventType string
+
+type PartType string
+
+const (
+	NEW_MESSAGE       EventType = "newMessage"
+	EDITED_MESSAGE    EventType = "editedMessage"
+	DELETED_MESSAGE   EventType = "deletedMessage"
+	PINNED_MESSAGE    EventType = "pinnedMessage"
+	UNPINNED_MESSAGE  EventType = "unpinnedMessage"
+	NEW_CHAT_MEMBERS  EventType = "newChatMembers"
+	LEFT_CHAT_MEMBERS EventType = "leftChatMembers"
+
+	STICKER PartType = "sticker"
+	MENTION PartType = "mention"
+	VOICE   PartType = "voice"
+	FILE    PartType = "file"
+	FORWARD PartType = "forward"
+	REPLY   PartType = "reply"
+)
+
 type Response struct {
 	OK          bool   `json:"ok"`
 	Description string `json:"description,omitempty"`
+}
+
+type Photo struct {
+	URL string `json:"url"`
 }
 
 type BotInfo struct {
@@ -21,7 +46,7 @@ type BotInfo struct {
 	About string `json:"about"`
 
 	// A slice of avatars
-	Photo []string `json:"photo"`
+	Photo []Photo `json:"photo"`
 }
 
 type eventsResponse struct {
@@ -90,7 +115,7 @@ type Event struct {
 	EventID int `json:"eventId"`
 
 	// Type of the event: newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage, newChatMembers
-	Type string `json:"type"`
+	Type EventType `json:"type"`
 
 	// Payload of the event
 	Payload EventPayload `json:"payload"`
@@ -98,7 +123,7 @@ type Event struct {
 
 type Part struct {
 	// Type of the part
-	Type string `json:"type"`
+	Type PartType `json:"type"`
 
 	// Payload of the part
 	Payload PartPayload `json:"payload"`

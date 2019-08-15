@@ -7,13 +7,14 @@ Crafted with love in @mail for your awesome bots.
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	NEW_MESSAGE_EVENT = "newMessage"
-	apiURL            = "https://api.icq.net/bot/v1"
+	apiURL = "https://api.icq.net/bot/v1"
 )
 
 // Bot is the main structure for interaction with ICQ API.
@@ -23,18 +24,30 @@ type Bot struct {
 	client  *Client
 	updater *Updater
 	logger  *logrus.Logger
-}
-
-// GetInfo returns information about bot:
-// id, name, about, avatar
-func (b *Bot) GetInfo() (*BotInfo, error) {
-	return b.client.GetInfo()
+	Info    *BotInfo
 }
 
 // GetInfo returns information about bot:
 // id, name, about, avatar
 func (b *Bot) GetChatInfo(chatID string) (*BotInfo, error) {
 	return b.client.GetInfo()
+}
+
+// NewMessage returns new message
+func (b *Bot) NewMessage(chatID string) *Message {
+	return &Message{
+		client: b.client,
+		Chat:   Chat{ID: chatID},
+	}
+}
+
+// NewFileMessage returns new file message
+func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
+	return &Message{
+		client: b.client,
+		Chat:   Chat{ID: chatID},
+		File:   file,
+	}
 }
 
 // NewTextMessage returns new text message
@@ -78,7 +91,7 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 // NewBot returns new bot object.
 // All communications with ICQ bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
-func NewBot(token string, opts ...BotOption) *Bot {
+func NewBot(token string, opts ...BotOption) (*Bot, error) {
 	debug := false
 	apiURL := "https://api.icq.net/bot/v1"
 	logger := logrus.New()
@@ -103,9 +116,15 @@ func NewBot(token string, opts ...BotOption) *Bot {
 	client := NewClient(apiURL, token, logger)
 	updater := NewUpdater(client, 0, logger)
 
+	info, err := client.GetInfo()
+	if err != nil {
+		return nil, fmt.Errorf("cannot get info about bot: %s", err)
+	}
+
 	return &Bot{
 		client:  client,
 		updater: updater,
 		logger:  logger,
-	}
+		Info:    info,
+	}, nil
 }

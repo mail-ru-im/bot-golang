@@ -28,7 +28,10 @@ package main
 import "github.com/DmitryDorofeev/goicqbot"
 
 func main() {
-    bot := goicqbot.NewBot(BOT_TOKEN)
+    bot, err := goicqbot.NewBot(BOT_TOKEN)
+    if err != nil {
+        log.Println("wrong token")
+    }
 
     message := bot.NewTextMessage("awesomechat@agent.chat", "text")
     message.Send()
@@ -94,8 +97,9 @@ bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotDebug(true))
 
 - [x] Edit message
 
-- [ ] Send files
+- [x] Send files
+
+- [x] Delete message
 
 - [ ] Send voice
 
-- [ ] Delete message

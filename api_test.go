@@ -58,7 +58,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 	expected := []*Event{
 		{
 			EventID: 1,
-			Type:    "newMessage",
+			Type:    NEW_MESSAGE,
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
 				Chat: Chat{
@@ -74,13 +74,13 @@ func TestClient_GetEvents_OK(t *testing.T) {
 				Text: "Hello!",
 				Parts: []Part{
 					{
-						Type: "sticker",
+						Type: STICKER,
 						Payload: PartPayload{
 							FileID: "2IWuJzaNWCJZxJWCvZhDYuJ5XDsr7hU",
 						},
 					},
 					{
-						Type: "mention",
+						Type: MENTION,
 						Payload: PartPayload{
 							FirstName: "Name",
 							LastName:  "SurName",
@@ -88,13 +88,13 @@ func TestClient_GetEvents_OK(t *testing.T) {
 						},
 					},
 					{
-						Type: "voice",
+						Type: VOICE,
 						Payload: PartPayload{
 							FileID: "IdjUEXuGdNhLKUfD5rvkE03IOax54cD",
 						},
 					},
 					{
-						Type: "file",
+						Type: FILE,
 						Payload: PartPayload{
 							FileID:  "ZhSnMuaOmF7FRez2jGWuQs5zGZwlLa0",
 							Caption: "Last weekend trip",
@@ -102,7 +102,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 						},
 					},
 					{
-						Type: "forward",
+						Type: FORWARD,
 						Payload: PartPayload{
 							Message: PartMessage{
 								MsgID: "12354",
@@ -111,7 +111,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 						},
 					},
 					{
-						Type: "reply",
+						Type: REPLY,
 						Payload: PartPayload{
 							Message: PartMessage{
 								MsgID: "12354",
@@ -125,7 +125,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 2,
-			Type:    "editedMessage",
+			Type:    EDITED_MESSAGE,
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
 				Chat: Chat{
@@ -144,7 +144,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 3,
-			Type:    "deletedMessage",
+			Type:    DELETED_MESSAGE,
 			Payload: EventPayload{
 				MsgID: "57883346846815030",
 				Chat: Chat{
@@ -157,7 +157,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 4,
-			Type:    "pinnedMessage",
+			Type:    PINNED_MESSAGE,
 			Payload: EventPayload{
 				MsgID: "6720509406122810000",
 				Chat: Chat{
@@ -176,7 +176,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 5,
-			Type:    "unpinnedMessage",
+			Type:    UNPINNED_MESSAGE,
 			Payload: EventPayload{
 				MsgID: "6720509406122810000",
 				Chat: Chat{
@@ -189,7 +189,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 6,
-			Type:    "newChatMembers",
+			Type:    NEW_CHAT_MEMBERS,
 			Payload: EventPayload{
 				Chat: Chat{
 					ID:    "681869378@chat.agent",
@@ -212,7 +212,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		},
 		{
 			EventID: 7,
-			Type:    "leftChatMembers",
+			Type:    LEFT_CHAT_MEMBERS,
 			Payload: EventPayload{
 				Chat: Chat{
 					ID:    "681869378@chat.agent",

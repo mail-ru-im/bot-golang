@@ -1,11 +1,15 @@
 package goicqbot
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -18,7 +22,7 @@ type Client struct {
 	logger  *logrus.Logger
 }
 
-func (c *Client) Do(path string, params url.Values) ([]byte, error) {
+func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, error) {
 	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
@@ -27,8 +31,32 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 	}
 
 	apiURL.RawQuery = params.Encode()
-	req := &http.Request{
-		URL: apiURL,
+	req, err := http.NewRequest(http.MethodGet, apiURL.String(), nil)
+	if err != nil || req == nil {
+		return nil, fmt.Errorf("cannot init http request: %s", err)
+	}
+
+	if file != nil {
+		buffer := &bytes.Buffer{}
+		multipartWriter := multipart.NewWriter(buffer)
+
+		fileWriter, err := multipartWriter.CreateFormFile("file", file.Name())
+		if err != nil {
+			return nil, fmt.Errorf("cannot create multipart writer: %s", err)
+		}
+
+		_, err = io.Copy(fileWriter, file)
+		if err != nil {
+			return nil, fmt.Errorf("cannot copy file into buffer: %s", err)
+		}
+
+		if err := multipartWriter.Close(); err != nil {
+			return nil, fmt.Errorf("cannot close multipartWriter: %s", err)
+		}
+
+		req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
+		req.Body = ioutil.NopCloser(buffer)
+		req.Method = http.MethodPost
 	}
 
 	c.logger.WithFields(logrus.Fields{
@@ -65,7 +93,7 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 
 	response := &Response{}
 
-	if err := response.UnmarshalJSON(bytes); err != nil {
+	if err := json.Unmarshal(bytes, response); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal json: %s", err)
 	}
 
@@ -77,13 +105,13 @@ func (c *Client) Do(path string, params url.Values) ([]byte, error) {
 }
 
 func (c *Client) GetInfo() (*BotInfo, error) {
-	bytes, err := c.Do("/self/get", url.Values{})
+	bytes, err := c.Do("/self/get", url.Values{}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error while receiving information: %s", err)
 	}
 
 	info := &BotInfo{}
-	if err := info.UnmarshalJSON(bytes); err != nil {
+	if err := json.Unmarshal(bytes, info); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
 	}
 
@@ -105,7 +133,7 @@ func (c *Client) SendMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
-	bytes, err := c.Do("/messages/sendText", params)
+	bytes, err := c.Do("/messages/sendText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while sending text: %s", err)
 	}
@@ -123,7 +151,7 @@ func (c *Client) EditMessage(message *Message) error {
 		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
 	}
-	bytes, err := c.Do("/messages/editText", params)
+	bytes, err := c.Do("/messages/editText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while editing text: %s", err)
 	}
@@ -140,9 +168,41 @@ func (c *Client) DeleteMessage(message *Message) error {
 		"msgId":  []string{message.ID},
 		"chatId": []string{message.Chat.ID},
 	}
-	_, err := c.Do("/messages/deleteMessages", params)
+	_, err := c.Do("/messages/deleteMessages", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while deleting message: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) UploadFile(message *Message) error {
+	params := url.Values{
+		"chatId":  {message.Chat.ID},
+		"caption": {message.Text},
+	}
+
+	bytes, err := c.Do("/messages/sendFile", params, message.File)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
+	}
+
+	if err := json.Unmarshal(bytes, message); err != nil {
+		return fmt.Errorf("cannot unmarshal response: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) SendFile(message *Message) error {
+	params := url.Values{
+		"chatId": {message.Chat.ID},
+		"fileId": {message.FileID},
+	}
+
+	_, err := c.Do("/messages/sendFile", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
 	}
 
 	return nil
@@ -155,12 +215,12 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	}
 	events := eventsResponse{}
 
-	body, err := c.Do("/events/get", params)
+	body, err := c.Do("/events/get", params, nil)
 	if err != nil {
 		return events.Events, fmt.Errorf("error while making request: %s", err)
 	}
 
-	if err := events.UnmarshalJSON(body); err != nil {
+	if err := json.Unmarshal(body, events); err != nil {
 		return events.Events, fmt.Errorf("cannot parse events: %s", err)
 	}
 

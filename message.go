@@ -1,6 +1,9 @@
 package goicqbot
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 //go:generate easyjson -all message.go
 
@@ -10,6 +13,9 @@ type Message struct {
 
 	// Id of the message (for editing)
 	ID string `json:"msgId"`
+
+	// File contains file attachment of the message
+	File *os.File `json:"-"`
 
 	// Id of file to send
 	FileID string `json:"fileId"`
@@ -45,8 +51,12 @@ func (m *Message) Send() error {
 		return fmt.Errorf("message should have chat id")
 	}
 
-	if m.Text == "" && m.FileID == "" {
+	if m.Text == "" && m.FileID == "" && m.File == nil {
 		return fmt.Errorf("cannot send message or file without data")
+	}
+
+	if m.File != nil {
+		return m.client.UploadFile(m)
 	}
 
 	return m.client.SendMessage(m)
