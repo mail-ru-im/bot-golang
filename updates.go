@@ -24,6 +24,17 @@ type Updater struct {
 	PollTime    int
 }
 
+// NewMessageFromPart returns new message based on part message
+func (u *Updater) NewMessageFromPayload(message EventPayload) *Message {
+	return &Message{
+		client:    u.client,
+		ID:        message.MsgID,
+		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
+		Text:      message.Text,
+		Timestamp: message.Timestamp,
+	}
+}
+
 func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 	_, err := u.GetLastEvents(0)
 	if err != nil {
@@ -50,6 +61,9 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 			}
 
 			for _, event := range events {
+				event.client = u.client
+				event.Payload.client = u.client
+
 				ch <- *event
 			}
 		}

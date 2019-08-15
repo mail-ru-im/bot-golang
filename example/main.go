@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"github.com/DmitryDorofeev/goicqbot"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -30,4 +33,22 @@ func main() {
 	}
 
 	fileMessage.Delete()
+
+	// Simple 30-seconds echo bot
+	ctx, _ := context.WithTimeout(context.Background(), 30 * time.Second)
+	updates := bot.GetUpdatesChannel(ctx)
+	for update := range updates {
+		fmt.Println(update.Type, update.Payload)
+		switch update.Type {
+		case goicqbot.NEW_MESSAGE:
+			message := update.Payload.Message()
+			if err := message.Send(); err != nil {
+				log.Printf("something went wrong: %s", err)
+			}
+		case goicqbot.EDITED_MESSAGE:
+			message := update.Payload.Message()
+			message.Reply("do not edit!")
+		}
+
+	}
 }

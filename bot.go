@@ -50,6 +50,17 @@ func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	}
 }
 
+// NewMessageFromPart returns new message based on part message
+func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
+	return &Message{
+		client:    b.client,
+		ID:        message.MsgID,
+		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
+		Text:      message.Text,
+		Timestamp: message.Timestamp,
+	}
+}
+
 // NewTextMessage returns new text message
 func (b *Bot) NewTextMessage(chatID string, text string) *Message {
 	return &Message{

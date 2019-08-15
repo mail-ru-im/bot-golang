@@ -38,6 +38,8 @@ type Message struct {
 	// You can't use it with ReplyMsgID
 	// You should use it with ForwardMsgID
 	ForwardChatID string `json:"replyChatId"`
+
+	Timestamp int `json:"timestamp"`
 }
 
 // Send method sends your message.

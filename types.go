@@ -61,6 +61,8 @@ type Contact struct {
 }
 
 type EventPayload struct {
+	client *Client
+
 	// Id of the message.
 	// Presented in newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage events.
 	MsgID string `json:"msgId"`
@@ -93,6 +95,18 @@ type EventPayload struct {
 	RemovedBy Contact `json:"removedBy"`
 }
 
+func (ep *EventPayload) Message() *Message {
+	ep.Chat.client = ep.client
+
+	return &Message{
+		client:    ep.client,
+		ID:        ep.MsgID,
+		Text:      ep.Text,
+		Chat:      ep.Chat,
+		Timestamp: ep.Timestamp,
+	}
+}
+
 type PartMessage struct {
 	From      Contact `json:"from"`
 	MsgID     string  `json:"msgId"`
@@ -101,16 +115,19 @@ type PartMessage struct {
 }
 
 type PartPayload struct {
-	FirstName string      `json:"firstName"`
-	LastName  string      `json:"lastName"`
-	UserID    string      `json:"userId"`
-	FileID    string      `json:"fileId"`
-	Caption   string      `json:"caption"`
-	Type      string      `json:"type"`
-	Message   PartMessage `json:"message"`
+	FirstName   string      `json:"firstName"`
+	LastName    string      `json:"lastName"`
+	UserID      string      `json:"userId"`
+	FileID      string      `json:"fileId"`
+	Caption     string      `json:"caption"`
+	Type        string      `json:"type"`
+	PartMessage PartMessage `json:"message"`
+	Message     PartMessage `json:"-"`
 }
 
 type Event struct {
+	client *Client
+
 	// Id of the event
 	EventID int `json:"eventId"`
 
