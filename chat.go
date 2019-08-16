@@ -15,10 +15,11 @@ type Chat struct {
 	// Is this chat public?
 	Public bool `json:"public"`
 
+	Group string `json:"group"`
+
 	// You can send this link to all your friends
 	InviteLink string `json:"inviteLink"`
+
+	Admins []Contact `json:"admins"`
 }
 
-func (c *Chat) Init() error {
-	return nil
-}

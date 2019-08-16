@@ -118,6 +118,36 @@ func (c *Client) GetInfo() (*BotInfo, error) {
 	return info, nil
 }
 
+func (c *Client) GetChatInfo(chatId string) (*Chat, error) {
+	params := url.Values{
+		"chatId": {chatId},
+	}
+	response, err := c.Do("/chats/getInfo", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving information: %s", err)
+	}
+
+	chat := &Chat{}
+	if err := json.Unmarshal(response, chat); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
+	}
+
+	if chat.Group != "group" {
+		return chat, nil
+	}
+
+	response, err = c.Do("/chats/getAdmins", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving admins: %s", err)
+	}
+
+	if err := json.Unmarshal(response, chat); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling admins: %s", err)
+	}
+
+	return chat, nil
+}
+
 func (c *Client) SendMessage(message *Message) error {
 	params := url.Values{
 		"chatId": []string{message.Chat.ID},
@@ -180,7 +210,7 @@ func (c *Client) SendFile(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
-		"fileId": {message.FileID},
+		"fileId":  {message.FileID},
 	}
 
 	response, err := c.Do("/messages/sendFile", params, nil)

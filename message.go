@@ -42,6 +42,10 @@ type Message struct {
 	Timestamp int `json:"timestamp"`
 }
 
+func (m *Message) AttachFile(file *os.File) {
+	m.File = file
+}
+
 // Send method sends your message.
 // Make sure you have Text or FileID in your message.
 func (m *Message) Send() error {
