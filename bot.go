@@ -40,7 +40,7 @@ func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
 	return b.client.GetChatInfo(chatID)
 }
 
-// GetFileInfo returns information about chat:
+// GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
 	return b.client.GetFileInfo(fileID)
