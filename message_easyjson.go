@@ -43,13 +43,15 @@ func easyjson4086215fDecodeGithubComDmitryDorofeevGoicqbot(in *jlexer.Lexer, out
 		case "text":
 			out.Text = string(in.String())
 		case "chat":
-			easyjson4086215fDecodeGithubComDmitryDorofeevGoicqbot1(in, &out.Chat)
+			(out.Chat).UnmarshalEasyJSON(in)
 		case "replyMsgId":
 			out.ReplyMsgID = string(in.String())
 		case "forwardMsgId":
 			out.ForwardMsgID = string(in.String())
 		case "replyChatId":
 			out.ForwardChatID = string(in.String())
+		case "timestamp":
+			out.Timestamp = int(in.Int())
 		default:
 			in.SkipRecursive()
 		}
@@ -82,7 +84,7 @@ func easyjson4086215fEncodeGithubComDmitryDorofeevGoicqbot(out *jwriter.Writer, 
 	{
 		const prefix string = ",\"chat\":"
 		out.RawString(prefix)
-		easyjson4086215fEncodeGithubComDmitryDorofeevGoicqbot1(out, in.Chat)
+		(in.Chat).MarshalEasyJSON(out)
 	}
 	{
 		const prefix string = ",\"replyMsgId\":"
@@ -98,6 +100,11 @@ func easyjson4086215fEncodeGithubComDmitryDorofeevGoicqbot(out *jwriter.Writer, 
 		const prefix string = ",\"replyChatId\":"
 		out.RawString(prefix)
 		out.String(string(in.ForwardChatID))
+	}
+	{
+		const prefix string = ",\"timestamp\":"
+		out.RawString(prefix)
+		out.Int(int(in.Timestamp))
 	}
 	out.RawByte('}')
 }
@@ -124,74 +131,4 @@ func (v *Message) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Message) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson4086215fDecodeGithubComDmitryDorofeevGoicqbot(l, v)
-}
-func easyjson4086215fDecodeGithubComDmitryDorofeevGoicqbot1(in *jlexer.Lexer, out *Chat) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "chatId":
-			out.ID = string(in.String())
-		case "type":
-			out.Type = string(in.String())
-		case "title":
-			out.Title = string(in.String())
-		case "public":
-			out.Public = bool(in.Bool())
-		case "inviteLink":
-			out.InviteLink = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson4086215fEncodeGithubComDmitryDorofeevGoicqbot1(out *jwriter.Writer, in Chat) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"chatId\":"
-		out.RawString(prefix[1:])
-		out.String(string(in.ID))
-	}
-	{
-		const prefix string = ",\"type\":"
-		out.RawString(prefix)
-		out.String(string(in.Type))
-	}
-	{
-		const prefix string = ",\"title\":"
-		out.RawString(prefix)
-		out.String(string(in.Title))
-	}
-	{
-		const prefix string = ",\"public\":"
-		out.RawString(prefix)
-		out.Bool(bool(in.Public))
-	}
-	{
-		const prefix string = ",\"inviteLink\":"
-		out.RawString(prefix)
-		out.String(string(in.InviteLink))
-	}
-	out.RawByte('}')
 }

@@ -1,5 +1,6 @@
 package goicqbot
 
+//go:generate easyjson -all chat.go
 
 type Chat struct {
 	client *Client
@@ -22,4 +23,3 @@ type Chat struct {
 
 	Admins []Contact `json:"admins"`
 }
-

@@ -42,14 +42,18 @@ type Message struct {
 	Timestamp int `json:"timestamp"`
 }
 
-func (m *Message) AttachFile(file *os.File) {
+func (m *Message) AttachNewFile(file *os.File) {
 	m.File = file
+}
+
+func (m *Message) AttachExistingFile(fileID string) {
+	m.FileID = fileID
 }
 
 // Send method sends your message.
 // Make sure you have Text or FileID in your message.
 func (m *Message) Send() error {
-	if (m.client == nil) {
+	if m.client == nil {
 		return fmt.Errorf("client is not inited, create message with constructor NewMessage, NewTextMessage, etc")
 	}
 
