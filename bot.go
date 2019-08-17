@@ -63,7 +63,7 @@ func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	}
 }
 
-// NewExistingFileMessage returns new message with previously uploaded file id
+// NewFileMessageByFileID returns new message with previously uploaded file id
 func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 	return &Message{
 		client: b.client,
@@ -84,7 +84,7 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 }
 
 // NewTextMessage returns new text message
-func (b *Bot) NewTextMessage(chatID string, text string) *Message {
+func (b *Bot) NewTextMessage(chatID, text string) *Message {
 	return &Message{
 		client: b.client,
 		Chat:   Chat{ID: chatID},
