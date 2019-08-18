@@ -118,9 +118,9 @@ func (c *Client) GetInfo() (*BotInfo, error) {
 	return info, nil
 }
 
-func (c *Client) GetChatInfo(chatId string) (*Chat, error) {
+func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 	params := url.Values{
-		"chatId": {chatId},
+		"chatId": {chatID},
 	}
 	response, err := c.Do("/chats/getInfo", params, nil)
 	if err != nil {
@@ -146,6 +146,23 @@ func (c *Client) GetChatInfo(chatId string) (*Chat, error) {
 	}
 
 	return chat, nil
+}
+
+func (c *Client) GetFileInfo(fileID string) (*File, error) {
+	params := url.Values{
+		"fileId": {fileID},
+	}
+	response, err := c.Do("/files/getInfo", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving information: %s", err)
+	}
+
+	file := &File{}
+	if err := json.Unmarshal(response, file); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
+	}
+
+	return file, nil
 }
 
 func (c *Client) SendMessage(message *Message) error {

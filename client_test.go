@@ -104,7 +104,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					{
 						Type: FORWARD,
 						Payload: PartPayload{
-							Message: PartMessage{
+							PartMessage: PartMessage{
 								MsgID: "12354",
 								Text:  "test1",
 							},
@@ -113,7 +113,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					{
 						Type: REPLY,
 						Payload: PartPayload{
-							Message: PartMessage{
+							PartMessage: PartMessage{
 								MsgID: "12354",
 								Text:  "test",
 							},

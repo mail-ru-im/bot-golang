@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/DmitryDorofeev/goicqbot"
 	"log"
 	"os"
 	"time"
+
+	"github.com/DmitryDorofeev/goicqbot"
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 	fileMessage.Delete()
 
 	// Simple 30-seconds echo bot
-	ctx, _ := context.WithTimeout(context.Background(), 30 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	updates := bot.GetUpdatesChannel(ctx)
 	for update := range updates {
 		fmt.Println(update.Type, update.Payload)

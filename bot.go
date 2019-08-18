@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	apiURL = "https://api.icq.net/bot/v1"
+	defaultAPIURL = "https://api.icq.net/bot/v1"
+	defaultDebug  = false
 )
 
 // Bot is the main structure for interaction with ICQ API.
@@ -29,8 +30,20 @@ type Bot struct {
 
 // GetInfo returns information about bot:
 // id, name, about, avatar
-func (b *Bot) GetChatInfo(chatID string) (*BotInfo, error) {
+func (b *Bot) GetInfo() (*BotInfo, error) {
 	return b.client.GetInfo()
+}
+
+// GetChatInfo returns information about chat:
+// id, type, title, public, group, inviteLink, admins
+func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
+	return b.client.GetChatInfo(chatID)
+}
+
+// GetFileInfo returns information about file:
+// id, type, size, filename, url
+func (b *Bot) GetFileInfo(fileID string) (*File, error) {
+	return b.client.GetFileInfo(fileID)
 }
 
 // NewMessage returns new message
@@ -50,6 +63,15 @@ func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	}
 }
 
+// NewFileMessageByFileID returns new message with previously uploaded file id
+func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
+	return &Message{
+		client: b.client,
+		Chat:   Chat{ID: chatID},
+		FileID: fileID,
+	}
+}
+
 // NewMessageFromPart returns new message based on part message
 func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 	return &Message{
@@ -62,7 +84,7 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 }
 
 // NewTextMessage returns new text message
-func (b *Bot) NewTextMessage(chatID string, text string) *Message {
+func (b *Bot) NewTextMessage(chatID, text string) *Message {
 	return &Message{
 		client: b.client,
 		Chat:   Chat{ID: chatID},
@@ -103,14 +125,13 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 // All communications with ICQ bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
 func NewBot(token string, opts ...BotOption) (*Bot, error) {
-	debug := false
-	apiURL := "https://api.icq.net/bot/v1"
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 
+	apiURL, debug := defaultAPIURL, defaultDebug
 	for _, option := range opts {
 		switch option.Type() {
 		case "api_url":
