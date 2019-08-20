@@ -75,7 +75,7 @@ You don't need this.
 But if you do, you can override bot's API URL:
 
 ```go
-bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotApiUrl("https://agent.mail.ru/bot/v1"))
+bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotApiURL("https://agent.mail.ru/bot/v1"))
 ```
 
 And debug all api requests and responses:
