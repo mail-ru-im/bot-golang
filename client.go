@@ -165,7 +165,11 @@ func (c *Client) GetFileInfo(fileID string) (*File, error) {
 	return file, nil
 }
 
-func (c *Client) SendMessage(message *Message) error {
+func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
+	return c.GetFileInfo(fileID)
+}
+
+func (c *Client) SendTextMessage(message *Message) error {
 	params := url.Values{
 		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
@@ -242,6 +246,25 @@ func (c *Client) SendFile(message *Message) error {
 	return nil
 }
 
+func (c *Client) SendVoice(message *Message) error {
+	params := url.Values{
+		"chatId":  {message.Chat.ID},
+		"caption": {message.Text},
+		"fileId":  {message.FileID},
+	}
+
+	response, err := c.Do("/messages/sendVoice", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
+	}
+
+	if err := json.Unmarshal(response, message); err != nil {
+		return fmt.Errorf("cannot unmarshal response: %s", err)
+	}
+
+	return nil
+}
+
 func (c *Client) UploadFile(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
@@ -249,6 +272,24 @@ func (c *Client) UploadFile(message *Message) error {
 	}
 
 	response, err := c.Do("/messages/sendFile", params, message.File)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
+	}
+
+	if err := json.Unmarshal(response, message); err != nil {
+		return fmt.Errorf("cannot unmarshal response: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) UploadVoice(message *Message) error {
+	params := url.Values{
+		"chatId":  {message.Chat.ID},
+		"caption": {message.Text},
+	}
+
+	response, err := c.Do("/messages/sendVoice", params, message.File)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
 	}

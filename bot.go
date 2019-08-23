@@ -49,26 +49,59 @@ func (b *Bot) GetFileInfo(fileID string) (*File, error) {
 // NewMessage returns new message
 func (b *Bot) NewMessage(chatID string) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		ContentType: Text,
+	}
+}
+
+// NewTextMessage returns new text message
+func (b *Bot) NewTextMessage(chatID, text string) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		Text:        text,
+		ContentType: Text,
 	}
 }
 
 // NewFileMessage returns new file message
 func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		File:   file,
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		File:        file,
+		ContentType: OtherFile,
 	}
 }
 
 // NewFileMessageByFileID returns new message with previously uploaded file id
 func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		FileID: fileID,
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		FileID:      fileID,
+		ContentType: OtherFile,
+	}
+}
+
+// NewFileMessage returns new voice message
+func (b *Bot) NewVoiceMessage(chatID string, file *os.File) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		File:        file,
+		ContentType: Voice,
+	}
+}
+
+// NewVoiceMessageByFileID returns new message with previously uploaded voice file id
+func (b *Bot) NewVoiceMessageByFileID(chatID, fileID string) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		FileID:      fileID,
+		ContentType: Voice,
 	}
 }
 
@@ -80,15 +113,6 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
 		Text:      message.Text,
 		Timestamp: message.Timestamp,
-	}
-}
-
-// NewTextMessage returns new text message
-func (b *Bot) NewTextMessage(chatID, text string) *Message {
-	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		Text:   text,
 	}
 }
 
