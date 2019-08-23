@@ -85,7 +85,7 @@ func (m *Message) Send() error {
 	switch m.ContentType {
 	case Voice:
 		if m.FileID != "" {
-			return m.client.SendVoice(m)
+			return m.client.SendVoiceMessage(m)
 		}
 
 		if m.File != nil {
@@ -93,14 +93,14 @@ func (m *Message) Send() error {
 		}
 	case OtherFile:
 		if m.FileID != "" {
-			return m.client.SendFile(m)
+			return m.client.SendFileMessage(m)
 		}
 
 		if m.File != nil {
 			return m.client.UploadFile(m)
 		}
 	case Text:
-		return m.client.SendMessage(m)
+		return m.client.SendTextMessage(m)
 	}
 
 	return fmt.Errorf("cannot send message or file without data")
@@ -135,7 +135,7 @@ func (m *Message) Reply(text string) error {
 	m.ReplyMsgID = m.ID
 	m.Text = text
 
-	return m.client.SendMessage(m)
+	return m.client.SendTextMessage(m)
 }
 
 // Forward method forwards your message to chat.
@@ -149,5 +149,5 @@ func (m *Message) Forward(chatID string) error {
 	m.ForwardMsgID = m.ID
 	m.Chat.ID = chatID
 
-	return m.client.SendMessage(m)
+	return m.client.SendTextMessage(m)
 }

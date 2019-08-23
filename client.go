@@ -227,7 +227,7 @@ func (c *Client) DeleteMessage(message *Message) error {
 	return nil
 }
 
-func (c *Client) SendFile(message *Message) error {
+func (c *Client) SendFileMessage(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
@@ -246,7 +246,7 @@ func (c *Client) SendFile(message *Message) error {
 	return nil
 }
 
-func (c *Client) SendVoice(message *Message) error {
+func (c *Client) SendVoiceMessage(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
