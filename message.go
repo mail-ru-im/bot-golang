@@ -3,6 +3,7 @@ package goicqbot
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 //go:generate easyjson -all message.go
@@ -10,7 +11,8 @@ import (
 type MessageContentType uint8
 
 const (
-	Text MessageContentType = iota
+	Unknown MessageContentType = iota
+	Text
 	OtherFile
 	Voice
 )
@@ -101,6 +103,26 @@ func (m *Message) Send() error {
 		}
 	case Text:
 		return m.client.SendTextMessage(m)
+	case Unknown:
+		// need to autodetect
+		if m.FileID != "" {
+			// voice message's fileID always starts with 'I'
+			if m.FileID[0] == voiceMessageLeadingRune {
+				return m.client.SendVoiceMessage(m)
+			}
+			return m.client.SendFileMessage(m)
+		}
+
+		if m.File != nil {
+			if voiceMessageSupportedExtensions[filepath.Ext(m.File.Name())] {
+				return m.client.UploadVoice(m)
+			}
+			return m.client.UploadFile(m)
+		}
+
+		if m.Text != "" {
+			return m.client.SendTextMessage(m)
+		}
 	}
 
 	return fmt.Errorf("cannot send message or file without data")
