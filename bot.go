@@ -49,26 +49,59 @@ func (b *Bot) GetFileInfo(fileID string) (*File, error) {
 // NewMessage returns new message
 func (b *Bot) NewMessage(chatID string) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		ContentType: Text,
+	}
+}
+
+// NewTextMessage returns new text message
+func (b *Bot) NewTextMessage(chatID, text string) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		Text:        text,
+		ContentType: Text,
 	}
 }
 
 // NewFileMessage returns new file message
 func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		File:   file,
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		File:        file,
+		ContentType: OtherFile,
 	}
 }
 
 // NewFileMessageByFileID returns new message with previously uploaded file id
 func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		FileID: fileID,
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		FileID:      fileID,
+		ContentType: OtherFile,
+	}
+}
+
+// NewFileMessage returns new voice message
+func (b *Bot) NewVoiceMessage(chatID string, file *os.File) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		File:        file,
+		ContentType: Voice,
+	}
+}
+
+// NewVoiceMessageByFileID returns new message with previously uploaded voice file id
+func (b *Bot) NewVoiceMessageByFileID(chatID, fileID string) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		FileID:      fileID,
+		ContentType: Voice,
 	}
 }
 
@@ -83,15 +116,6 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 	}
 }
 
-// NewTextMessage returns new text message
-func (b *Bot) NewTextMessage(chatID, text string) *Message {
-	return &Message{
-		client: b.client,
-		Chat:   Chat{ID: chatID},
-		Text:   text,
-	}
-}
-
 func (b *Bot) NewChat(id string) *Chat {
 	return &Chat{
 		client: b.client,
@@ -102,7 +126,7 @@ func (b *Bot) NewChat(id string) *Chat {
 // SendMessage sends a message, passed as an argument.
 // This method fills the argument with ID of sent message and returns an error if any.
 func (b *Bot) SendMessage(message *Message) error {
-	return b.client.SendMessage(message)
+	return b.client.SendTextMessage(message)
 }
 
 // EditMessage edit a message passed as an argument.

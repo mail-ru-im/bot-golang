@@ -34,6 +34,18 @@ func main() {
 	}
 
 	fileMessage.Delete()
+	file.Close()
+
+	file, err = os.Open("./voice.aac")
+	if err != nil {
+		log.Fatalf("cannot open file: %s", err)
+	}
+	defer file.Close()
+
+	voiceMessage := bot.NewVoiceMessage("g.gabolaev@corp.mail.ru", file)
+	if err := voiceMessage.Send(); err != nil {
+		log.Println(err)
+	}
 
 	// Simple 30-seconds echo bot
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)

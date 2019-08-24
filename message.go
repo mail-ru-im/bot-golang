@@ -7,9 +7,18 @@ import (
 
 //go:generate easyjson -all message.go
 
+type MessageContentType uint8
+
+const (
+	Text MessageContentType = iota
+	OtherFile
+	Voice
+)
+
 // Message represents a text message in ICQ
 type Message struct {
-	client *Client
+	client      *Client
+	ContentType MessageContentType
 
 	// Id of the message (for editing)
 	ID string `json:"msgId"`
@@ -44,10 +53,22 @@ type Message struct {
 
 func (m *Message) AttachNewFile(file *os.File) {
 	m.File = file
+	m.ContentType = OtherFile
 }
 
 func (m *Message) AttachExistingFile(fileID string) {
 	m.FileID = fileID
+	m.ContentType = OtherFile
+}
+
+func (m *Message) AttachNewVoice(file *os.File) {
+	m.File = file
+	m.ContentType = Voice
+}
+
+func (m *Message) AttachExistingVoice(fileID string) {
+	m.FileID = fileID
+	m.ContentType = Voice
 }
 
 // Send method sends your message.
@@ -61,16 +82,25 @@ func (m *Message) Send() error {
 		return fmt.Errorf("message should have chat id")
 	}
 
-	if m.FileID != "" {
-		return m.client.SendFile(m)
-	}
+	switch m.ContentType {
+	case Voice:
+		if m.FileID != "" {
+			return m.client.SendVoiceMessage(m)
+		}
 
-	if m.File != nil {
-		return m.client.UploadFile(m)
-	}
+		if m.File != nil {
+			return m.client.UploadVoice(m)
+		}
+	case OtherFile:
+		if m.FileID != "" {
+			return m.client.SendFileMessage(m)
+		}
 
-	if m.Text != "" {
-		return m.client.SendMessage(m)
+		if m.File != nil {
+			return m.client.UploadFile(m)
+		}
+	case Text:
+		return m.client.SendTextMessage(m)
 	}
 
 	return fmt.Errorf("cannot send message or file without data")
@@ -105,7 +135,7 @@ func (m *Message) Reply(text string) error {
 	m.ReplyMsgID = m.ID
 	m.Text = text
 
-	return m.client.SendMessage(m)
+	return m.client.SendTextMessage(m)
 }
 
 // Forward method forwards your message to chat.
@@ -119,5 +149,5 @@ func (m *Message) Forward(chatID string) error {
 	m.ForwardMsgID = m.ID
 	m.Chat.ID = chatID
 
-	return m.client.SendMessage(m)
+	return m.client.SendTextMessage(m)
 }
