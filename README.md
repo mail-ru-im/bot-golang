@@ -101,9 +101,9 @@ bot := goicqbot.NewBot(BOT_TOKEN, goicqbot.BotDebug(true))
 
 - [x] Delete message
 
-- [ ] Chat info
+- [x] Chat info
 
-- [ ] Send voice
+- [x] Send voice
 
-- [ ] File info
+- [x] File info
 
