@@ -49,9 +49,8 @@ func (b *Bot) GetFileInfo(fileID string) (*File, error) {
 // NewMessage returns new message
 func (b *Bot) NewMessage(chatID string) *Message {
 	return &Message{
-		client:      b.client,
-		Chat:        Chat{ID: chatID},
-		ContentType: Text,
+		client: b.client,
+		Chat:   Chat{ID: chatID},
 	}
 }
 
@@ -126,7 +125,8 @@ func (b *Bot) NewChat(id string) *Chat {
 // SendMessage sends a message, passed as an argument.
 // This method fills the argument with ID of sent message and returns an error if any.
 func (b *Bot) SendMessage(message *Message) error {
-	return b.client.SendTextMessage(message)
+	message.client = b.client
+	return message.Send()
 }
 
 // EditMessage edit a message passed as an argument.
