@@ -1,4 +1,4 @@
-package goicqbot
+package gobotapi
 
 var (
 	voiceMessageSupportedExtensions = map[string]bool{

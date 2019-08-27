@@ -1,4 +1,4 @@
-package goicqbot
+package gobotapi
 
 type BotOption interface {
 	Type() string

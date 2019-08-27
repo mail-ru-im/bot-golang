@@ -1,4 +1,4 @@
-package goicqbot
+package gobotapi
 
 //go:generate easyjson -all chat.go
 

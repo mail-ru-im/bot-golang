@@ -1,4 +1,4 @@
-package goicqbot
+package gobotapi
 
 import (
 	"bytes"
