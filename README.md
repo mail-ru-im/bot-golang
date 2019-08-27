@@ -75,9 +75,8 @@ You don't need this.
 But if you do, you can override bot's API URL:
 
 ```go
-bot := gobotapi.NewBot(BOT_TOKEN, gobotapi.BotApiUrl("https://agent.mail.ru/bot/v1"))
+bot := gobotapi.NewBot(BOT_TOKEN, gobotapi.BotApiURL("https://agent.mail.ru/bot/v1"))
 ```
-
 And debug all api requests and responses:
 
 ```go
