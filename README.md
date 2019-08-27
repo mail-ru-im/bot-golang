@@ -11,7 +11,7 @@
 
 ## Install
 ```bash
-go get github.com/mail-ru-im/botgolang
+go get github.com/mail-ru-im/bot-golang
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ Note a bot can only reply after the user has added it to his contacts list, or i
 ```go
 package main
 
-import "github.com/mail-ru-im/botgolang"
+import "github.com/mail-ru-im/bot-golang"
 
 func main() {
     bot, err := botgolang.NewBot(BOT_TOKEN)
