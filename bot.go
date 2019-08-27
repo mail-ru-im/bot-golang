@@ -1,7 +1,7 @@
-package gobotapi
+package botgolang
 
 /*
-💥 GoBotAPI is zero-configuration library with convenient interface.
+💥 botgolang is zero-configuration library with convenient interface.
 Crafted with love in @mail for your awesome bots.
 */
 

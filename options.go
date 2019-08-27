@@ -1,4 +1,4 @@
-package gobotapi
+package botgolang
 
 type BotOption interface {
 	Type() string

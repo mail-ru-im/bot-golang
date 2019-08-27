@@ -11,7 +11,7 @@
 
 ## Install
 ```bash
-go get github.com/mail-ru-im/gobotapi
+go get github.com/mail-ru-im/botgolang
 ```
 
 ## Usage
@@ -25,10 +25,10 @@ Note a bot can only reply after the user has added it to his contacts list, or i
 ```go
 package main
 
-import "github.com/mail-ru-im/gobotapi"
+import "github.com/mail-ru-im/botgolang"
 
 func main() {
-    bot, err := gobotapi.NewBot(BOT_TOKEN)
+    bot, err := botgolang.NewBot(BOT_TOKEN)
     if err != nil {
         log.Println("wrong token")
     }
@@ -75,12 +75,12 @@ You don't need this.
 But if you do, you can override bot's API URL:
 
 ```go
-bot := gobotapi.NewBot(BOT_TOKEN, gobotapi.BotApiURL("https://agent.mail.ru/bot/v1"))
+bot := botgolang.NewBot(BOT_TOKEN, botgolang.BotApiURL("https://agent.mail.ru/bot/v1"))
 ```
 And debug all api requests and responses:
 
 ```go
-bot := gobotapi.NewBot(BOT_TOKEN, gobotapi.BotDebug(true))
+bot := botgolang.NewBot(BOT_TOKEN, botgolang.BotDebug(true))
 ```
 
 

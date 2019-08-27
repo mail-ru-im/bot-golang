@@ -7,13 +7,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/mail-ru-im/gobotapi"
+	"github.com/mail-ru-im/bot-golang"
 )
 
 func main() {
 	token := os.Getenv("TOKEN")
 
-	bot, err := gobotapi.NewBot(token, gobotapi.BotDebug(true))
+	bot, err := botgolang.NewBot(token, botgolang.BotDebug(true))
 	if err != nil {
 		log.Fatalf("cannot connect to bot: %s", err)
 	}
@@ -53,12 +53,12 @@ func main() {
 	for update := range updates {
 		fmt.Println(update.Type, update.Payload)
 		switch update.Type {
-		case gobotapi.NEW_MESSAGE:
+		case botgolang.NEW_MESSAGE:
 			message := update.Payload.Message()
 			if err := message.Send(); err != nil {
 				log.Printf("something went wrong: %s", err)
 			}
-		case gobotapi.EDITED_MESSAGE:
+		case botgolang.EDITED_MESSAGE:
 			message := update.Payload.Message()
 			message.Reply("do not edit!")
 		}

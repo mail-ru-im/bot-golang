@@ -1,4 +1,4 @@
-package gobotapi
+package botgolang
 
 var (
 	voiceMessageSupportedExtensions = map[string]bool{
