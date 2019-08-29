@@ -12,3 +12,9 @@ jobs:
     steps:
     - checkout
     - run: make lint
+workflows:
+  version: 2
+  build_and_lint:
+    jobs:
+    - build
+    - lint
