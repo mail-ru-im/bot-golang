@@ -1,4 +1,4 @@
-module github.com/DmitryDorofeev/goicqbot
+module github.com/mail-ru-im/bot-golang
 
 go 1.12
 

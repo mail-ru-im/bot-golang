@@ -1,7 +1,7 @@
-package goicqbot
+package botgolang
 
 /*
-💥 GoICQBot is zero-configuration library with convenient interface.
+💥 botgolang is zero-configuration library with convenient interface.
 Crafted with love in @mail for your awesome bots.
 */
 
@@ -18,7 +18,7 @@ const (
 	defaultDebug  = false
 )
 
-// Bot is the main structure for interaction with ICQ API.
+// Bot is the main structure for interaction with API.
 // All fields are private, you can configure bot using config arguments in NewBot func.
 type Bot struct {
 	ctx     context.Context
@@ -146,7 +146,7 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 }
 
 // NewBot returns new bot object.
-// All communications with ICQ bot API must go through Bot struct.
+// All communications with bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
 func NewBot(token string, opts ...BotOption) (*Bot, error) {
 	logger := logrus.New()

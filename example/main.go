@@ -7,13 +7,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/DmitryDorofeev/goicqbot"
+	"github.com/mail-ru-im/bot-golang"
 )
 
 func main() {
 	token := os.Getenv("TOKEN")
 
-	bot, err := goicqbot.NewBot(token, goicqbot.BotDebug(true))
+	bot, err := botgolang.NewBot(token, botgolang.BotDebug(true))
 	if err != nil {
 		log.Fatalf("cannot connect to bot: %s", err)
 	}
@@ -53,12 +53,12 @@ func main() {
 	for update := range updates {
 		fmt.Println(update.Type, update.Payload)
 		switch update.Type {
-		case goicqbot.NEW_MESSAGE:
+		case botgolang.NEW_MESSAGE:
 			message := update.Payload.Message()
 			if err := message.Send(); err != nil {
 				log.Printf("something went wrong: %s", err)
 			}
-		case goicqbot.EDITED_MESSAGE:
+		case botgolang.EDITED_MESSAGE:
 			message := update.Payload.Message()
 			message.Reply("do not edit!")
 		}

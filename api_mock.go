@@ -1,4 +1,4 @@
-package goicqbot
+package botgolang
 
 import (
 	"encoding/json"

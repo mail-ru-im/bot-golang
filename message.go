@@ -1,4 +1,4 @@
-package goicqbot
+package botgolang
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ const (
 	Voice
 )
 
-// Message represents a text message in ICQ
+// Message represents a text message
 type Message struct {
 	client      *Client
 	ContentType MessageContentType

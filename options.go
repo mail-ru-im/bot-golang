@@ -1,4 +1,4 @@
-package goicqbot
+package botgolang
 
 type BotOption interface {
 	Type() string
