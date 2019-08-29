@@ -1,7 +1,7 @@
 <img src="https://github.com/mail-ru-im/bot-python/blob/master/logo.png" width="100" height="100">
 
 # Golang interface for bot API
-[![CircleCI](https://circleci.com/gh/DmitryDorofeev/goicqbot.svg?style=svg)](https://circleci.com/gh/DmitryDorofeev/goicqbot)
+[![CircleCI](https://circleci.com/gh/mail-ru-im/bot-golang.svg?style=svg)](https://circleci.com/gh/mail-ru-im/bot-golang)
 
  - *Brand new Bot API!*
 
