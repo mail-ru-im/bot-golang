@@ -21,7 +21,6 @@ const (
 // Bot is the main structure for interaction with API.
 // All fields are private, you can configure bot using config arguments in NewBot func.
 type Bot struct {
-	ctx     context.Context
 	client  *Client
 	updater *Updater
 	logger  *logrus.Logger
@@ -138,7 +137,7 @@ func (b *Bot) EditMessage(message *Message) error {
 // You can pass cancellable context there and stop receiving events.
 // The channel will be closed after context cancellation.
 func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
-	updates := make(chan Event, 0)
+	updates := make(chan Event)
 
 	go b.updater.RunUpdatesCheck(ctx, updates)
 
