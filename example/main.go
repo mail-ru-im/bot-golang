@@ -21,7 +21,9 @@ func main() {
 	log.Println(bot.Info)
 
 	message := bot.NewTextMessage("d.dorofeev@corp.mail.ru", "Hi")
-	message.Send()
+	if err = message.Send(); err != nil {
+		log.Fatalf("failed to send message: %s", err)
+	}
 
 	file, err := os.Open("./example.png")
 	if err != nil {
@@ -33,8 +35,13 @@ func main() {
 		log.Println(err)
 	}
 
-	fileMessage.Delete()
-	file.Close()
+	if err = fileMessage.Delete(); err != nil {
+		log.Fatalf("failed to delete message: %s", err)
+	}
+
+	if err = file.Close(); err != nil {
+		log.Fatalf("failed to close file: %s", err)
+	}
 
 	file, err = os.Open("./voice.aac")
 	if err != nil {
@@ -48,7 +55,8 @@ func main() {
 	}
 
 	// Simple 30-seconds echo bot
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	updates := bot.GetUpdatesChannel(ctx)
 	for update := range updates {
 		fmt.Println(update.Type, update.Payload)
@@ -56,11 +64,14 @@ func main() {
 		case botgolang.NEW_MESSAGE:
 			message := update.Payload.Message()
 			if err := message.Send(); err != nil {
-				log.Printf("something went wrong: %s", err)
+				log.Printf("failed to send message: %s", err)
 			}
 		case botgolang.EDITED_MESSAGE:
 			message := update.Payload.Message()
-			message.Reply("do not edit!")
+			if err := message.Reply("do not edit!"); err != nil {
+				log.Printf("failed to reply to message: %s", err)
+			}
+
 		}
 
 	}

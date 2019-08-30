@@ -226,7 +226,10 @@ func (h *MockHandler) GetEvents(w http.ResponseWriter) {
 		}
 	`
 
-	w.Write([]byte(events))
+	_, err := w.Write([]byte(events))
+	if err != nil {
+		h.logger.Fatal("failed to write events")
+	}
 }
 
 func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

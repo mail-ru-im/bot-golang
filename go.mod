@@ -3,6 +3,7 @@ module github.com/mail-ru-im/bot-golang
 go 1.12
 
 require (
+	github.com/golangci/golangci-lint v1.17.1 // indirect
 	github.com/hako/durafmt v0.0.0-20190612201238-650ed9f29a84
 	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e
 	github.com/sirupsen/logrus v1.4.2
