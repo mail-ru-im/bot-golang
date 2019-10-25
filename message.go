@@ -173,3 +173,23 @@ func (m *Message) Forward(chatID string) error {
 
 	return m.client.SendTextMessage(m)
 }
+
+// Pin message in chat
+// Make shure you are admin in this chat
+func (m *Message) Pin() error {
+	if m.ID == "" {
+		return fmt.Errorf("cannot pin message without id")
+	}
+
+	return m.client.PinMessage(m)
+}
+
+// Unpin message in chat
+// Make shure you are admin in this chat
+func (m *Message) Unpin() error {
+	if m.ID == "" {
+		return fmt.Errorf("cannot unpin message without id")
+	}
+
+	return m.client.UnpinMessage(m)
+}

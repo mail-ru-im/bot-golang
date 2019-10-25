@@ -320,6 +320,32 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 	return events.Events, nil
 }
 
+func (c *Client) PinMessage(message *Message) error {
+	params := url.Values{
+		"chatId": []string{message.Chat.ID},
+		"msgId":  []string{message.ID},
+	}
+	_, err := c.Do("/chats/pinMessage", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while pinning message: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) UnpinMessage(message *Message) error {
+	params := url.Values{
+		"chatId": []string{message.Chat.ID},
+		"msgId":  []string{message.ID},
+	}
+	_, err := c.Do("/chats/unpinMessage", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while unpinning message: %s", err)
+	}
+
+	return nil
+}
+
 func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
 	return &Client{
 		token:   token,
