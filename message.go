@@ -175,7 +175,7 @@ func (m *Message) Forward(chatID string) error {
 }
 
 // Pin message in chat
-// Make shure you are admin in this chat
+// Make sure you are admin in this chat
 func (m *Message) Pin() error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot pin message without id")
@@ -185,7 +185,7 @@ func (m *Message) Pin() error {
 }
 
 // Unpin message in chat
-// Make shure you are admin in this chat
+// Make sure you are admin in this chat
 func (m *Message) Unpin() error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot unpin message without id")
