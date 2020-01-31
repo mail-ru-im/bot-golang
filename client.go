@@ -234,6 +234,15 @@ func (c *Client) SendFileMessage(message *Message) error {
 		"fileId":  {message.FileID},
 	}
 
+	if message.ReplyMsgID != "" {
+		params.Set("replyMsgId", message.ReplyMsgID)
+	}
+
+	if message.ForwardMsgID != "" {
+		params.Set("forwardMsgId", message.ForwardMsgID)
+		params.Set("forwardChatId", message.ForwardChatID)
+	}
+
 	response, err := c.Do("/messages/sendFile", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -251,6 +260,15 @@ func (c *Client) SendVoiceMessage(message *Message) error {
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
 		"fileId":  {message.FileID},
+	}
+
+	if message.ReplyMsgID != "" {
+		params.Set("replyMsgId", message.ReplyMsgID)
+	}
+
+	if message.ForwardMsgID != "" {
+		params.Set("forwardMsgId", message.ForwardMsgID)
+		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
 	response, err := c.Do("/messages/sendVoice", params, nil)

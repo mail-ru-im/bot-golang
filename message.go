@@ -48,7 +48,7 @@ type Message struct {
 	// Id of a chat from which you forward the message
 	// You can't use it with ReplyMsgID
 	// You should use it with ForwardMsgID
-	ForwardChatID string `json:"replyChatId"`
+	ForwardChatID string `json:"forwardChatId"`
 
 	Timestamp int `json:"timestamp"`
 }

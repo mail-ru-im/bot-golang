@@ -1,6 +1,6 @@
 module github.com/mail-ru-im/bot-golang
 
-go 1.12
+go 1.13
 
 require (
 	github.com/hako/durafmt v0.0.0-20190612201238-650ed9f29a84

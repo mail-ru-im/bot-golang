@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson4086215fDecodeGithubComMailRuImBotgolang(in *jlexer.Lexer, out *Message) {
+func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Message) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -50,7 +50,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotgolang(in *jlexer.Lexer, out *Mes
 			out.ReplyMsgID = string(in.String())
 		case "forwardMsgId":
 			out.ForwardMsgID = string(in.String())
-		case "replyChatId":
+		case "forwardChatId":
 			out.ForwardChatID = string(in.String())
 		case "timestamp":
 			out.Timestamp = int(in.Int())
@@ -64,7 +64,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotgolang(in *jlexer.Lexer, out *Mes
 		in.Consumed()
 	}
 }
-func easyjson4086215fEncodeGithubComMailRuImBotgolang(out *jwriter.Writer, in Message) {
+func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Message) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -104,7 +104,7 @@ func easyjson4086215fEncodeGithubComMailRuImBotgolang(out *jwriter.Writer, in Me
 		out.String(string(in.ForwardMsgID))
 	}
 	{
-		const prefix string = ",\"replyChatId\":"
+		const prefix string = ",\"forwardChatId\":"
 		out.RawString(prefix)
 		out.String(string(in.ForwardChatID))
 	}
@@ -119,23 +119,23 @@ func easyjson4086215fEncodeGithubComMailRuImBotgolang(out *jwriter.Writer, in Me
 // MarshalJSON supports json.Marshaler interface
 func (v Message) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson4086215fEncodeGithubComMailRuImBotgolang(&w, v)
+	easyjson4086215fEncodeGithubComMailRuImBotGolang(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Message) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson4086215fEncodeGithubComMailRuImBotgolang(w, v)
+	easyjson4086215fEncodeGithubComMailRuImBotGolang(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Message) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson4086215fDecodeGithubComMailRuImBotgolang(&r, v)
+	easyjson4086215fDecodeGithubComMailRuImBotGolang(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Message) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson4086215fDecodeGithubComMailRuImBotgolang(l, v)
+	easyjson4086215fDecodeGithubComMailRuImBotGolang(l, v)
 }
