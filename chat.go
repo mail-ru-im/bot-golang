@@ -1,7 +1,5 @@
 package botgolang
 
-import "fmt"
-
 //go:generate easyjson -all chat.go
 
 type ChatAction = string
@@ -71,6 +69,5 @@ func (c *Chat) resolveID() string {
 }
 
 func (c *Chat) SendActions(actions ...ChatAction) error {
-	fmt.Println(c.resolveID())
 	return c.client.SendChatActions(c.resolveID(), actions...)
 }
