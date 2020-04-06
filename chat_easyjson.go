@@ -40,12 +40,24 @@ func easyjson9b8f5552DecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Cha
 			out.ID = string(in.String())
 		case "type":
 			out.Type = string(in.String())
+		case "firstName":
+			out.FirstName = string(in.String())
+		case "lastName":
+			out.LastName = string(in.String())
+		case "nick":
+			out.Nick = string(in.String())
+		case "about":
+			out.About = string(in.String())
+		case "rules":
+			out.Rules = string(in.String())
+		case "isBot":
+			out.IsBot = bool(in.Bool())
 		case "title":
 			out.Title = string(in.String())
 		case "public":
 			out.Public = bool(in.Bool())
-		case "group":
-			out.Group = string(in.String())
+		case "joinModeration":
+			out.JoinModeration = bool(in.Bool())
 		case "inviteLink":
 			out.InviteLink = string(in.String())
 		case "admins":
@@ -56,15 +68,15 @@ func easyjson9b8f5552DecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Cha
 				in.Delim('[')
 				if out.Admins == nil {
 					if !in.IsDelim(']') {
-						out.Admins = make([]Contact, 0, 1)
+						out.Admins = make([]Admin, 0, 2)
 					} else {
-						out.Admins = []Contact{}
+						out.Admins = []Admin{}
 					}
 				} else {
 					out.Admins = (out.Admins)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v1 Contact
+					var v1 Admin
 					(v1).UnmarshalEasyJSON(in)
 					out.Admins = append(out.Admins, v1)
 					in.WantComma()
@@ -96,6 +108,36 @@ func easyjson9b8f5552EncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Ch
 		out.String(string(in.Type))
 	}
 	{
+		const prefix string = ",\"firstName\":"
+		out.RawString(prefix)
+		out.String(string(in.FirstName))
+	}
+	{
+		const prefix string = ",\"lastName\":"
+		out.RawString(prefix)
+		out.String(string(in.LastName))
+	}
+	{
+		const prefix string = ",\"nick\":"
+		out.RawString(prefix)
+		out.String(string(in.Nick))
+	}
+	{
+		const prefix string = ",\"about\":"
+		out.RawString(prefix)
+		out.String(string(in.About))
+	}
+	{
+		const prefix string = ",\"rules\":"
+		out.RawString(prefix)
+		out.String(string(in.Rules))
+	}
+	{
+		const prefix string = ",\"isBot\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.IsBot))
+	}
+	{
 		const prefix string = ",\"title\":"
 		out.RawString(prefix)
 		out.String(string(in.Title))
@@ -106,9 +148,9 @@ func easyjson9b8f5552EncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Ch
 		out.Bool(bool(in.Public))
 	}
 	{
-		const prefix string = ",\"group\":"
+		const prefix string = ",\"joinModeration\":"
 		out.RawString(prefix)
-		out.String(string(in.Group))
+		out.Bool(bool(in.JoinModeration))
 	}
 	{
 		const prefix string = ",\"inviteLink\":"

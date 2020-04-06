@@ -1052,3 +1052,76 @@ func (v *BotInfo) UnmarshalJSON(data []byte) error {
 func (v *BotInfo) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(l, v)
 }
+func easyjson6601e8cdDecodeGithubComMailRuImBotGolang10(in *jlexer.Lexer, out *Admin) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "userId":
+			out.UserID = string(in.String())
+		case "creator":
+			out.Creator = bool(in.Bool())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeGithubComMailRuImBotGolang10(out *jwriter.Writer, in Admin) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"userId\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.UserID))
+	}
+	{
+		const prefix string = ",\"creator\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.Creator))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Admin) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson6601e8cdEncodeGithubComMailRuImBotGolang10(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Admin) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeGithubComMailRuImBotGolang10(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Admin) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson6601e8cdDecodeGithubComMailRuImBotGolang10(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Admin) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeGithubComMailRuImBotGolang10(l, v)
+}

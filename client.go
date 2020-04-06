@@ -127,12 +127,15 @@ func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 		return nil, fmt.Errorf("error while receiving information: %s", err)
 	}
 
-	chat := &Chat{}
+	chat := &Chat{
+		client: c,
+		ID:     chatID,
+	}
 	if err := json.Unmarshal(response, chat); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
 	}
 
-	if chat.Group != "group" {
+	if chat.Type == Private {
 		return chat, nil
 	}
 
@@ -146,6 +149,26 @@ func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 	}
 
 	return chat, nil
+}
+
+func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
+	actionsMap := make(map[ChatAction]bool)
+	filteredActions := make([]ChatAction, 0)
+	for _, action := range actions {
+		if _, has := actionsMap[action]; !has {
+			filteredActions = append(filteredActions, action)
+			actionsMap[action] = true
+		}
+	}
+	params := url.Values{
+		"chatId":  {chatID},
+		"actions": filteredActions,
+	}
+	_, err := c.Do("/chats/sendActions", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while receiving information: %s", err)
+	}
+	return nil
 }
 
 func (c *Client) GetFileInfo(fileID string) (*File, error) {

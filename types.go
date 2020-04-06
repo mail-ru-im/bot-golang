@@ -54,6 +54,11 @@ type eventsResponse struct {
 	Events []*Event `json:"events"`
 }
 
+type Admin struct {
+	UserID  string `json:"userId"`
+	Creator bool   `json:"creator"`
+}
+
 type Contact struct {
 	UserID    string `json:"userId"`
 	FirstName string `json:"firstName"`

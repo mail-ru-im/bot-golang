@@ -39,6 +39,12 @@ func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
 	return b.client.GetChatInfo(chatID)
 }
 
+// GetChatInfo returns information about chat:
+// id, type, title, public, group, inviteLink, admins
+func (b *Bot) SendChatActions(chatID string, actions ...ChatAction) error {
+	return b.client.SendChatActions(chatID, actions...)
+}
+
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
