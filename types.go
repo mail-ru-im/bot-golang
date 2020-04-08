@@ -33,8 +33,7 @@ type Photo struct {
 }
 
 type BotInfo struct {
-	// Id of the bot
-	UserID string `json:"userId"`
+	User
 
 	// Nickname of the bot
 	Nick string `json:"nick"`
@@ -54,13 +53,30 @@ type eventsResponse struct {
 	Events []*Event `json:"events"`
 }
 
-type Admin struct {
-	UserID  string `json:"userId"`
-	Creator bool   `json:"creator"`
+type User struct {
+	ID string `json:"userId"`
+}
+
+type ChatMember struct {
+	User
+	Creator bool `json:"creator"`
+	Admin   bool `json:"admin"`
+}
+
+type UsersListResponse struct {
+	List []User `json:"users"`
+}
+
+type MembersListResponse struct {
+	List []ChatMember `json:"members"`
+}
+
+type AdminsListResponse struct {
+	List []ChatMember `json:"admins"`
 }
 
 type Contact struct {
-	UserID    string `json:"userId"`
+	User
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 }

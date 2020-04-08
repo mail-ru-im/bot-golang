@@ -60,29 +60,6 @@ func easyjson9b8f5552DecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Cha
 			out.JoinModeration = bool(in.Bool())
 		case "inviteLink":
 			out.InviteLink = string(in.String())
-		case "admins":
-			if in.IsNull() {
-				in.Skip()
-				out.Admins = nil
-			} else {
-				in.Delim('[')
-				if out.Admins == nil {
-					if !in.IsDelim(']') {
-						out.Admins = make([]Admin, 0, 2)
-					} else {
-						out.Admins = []Admin{}
-					}
-				} else {
-					out.Admins = (out.Admins)[:0]
-				}
-				for !in.IsDelim(']') {
-					var v1 Admin
-					(v1).UnmarshalEasyJSON(in)
-					out.Admins = append(out.Admins, v1)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
 		default:
 			in.SkipRecursive()
 		}
@@ -156,22 +133,6 @@ func easyjson9b8f5552EncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Ch
 		const prefix string = ",\"inviteLink\":"
 		out.RawString(prefix)
 		out.String(string(in.InviteLink))
-	}
-	{
-		const prefix string = ",\"admins\":"
-		out.RawString(prefix)
-		if in.Admins == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-			out.RawString("null")
-		} else {
-			out.RawByte('[')
-			for v2, v3 := range in.Admins {
-				if v2 > 0 {
-					out.RawByte(',')
-				}
-				(v3).MarshalEasyJSON(out)
-			}
-			out.RawByte(']')
-		}
 	}
 	out.RawByte('}')
 }

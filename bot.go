@@ -39,10 +39,21 @@ func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
 	return b.client.GetChatInfo(chatID)
 }
 
-// GetChatInfo returns information about chat:
-// id, type, title, public, group, inviteLink, admins
+// SendChatActions sends an actions like "typing, looking"
 func (b *Bot) SendChatActions(chatID string, actions ...ChatAction) error {
 	return b.client.SendChatActions(chatID, actions...)
+}
+
+// GetChatAdmins returns chat admins list with fields:
+// userID, creator flag
+func (b *Bot) GetChatAdmins(chatID string) ([]ChatMember, error) {
+	return b.client.GetChatAdmins(chatID)
+}
+
+// GetChatMem returns chat members list with fields:
+// userID, creator flag, admin flag
+func (b *Bot) GetChatMembers(chatID string) ([]ChatMember, error) {
+	return b.client.GetChatMembers(chatID)
 }
 
 // GetFileInfo returns information about file:
@@ -114,7 +125,7 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 	return &Message{
 		client:    b.client,
 		ID:        message.MsgID,
-		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
+		Chat:      Chat{ID: message.From.User.ID, Title: message.From.FirstName},
 		Text:      message.Text,
 		Timestamp: message.Timestamp,
 	}

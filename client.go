@@ -138,16 +138,6 @@ func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 	if chat.Type == Private {
 		return chat, nil
 	}
-
-	response, err = c.Do("/chats/getAdmins", params, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error while receiving admins: %s", err)
-	}
-
-	if err := json.Unmarshal(response, chat); err != nil {
-		return nil, fmt.Errorf("error while unmarshalling admins: %s", err)
-	}
-
 	return chat, nil
 }
 
@@ -169,6 +159,40 @@ func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
 		return fmt.Errorf("error while receiving information: %s", err)
 	}
 	return nil
+}
+
+func (c *Client) GetChatAdmins(chatID string) ([]ChatMember, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getAdmins", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving admins: %s", err)
+	}
+
+	admins := new(AdminsListResponse)
+	if err := json.Unmarshal(response, admins); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling admins: %s", err)
+	}
+	return admins.List, nil
+}
+
+func (c *Client) GetChatMembers(chatID string) ([]ChatMember, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getMembers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving members: %s", err)
+	}
+
+	members := new(MembersListResponse)
+	if err := json.Unmarshal(response, members); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling members: %s", err)
+	}
+	return members.List, nil
 }
 
 func (c *Client) GetFileInfo(fileID string) (*File, error) {

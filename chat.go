@@ -54,9 +54,6 @@ type Chat struct {
 
 	// You can send this link to all your friends
 	InviteLink string `json:"inviteLink"`
-
-	// Chat admins list
-	Admins []Admin `json:"admins"`
 }
 
 func (c *Chat) resolveID() string {
@@ -68,6 +65,21 @@ func (c *Chat) resolveID() string {
 	}
 }
 
+// Send bot actions to the chat
+//
+// You can call this method every time you change the current actions,
+// or every 10 seconds if the actions have not changed. After sending a
+// request without active action, you should not re-notify of their absence.
 func (c *Chat) SendActions(actions ...ChatAction) error {
 	return c.client.SendChatActions(c.resolveID(), actions...)
+}
+
+// Get chat administrators list
+func (c *Chat) GetAdmins() ([]ChatMember, error) {
+	return c.client.GetChatAdmins(c.ID)
+}
+
+// Get chat members list
+func (c *Chat) GetMembers() ([]ChatMember, error) {
+	return c.client.GetChatMembers(c.ID)
 }
