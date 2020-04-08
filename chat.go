@@ -93,3 +93,14 @@ func (c *Chat) GetBlockedUsers() ([]User, error) {
 func (c *Chat) GetPendingUsers() ([]User, error) {
 	return c.client.GetChatPendingUsers(c.ID)
 }
+
+// Block user and remove him from chat.
+// If deleteLastMessages is true, the messages written recently will be deleted
+func (c *Chat) BlockUser(userID string, deleteLastMessages bool) error {
+	return c.client.BlockChatUser(c.ID, userID, deleteLastMessages)
+}
+
+// Unblock user in chat (but not add him back)
+func (c *Chat) UnblockUser(userID string) error {
+	return c.client.UnblockChatUser(c.ID, userID)
+}

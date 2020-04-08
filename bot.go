@@ -68,6 +68,17 @@ func (b *Bot) GetChatPendingUsers(chatID string) ([]User, error) {
 	return b.client.GetChatPendingUsers(chatID)
 }
 
+// BlockChatUser blocks user and removes him from chat.
+// If deleteLastMessages is true, the messages written recently will be deleted
+func (b *Bot) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
+	return b.client.BlockChatUser(chatID, userID, deleteLastMessages)
+}
+
+// UnblockChatUser unblocks user in chat
+func (b *Bot) UnblockChatUser(chatID, userID string) error {
+	return b.client.UnblockChatUser(chatID, userID)
+}
+
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {

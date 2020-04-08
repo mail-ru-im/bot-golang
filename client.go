@@ -229,6 +229,43 @@ func (c *Client) GetChatPendingUsers(chatID string) ([]User, error) {
 	return users.List, nil
 }
 
+func (c *Client) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
+	params := url.Values{
+		"chatId":          {chatID},
+		"userId":          {userID},
+		"delLastMessages": {strconv.FormatBool(deleteLastMessages)},
+	}
+
+	response, err := c.Do("/chats/blockUser", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while blocking user: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return fmt.Errorf("error while blocking user: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) UnblockChatUser(chatID, userID string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"userId": {userID},
+	}
+
+	response, err := c.Do("/chats/unblockUser", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while unblocking user: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return fmt.Errorf("error while unblocking user: %s", err)
+	}
+	return nil
+}
+
 func (c *Client) GetFileInfo(fileID string) (*File, error) {
 	params := url.Values{
 		"fileId": {fileID},

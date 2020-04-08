@@ -68,6 +68,7 @@ type UsersListResponse struct {
 }
 
 type MembersListResponse struct {
+	// TODO: cursor
 	List []ChatMember `json:"members"`
 }
 
