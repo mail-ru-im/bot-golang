@@ -83,3 +83,13 @@ func (c *Chat) GetAdmins() ([]ChatMember, error) {
 func (c *Chat) GetMembers() ([]ChatMember, error) {
 	return c.client.GetChatMembers(c.ID)
 }
+
+// Get chat blocked users list
+func (c *Chat) GetBlockedUsers() ([]User, error) {
+	return c.client.GetChatBlockedUsers(c.ID)
+}
+
+// Get chat join pending users list
+func (c *Chat) GetPendingUsers() ([]User, error) {
+	return c.client.GetChatPendingUsers(c.ID)
+}

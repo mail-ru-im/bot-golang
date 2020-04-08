@@ -195,6 +195,40 @@ func (c *Client) GetChatMembers(chatID string) ([]ChatMember, error) {
 	return members.List, nil
 }
 
+func (c *Client) GetChatBlockedUsers(chatID string) ([]User, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getBlockedUsers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving blocked users: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling blocked users: %s", err)
+	}
+	return users.List, nil
+}
+
+func (c *Client) GetChatPendingUsers(chatID string) ([]User, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getPendingUsers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving pending users: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling pending users: %s", err)
+	}
+	return users.List, nil
+}
+
 func (c *Client) GetFileInfo(fileID string) (*File, error) {
 	params := url.Values{
 		"fileId": {fileID},

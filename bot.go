@@ -56,6 +56,18 @@ func (b *Bot) GetChatMembers(chatID string) ([]ChatMember, error) {
 	return b.client.GetChatMembers(chatID)
 }
 
+// GetChatBlockedUsers returns chat blocked users list:
+// userID
+func (b *Bot) GetChatBlockedUsers(chatID string) ([]User, error) {
+	return b.client.GetChatBlockedUsers(chatID)
+}
+
+// GetChatPendingUsers returns chat join pending users list:
+// userID
+func (b *Bot) GetChatPendingUsers(chatID string) ([]User, error) {
+	return b.client.GetChatPendingUsers(chatID)
+}
+
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
