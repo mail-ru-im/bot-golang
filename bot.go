@@ -83,7 +83,7 @@ func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 	}
 }
 
-// NewFileMessage returns new voice message
+// NewVoiceMessage returns new voice message
 func (b *Bot) NewVoiceMessage(chatID string, file *os.File) *Message {
 	return &Message{
 		client:      b.client,
