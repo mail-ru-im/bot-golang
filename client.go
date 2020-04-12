@@ -211,6 +211,16 @@ func (c *Client) EditMessage(message *Message) error {
 		"chatId": []string{message.Chat.ID},
 		"text":   []string{message.Text},
 	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/editText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while editing text: %s", err)
@@ -252,6 +262,15 @@ func (c *Client) SendFileMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendFile", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -280,6 +299,15 @@ func (c *Client) SendVoiceMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendVoice", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -298,6 +326,15 @@ func (c *Client) UploadFile(message *Message) error {
 		"caption": {message.Text},
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendFile", params, message.File)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -314,6 +351,15 @@ func (c *Client) UploadVoice(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
+	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
 	}
 
 	response, err := c.Do("/messages/sendVoice", params, message.File)
