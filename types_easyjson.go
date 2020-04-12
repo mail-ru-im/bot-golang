@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *eventsResponse) {
+func easyjson6601e8cdDecodeBotGolang(in *jlexer.Lexer, out *Part) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -36,39 +36,10 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *eve
 			continue
 		}
 		switch key {
-		case "ok":
-			out.OK = bool(in.Bool())
-		case "events":
-			if in.IsNull() {
-				in.Skip()
-				out.Events = nil
-			} else {
-				in.Delim('[')
-				if out.Events == nil {
-					if !in.IsDelim(']') {
-						out.Events = make([]*Event, 0, 8)
-					} else {
-						out.Events = []*Event{}
-					}
-				} else {
-					out.Events = (out.Events)[:0]
-				}
-				for !in.IsDelim(']') {
-					var v1 *Event
-					if in.IsNull() {
-						in.Skip()
-						v1 = nil
-					} else {
-						if v1 == nil {
-							v1 = new(Event)
-						}
-						(*v1).UnmarshalEasyJSON(in)
-					}
-					out.Events = append(out.Events, v1)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
+		case "type":
+			out.Type = PartType(in.String())
+		case "payload":
+			(out.Payload).UnmarshalEasyJSON(in)
 		default:
 			in.SkipRecursive()
 		}
@@ -79,62 +50,47 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *eve
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in eventsResponse) {
+func easyjson6601e8cdEncodeBotGolang(out *jwriter.Writer, in Part) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"ok\":"
+		const prefix string = ",\"type\":"
 		out.RawString(prefix[1:])
-		out.Bool(bool(in.OK))
+		out.String(string(in.Type))
 	}
 	{
-		const prefix string = ",\"events\":"
+		const prefix string = ",\"payload\":"
 		out.RawString(prefix)
-		if in.Events == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-			out.RawString("null")
-		} else {
-			out.RawByte('[')
-			for v2, v3 := range in.Events {
-				if v2 > 0 {
-					out.RawByte(',')
-				}
-				if v3 == nil {
-					out.RawString("null")
-				} else {
-					(*v3).MarshalEasyJSON(out)
-				}
-			}
-			out.RawByte(']')
-		}
+		(in.Payload).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v eventsResponse) MarshalJSON() ([]byte, error) {
+func (v Part) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang(&w, v)
+	easyjson6601e8cdEncodeBotGolang(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v eventsResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang(w, v)
+func (v Part) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeBotGolang(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *eventsResponse) UnmarshalJSON(data []byte) error {
+func (v *Part) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang(&r, v)
+	easyjson6601e8cdDecodeBotGolang(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *eventsResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang(l, v)
+func (v *Part) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeBotGolang(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Response) {
+func easyjson6601e8cdDecodeBotGolang1(in *jlexer.Lexer, out *Event) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -153,10 +109,12 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Re
 			continue
 		}
 		switch key {
-		case "ok":
-			out.OK = bool(in.Bool())
-		case "description":
-			out.Description = string(in.String())
+		case "eventId":
+			out.EventID = int(in.Int())
+		case "type":
+			out.Type = EventType(in.String())
+		case "payload":
+			(out.Payload).UnmarshalEasyJSON(in)
 		default:
 			in.SkipRecursive()
 		}
@@ -167,113 +125,52 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Re
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang1(out *jwriter.Writer, in Response) {
+func easyjson6601e8cdEncodeBotGolang1(out *jwriter.Writer, in Event) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"ok\":"
+		const prefix string = ",\"eventId\":"
 		out.RawString(prefix[1:])
-		out.Bool(bool(in.OK))
+		out.Int(int(in.EventID))
 	}
-	if in.Description != "" {
-		const prefix string = ",\"description\":"
+	{
+		const prefix string = ",\"type\":"
 		out.RawString(prefix)
-		out.String(string(in.Description))
+		out.String(string(in.Type))
 	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v Response) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang1(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Response) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang1(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *Response) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang1(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Response) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang1(l, v)
-}
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang2(in *jlexer.Lexer, out *Photo) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "url":
-			out.URL = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang2(out *jwriter.Writer, in Photo) {
-	out.RawByte('{')
-	first := true
-	_ = first
 	{
-		const prefix string = ",\"url\":"
-		out.RawString(prefix[1:])
-		out.String(string(in.URL))
+		const prefix string = ",\"payload\":"
+		out.RawString(prefix)
+		(in.Payload).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v Photo) MarshalJSON() ([]byte, error) {
+func (v Event) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang2(&w, v)
+	easyjson6601e8cdEncodeBotGolang1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Photo) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang2(w, v)
+func (v Event) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeBotGolang1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *Photo) UnmarshalJSON(data []byte) error {
+func (v *Event) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang2(&r, v)
+	easyjson6601e8cdDecodeBotGolang1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Photo) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang2(l, v)
+func (v *Event) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeBotGolang1(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang3(in *jlexer.Lexer, out *PartPayload) {
+func easyjson6601e8cdDecodeBotGolang2(in *jlexer.Lexer, out *PartPayload) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -316,7 +213,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang3(in *jlexer.Lexer, out *Pa
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang3(out *jwriter.Writer, in PartPayload) {
+func easyjson6601e8cdEncodeBotGolang2(out *jwriter.Writer, in PartPayload) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -361,27 +258,27 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang3(out *jwriter.Writer, in P
 // MarshalJSON supports json.Marshaler interface
 func (v PartPayload) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang3(&w, v)
+	easyjson6601e8cdEncodeBotGolang2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v PartPayload) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang3(w, v)
+	easyjson6601e8cdEncodeBotGolang2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *PartPayload) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang3(&r, v)
+	easyjson6601e8cdDecodeBotGolang2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *PartPayload) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang3(l, v)
+	easyjson6601e8cdDecodeBotGolang2(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang4(in *jlexer.Lexer, out *PartMessage) {
+func easyjson6601e8cdDecodeBotGolang3(in *jlexer.Lexer, out *PartMessage) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -418,7 +315,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang4(in *jlexer.Lexer, out *Pa
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang4(out *jwriter.Writer, in PartMessage) {
+func easyjson6601e8cdEncodeBotGolang3(out *jwriter.Writer, in PartMessage) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -448,100 +345,27 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang4(out *jwriter.Writer, in P
 // MarshalJSON supports json.Marshaler interface
 func (v PartMessage) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang4(&w, v)
+	easyjson6601e8cdEncodeBotGolang3(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v PartMessage) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang4(w, v)
+	easyjson6601e8cdEncodeBotGolang3(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *PartMessage) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang4(&r, v)
+	easyjson6601e8cdDecodeBotGolang3(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *PartMessage) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang4(l, v)
+	easyjson6601e8cdDecodeBotGolang3(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang5(in *jlexer.Lexer, out *Part) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "type":
-			out.Type = PartType(in.String())
-		case "payload":
-			(out.Payload).UnmarshalEasyJSON(in)
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang5(out *jwriter.Writer, in Part) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"type\":"
-		out.RawString(prefix[1:])
-		out.String(string(in.Type))
-	}
-	{
-		const prefix string = ",\"payload\":"
-		out.RawString(prefix)
-		(in.Payload).MarshalEasyJSON(out)
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v Part) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang5(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Part) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang5(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *Part) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang5(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Part) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang5(l, v)
-}
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *EventPayload) {
+func easyjson6601e8cdDecodeBotGolang4(in *jlexer.Lexer, out *EventPayload) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -576,7 +400,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 				in.Delim('[')
 				if out.Parts == nil {
 					if !in.IsDelim(']') {
-						out.Parts = make([]Part, 0, 1)
+						out.Parts = make([]Part, 0, 0)
 					} else {
 						out.Parts = []Part{}
 					}
@@ -584,9 +408,9 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 					out.Parts = (out.Parts)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v4 Part
-					(v4).UnmarshalEasyJSON(in)
-					out.Parts = append(out.Parts, v4)
+					var v1 Part
+					(v1).UnmarshalEasyJSON(in)
+					out.Parts = append(out.Parts, v1)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -609,9 +433,9 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 					out.LeftMembers = (out.LeftMembers)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v5 Contact
-					(v5).UnmarshalEasyJSON(in)
-					out.LeftMembers = append(out.LeftMembers, v5)
+					var v2 Contact
+					(v2).UnmarshalEasyJSON(in)
+					out.LeftMembers = append(out.LeftMembers, v2)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -632,9 +456,9 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 					out.NewMembers = (out.NewMembers)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v6 Contact
-					(v6).UnmarshalEasyJSON(in)
-					out.NewMembers = append(out.NewMembers, v6)
+					var v3 Contact
+					(v3).UnmarshalEasyJSON(in)
+					out.NewMembers = append(out.NewMembers, v3)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -643,6 +467,10 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 			(out.AddedBy).UnmarshalEasyJSON(in)
 		case "removedBy":
 			(out.RemovedBy).UnmarshalEasyJSON(in)
+		case "queryId":
+			out.QueryID = string(in.String())
+		case "callbackData":
+			out.CallbackData = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -653,7 +481,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(in *jlexer.Lexer, out *Ev
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(out *jwriter.Writer, in EventPayload) {
+func easyjson6601e8cdEncodeBotGolang4(out *jwriter.Writer, in EventPayload) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -684,11 +512,11 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(out *jwriter.Writer, in E
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v7, v8 := range in.Parts {
-				if v7 > 0 {
+			for v4, v5 := range in.Parts {
+				if v4 > 0 {
 					out.RawByte(',')
 				}
-				(v8).MarshalEasyJSON(out)
+				(v5).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
@@ -705,11 +533,11 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(out *jwriter.Writer, in E
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v9, v10 := range in.LeftMembers {
-				if v9 > 0 {
+			for v6, v7 := range in.LeftMembers {
+				if v6 > 0 {
 					out.RawByte(',')
 				}
-				(v10).MarshalEasyJSON(out)
+				(v7).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
@@ -721,11 +549,11 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(out *jwriter.Writer, in E
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v11, v12 := range in.NewMembers {
-				if v11 > 0 {
+			for v8, v9 := range in.NewMembers {
+				if v8 > 0 {
 					out.RawByte(',')
 				}
-				(v12).MarshalEasyJSON(out)
+				(v9).MarshalEasyJSON(out)
 			}
 			out.RawByte(']')
 		}
@@ -740,113 +568,43 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(out *jwriter.Writer, in E
 		out.RawString(prefix)
 		(in.RemovedBy).MarshalEasyJSON(out)
 	}
+	{
+		const prefix string = ",\"queryId\":"
+		out.RawString(prefix)
+		out.String(string(in.QueryID))
+	}
+	{
+		const prefix string = ",\"callbackData\":"
+		out.RawString(prefix)
+		out.String(string(in.CallbackData))
+	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
 func (v EventPayload) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(&w, v)
+	easyjson6601e8cdEncodeBotGolang4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v EventPayload) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang6(w, v)
+	easyjson6601e8cdEncodeBotGolang4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *EventPayload) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(&r, v)
+	easyjson6601e8cdDecodeBotGolang4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *EventPayload) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang6(l, v)
+	easyjson6601e8cdDecodeBotGolang4(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang7(in *jlexer.Lexer, out *Event) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "eventId":
-			out.EventID = int(in.Int())
-		case "type":
-			out.Type = EventType(in.String())
-		case "payload":
-			(out.Payload).UnmarshalEasyJSON(in)
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang7(out *jwriter.Writer, in Event) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"eventId\":"
-		out.RawString(prefix[1:])
-		out.Int(int(in.EventID))
-	}
-	{
-		const prefix string = ",\"type\":"
-		out.RawString(prefix)
-		out.String(string(in.Type))
-	}
-	{
-		const prefix string = ",\"payload\":"
-		out.RawString(prefix)
-		(in.Payload).MarshalEasyJSON(out)
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v Event) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang7(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Event) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang7(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *Event) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang7(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Event) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang7(l, v)
-}
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang8(in *jlexer.Lexer, out *Contact) {
+func easyjson6601e8cdDecodeBotGolang5(in *jlexer.Lexer, out *Contact) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -881,7 +639,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang8(in *jlexer.Lexer, out *Co
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang8(out *jwriter.Writer, in Contact) {
+func easyjson6601e8cdEncodeBotGolang5(out *jwriter.Writer, in Contact) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -906,27 +664,144 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang8(out *jwriter.Writer, in C
 // MarshalJSON supports json.Marshaler interface
 func (v Contact) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang8(&w, v)
+	easyjson6601e8cdEncodeBotGolang5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Contact) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang8(w, v)
+	easyjson6601e8cdEncodeBotGolang5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Contact) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang8(&r, v)
+	easyjson6601e8cdDecodeBotGolang5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Contact) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang8(l, v)
+	easyjson6601e8cdDecodeBotGolang5(l, v)
 }
-func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *BotInfo) {
+func easyjson6601e8cdDecodeBotGolang6(in *jlexer.Lexer, out *eventsResponse) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "ok":
+			out.OK = bool(in.Bool())
+		case "events":
+			if in.IsNull() {
+				in.Skip()
+				out.Events = nil
+			} else {
+				in.Delim('[')
+				if out.Events == nil {
+					if !in.IsDelim(']') {
+						out.Events = make([]*Event, 0, 8)
+					} else {
+						out.Events = []*Event{}
+					}
+				} else {
+					out.Events = (out.Events)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v10 *Event
+					if in.IsNull() {
+						in.Skip()
+						v10 = nil
+					} else {
+						if v10 == nil {
+							v10 = new(Event)
+						}
+						(*v10).UnmarshalEasyJSON(in)
+					}
+					out.Events = append(out.Events, v10)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeBotGolang6(out *jwriter.Writer, in eventsResponse) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"ok\":"
+		out.RawString(prefix[1:])
+		out.Bool(bool(in.OK))
+	}
+	{
+		const prefix string = ",\"events\":"
+		out.RawString(prefix)
+		if in.Events == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v11, v12 := range in.Events {
+				if v11 > 0 {
+					out.RawByte(',')
+				}
+				if v12 == nil {
+					out.RawString("null")
+				} else {
+					(*v12).MarshalEasyJSON(out)
+				}
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v eventsResponse) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson6601e8cdEncodeBotGolang6(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v eventsResponse) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeBotGolang6(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *eventsResponse) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson6601e8cdDecodeBotGolang6(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *eventsResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeBotGolang6(l, v)
+}
+func easyjson6601e8cdDecodeBotGolang7(in *jlexer.Lexer, out *BotInfo) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -986,7 +861,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *Bo
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in BotInfo) {
+func easyjson6601e8cdEncodeBotGolang7(out *jwriter.Writer, in BotInfo) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1032,23 +907,162 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in B
 // MarshalJSON supports json.Marshaler interface
 func (v BotInfo) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(&w, v)
+	easyjson6601e8cdEncodeBotGolang7(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v BotInfo) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(w, v)
+	easyjson6601e8cdEncodeBotGolang7(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *BotInfo) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(&r, v)
+	easyjson6601e8cdDecodeBotGolang7(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *BotInfo) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(l, v)
+	easyjson6601e8cdDecodeBotGolang7(l, v)
+}
+func easyjson6601e8cdDecodeBotGolang8(in *jlexer.Lexer, out *Photo) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "url":
+			out.URL = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeBotGolang8(out *jwriter.Writer, in Photo) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"url\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.URL))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Photo) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson6601e8cdEncodeBotGolang8(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Photo) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeBotGolang8(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Photo) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson6601e8cdDecodeBotGolang8(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Photo) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeBotGolang8(l, v)
+}
+func easyjson6601e8cdDecodeBotGolang9(in *jlexer.Lexer, out *Response) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "ok":
+			out.OK = bool(in.Bool())
+		case "description":
+			out.Description = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeBotGolang9(out *jwriter.Writer, in Response) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"ok\":"
+		out.RawString(prefix[1:])
+		out.Bool(bool(in.OK))
+	}
+	if in.Description != "" {
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Response) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson6601e8cdEncodeBotGolang9(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Response) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeBotGolang9(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Response) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson6601e8cdDecodeBotGolang9(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Response) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeBotGolang9(l, v)
 }

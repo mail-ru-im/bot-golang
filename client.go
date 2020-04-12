@@ -184,6 +184,15 @@ func (c *Client) SendTextMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while sending text: %s", err)
@@ -359,6 +368,22 @@ func (c *Client) UnpinMessage(message *Message) error {
 	_, err := c.Do("/chats/unpinMessage", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while unpinning message: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
+	params := url.Values{
+		"queryId":   []string{answer.QueryID},
+		"text":      []string{answer.Text},
+		"url":       []string{answer.URL},
+		"showAlert": []string{strconv.FormatBool(answer.ShowAlert)},
+	}
+
+	_, err := c.Do("/messages/answerCallbackQuery", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
 	}
 
 	return nil
