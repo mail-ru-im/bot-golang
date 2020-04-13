@@ -421,10 +421,10 @@ func (c *Client) UnpinMessage(message *Message) error {
 
 func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
 	params := url.Values{
-		"queryId":   []string{answer.QueryID},
-		"text":      []string{answer.Text},
-		"url":       []string{answer.URL},
-		"showAlert": []string{strconv.FormatBool(answer.ShowAlert)},
+		"queryId":   {answer.QueryID},
+		"text":      {answer.Text},
+		"url":       {answer.URL},
+		"showAlert": {strconv.FormatBool(answer.ShowAlert)},
 	}
 
 	_, err := c.Do("/messages/answerCallbackQuery", params, nil)
