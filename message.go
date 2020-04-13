@@ -51,6 +51,9 @@ type Message struct {
 	ForwardChatID string `json:"forwardChatId"`
 
 	Timestamp int `json:"timestamp"`
+
+	// The markup for the inline keyboard
+	InlineKeyboard [][]Button `json:"inlineKeyboardMarkup"`
 }
 
 func (m *Message) AttachNewFile(file *os.File) {
@@ -71,6 +74,10 @@ func (m *Message) AttachNewVoice(file *os.File) {
 func (m *Message) AttachExistingVoice(fileID string) {
 	m.FileID = fileID
 	m.ContentType = Voice
+}
+
+func (m *Message) AttachInlineKeyboard(keyboard [][]Button) {
+	m.InlineKeyboard = keyboard
 }
 
 // Send method sends your message.

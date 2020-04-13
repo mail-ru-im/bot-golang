@@ -14,6 +14,7 @@ const (
 	UNPINNED_MESSAGE  EventType = "unpinnedMessage"
 	NEW_CHAT_MEMBERS  EventType = "newChatMembers"
 	LEFT_CHAT_MEMBERS EventType = "leftChatMembers"
+	CALLBACK_QUERY    EventType = "callbackQuery"
 
 	STICKER PartType = "sticker"
 	MENTION PartType = "mention"
@@ -86,6 +87,14 @@ type EventPayload struct {
 	// Timestamp of the event.
 	Timestamp int `json:"timestamp"`
 
+	// Id of the query.
+	// Presented only in callbackQuery event.
+	QueryID string `json:"queryId"`
+
+	// CallbackData of the query (id of button).
+	// Presented only in callbackQuery event.
+	CallbackData string `json:"callbackData"`
+
 	LeftMembers []Contact `json:"leftMembers"`
 
 	NewMembers []Contact `json:"newMembers"`
@@ -144,4 +153,11 @@ type Part struct {
 
 	// Payload of the part
 	Payload PartPayload `json:"payload"`
+}
+
+func (ep *EventPayload) CallbackQuery() *ButtonResponse {
+	return &ButtonResponse{
+		QueryID:      ep.QueryID,
+		CallbackData: ep.CallbackData,
+	}
 }

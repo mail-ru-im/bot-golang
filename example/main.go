@@ -54,7 +54,7 @@ func main() {
 		log.Println(err)
 	}
 
-	// Simple 30-seconds echo bot
+	// Simple 30-seconds echo bot with buttons
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	updates := bot.GetUpdatesChannel(ctx)
@@ -63,6 +63,11 @@ func main() {
 		switch update.Type {
 		case botgolang.NEW_MESSAGE:
 			message := update.Payload.Message()
+
+			helloBtn := botgolang.NewCallbackButton("Hello", "echo")
+			goBtn := botgolang.NewURLButton("go", "https://golang.org/")
+			message.AttachInlineKeyboard([][]botgolang.Button{{helloBtn, goBtn}})
+
 			if err := message.Send(); err != nil {
 				log.Printf("failed to send message: %s", err)
 			}
@@ -71,7 +76,15 @@ func main() {
 			if err := message.Reply("do not edit!"); err != nil {
 				log.Printf("failed to reply to message: %s", err)
 			}
-
+		case botgolang.CALLBACK_QUERY:
+			data := update.Payload.CallbackQuery()
+			switch data.CallbackData {
+			case "echo":
+				response := bot.NewButtonResponse(data.QueryID, "", "Hello World!", false)
+				if err := response.Send(); err != nil {
+					log.Printf("failed to reply on button click: %s", err)
+				}
+			}
 		}
 
 	}
