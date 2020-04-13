@@ -171,8 +171,8 @@ func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
 
 func (c *Client) SendTextMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"text":   []string{message.Text},
+		"chatId": {message.Chat.ID},
+		"text":   {message.Text},
 	}
 
 	if message.ReplyMsgID != "" {
@@ -207,9 +207,9 @@ func (c *Client) SendTextMessage(message *Message) error {
 
 func (c *Client) EditMessage(message *Message) error {
 	params := url.Values{
-		"msgId":  []string{message.ID},
-		"chatId": []string{message.Chat.ID},
-		"text":   []string{message.Text},
+		"msgId":  {message.ID},
+		"chatId": {message.Chat.ID},
+		"text":   {message.Text},
 	}
 
 	if message.InlineKeyboard != nil {
@@ -235,8 +235,8 @@ func (c *Client) EditMessage(message *Message) error {
 
 func (c *Client) DeleteMessage(message *Message) error {
 	params := url.Values{
-		"msgId":  []string{message.ID},
-		"chatId": []string{message.Chat.ID},
+		"msgId":  {message.ID},
+		"chatId": {message.Chat.ID},
 	}
 	_, err := c.Do("/messages/deleteMessages", params, nil)
 	if err != nil {
@@ -395,8 +395,8 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 
 func (c *Client) PinMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"msgId":  []string{message.ID},
+		"chatId": {message.Chat.ID},
+		"msgId":  {message.ID},
 	}
 	_, err := c.Do("/chats/pinMessage", params, nil)
 	if err != nil {
@@ -408,8 +408,8 @@ func (c *Client) PinMessage(message *Message) error {
 
 func (c *Client) UnpinMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"msgId":  []string{message.ID},
+		"chatId": {message.Chat.ID},
+		"msgId":  {message.ID},
 	}
 	_, err := c.Do("/chats/unpinMessage", params, nil)
 	if err != nil {
