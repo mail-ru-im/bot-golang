@@ -221,6 +221,18 @@ func (h *MockHandler) GetEvents(w http.ResponseWriter) {
 				  "lastName": "SurName"
 				}
 			  }
+        },
+        {
+            "eventId": 8,
+            "payload": {
+                "callbackData": "echo",
+                "from": {
+				  "firstName": "Name",
+				  "userId": "1234567890"
+                },
+                "queryId": "SVR:123456"
+            },
+            "type": "callbackQuery"
 			}
 		  ]
 		}

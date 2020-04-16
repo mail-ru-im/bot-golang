@@ -342,8 +342,8 @@ func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
 
 func (c *Client) SendTextMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"text":   []string{message.Text},
+		"chatId": {message.Chat.ID},
+		"text":   {message.Text},
 	}
 
 	if message.ReplyMsgID != "" {
@@ -353,6 +353,15 @@ func (c *Client) SendTextMessage(message *Message) error {
 	if message.ForwardMsgID != "" {
 		params.Set("forwardMsgId", message.ForwardMsgID)
 		params.Set("forwardChatId", message.ForwardChatID)
+	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
 	}
 
 	response, err := c.Do("/messages/sendText", params, nil)
@@ -369,10 +378,20 @@ func (c *Client) SendTextMessage(message *Message) error {
 
 func (c *Client) EditMessage(message *Message) error {
 	params := url.Values{
-		"msgId":  []string{message.ID},
-		"chatId": []string{message.Chat.ID},
-		"text":   []string{message.Text},
+		"msgId":  {message.ID},
+		"chatId": {message.Chat.ID},
+		"text":   {message.Text},
 	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/editText", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while editing text: %s", err)
@@ -387,8 +406,8 @@ func (c *Client) EditMessage(message *Message) error {
 
 func (c *Client) DeleteMessage(message *Message) error {
 	params := url.Values{
-		"msgId":  []string{message.ID},
-		"chatId": []string{message.Chat.ID},
+		"msgId":  {message.ID},
+		"chatId": {message.Chat.ID},
 	}
 	_, err := c.Do("/messages/deleteMessages", params, nil)
 	if err != nil {
@@ -412,6 +431,15 @@ func (c *Client) SendFileMessage(message *Message) error {
 	if message.ForwardMsgID != "" {
 		params.Set("forwardMsgId", message.ForwardMsgID)
 		params.Set("forwardChatId", message.ForwardChatID)
+	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
 	}
 
 	response, err := c.Do("/messages/sendFile", params, nil)
@@ -442,6 +470,15 @@ func (c *Client) SendVoiceMessage(message *Message) error {
 		params.Set("forwardChatId", message.ForwardChatID)
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendVoice", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -460,6 +497,15 @@ func (c *Client) UploadFile(message *Message) error {
 		"caption": {message.Text},
 	}
 
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
 	response, err := c.Do("/messages/sendFile", params, message.File)
 	if err != nil {
 		return fmt.Errorf("error while making request: %s", err)
@@ -476,6 +522,15 @@ func (c *Client) UploadVoice(message *Message) error {
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
+	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard)
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
 	}
 
 	response, err := c.Do("/messages/sendVoice", params, message.File)
@@ -511,8 +566,8 @@ func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
 
 func (c *Client) PinMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"msgId":  []string{message.ID},
+		"chatId": {message.Chat.ID},
+		"msgId":  {message.ID},
 	}
 	_, err := c.Do("/chats/pinMessage", params, nil)
 	if err != nil {
@@ -524,12 +579,28 @@ func (c *Client) PinMessage(message *Message) error {
 
 func (c *Client) UnpinMessage(message *Message) error {
 	params := url.Values{
-		"chatId": []string{message.Chat.ID},
-		"msgId":  []string{message.ID},
+		"chatId": {message.Chat.ID},
+		"msgId":  {message.ID},
 	}
 	_, err := c.Do("/chats/unpinMessage", params, nil)
 	if err != nil {
 		return fmt.Errorf("error while unpinning message: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
+	params := url.Values{
+		"queryId":   {answer.QueryID},
+		"text":      {answer.Text},
+		"url":       {answer.URL},
+		"showAlert": {strconv.FormatBool(answer.ShowAlert)},
+	}
+
+	_, err := c.Do("/messages/answerCallbackQuery", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while making request: %s", err)
 	}
 
 	return nil

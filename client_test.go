@@ -233,6 +233,18 @@ func TestClient_GetEvents_OK(t *testing.T) {
 				},
 			},
 		},
+		{
+			EventID: 8,
+			Type:    CALLBACK_QUERY,
+			Payload: EventPayload{
+				CallbackData: "echo",
+				From: Contact{
+					UserID:    "1234567890",
+					FirstName: "Name",
+				},
+				QueryID: "SVR:123456",
+			},
+		},
 	}
 
 	client := Client{

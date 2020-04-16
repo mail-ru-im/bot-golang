@@ -855,6 +855,10 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *Ev
 			}
 		case "timestamp":
 			out.Timestamp = int(in.Int())
+		case "queryId":
+			out.QueryID = string(in.String())
+		case "callbackData":
+			out.CallbackData = string(in.String())
 		case "leftMembers":
 			if in.IsNull() {
 				in.Skip()
@@ -959,6 +963,16 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in E
 		const prefix string = ",\"timestamp\":"
 		out.RawString(prefix)
 		out.Int(int(in.Timestamp))
+	}
+	{
+		const prefix string = ",\"queryId\":"
+		out.RawString(prefix)
+		out.String(string(in.QueryID))
+	}
+	{
+		const prefix string = ",\"callbackData\":"
+		out.RawString(prefix)
+		out.String(string(in.CallbackData))
 	}
 	{
 		const prefix string = ",\"leftMembers\":"

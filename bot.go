@@ -123,6 +123,17 @@ func (b *Bot) NewTextMessage(chatID, text string) *Message {
 	}
 }
 
+// NewInlineKeyboardMessage returns new text message with inline keyboard
+func (b *Bot) NewInlineKeyboardMessage(chatID, text string, keyboard [][]Button) *Message {
+	return &Message{
+		client:         b.client,
+		Chat:           Chat{ID: chatID},
+		Text:           text,
+		ContentType:    Text,
+		InlineKeyboard: keyboard,
+	}
+}
+
 // NewFileMessage returns new file message
 func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	return &Message{
@@ -143,7 +154,7 @@ func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 	}
 }
 
-// NewFileMessage returns new voice message
+// NewVoiceMessage returns new voice message
 func (b *Bot) NewVoiceMessage(chatID string, file *os.File) *Message {
 	return &Message{
 		client:      b.client,
@@ -171,6 +182,17 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 		Chat:      Chat{ID: message.From.User.ID, Title: message.From.FirstName},
 		Text:      message.Text,
 		Timestamp: message.Timestamp,
+	}
+}
+
+// NewButtonResponse returns new ButtonResponse
+func (b *Bot) NewButtonResponse(queryID, url, text string, showAlert bool) *ButtonResponse {
+	return &ButtonResponse{
+		client:    b.client,
+		QueryID:   queryID,
+		Text:      text,
+		URL:       url,
+		ShowAlert: showAlert,
 	}
 }
 
