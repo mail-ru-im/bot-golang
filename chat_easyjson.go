@@ -50,10 +50,10 @@ func easyjson9b8f5552DecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Cha
 			out.About = string(in.String())
 		case "rules":
 			out.Rules = string(in.String())
-		case "isBot":
-			out.IsBot = bool(in.Bool())
 		case "title":
 			out.Title = string(in.String())
+		case "isBot":
+			out.IsBot = bool(in.Bool())
 		case "public":
 			out.Public = bool(in.Bool())
 		case "joinModeration":
@@ -110,14 +110,14 @@ func easyjson9b8f5552EncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Ch
 		out.String(string(in.Rules))
 	}
 	{
-		const prefix string = ",\"isBot\":"
-		out.RawString(prefix)
-		out.Bool(bool(in.IsBot))
-	}
-	{
 		const prefix string = ",\"title\":"
 		out.RawString(prefix)
 		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"isBot\":"
+		out.RawString(prefix)
+		out.Bool(bool(in.IsBot))
 	}
 	{
 		const prefix string = ",\"public\":"

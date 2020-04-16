@@ -266,6 +266,59 @@ func (c *Client) UnblockChatUser(chatID, userID string) error {
 	return nil
 }
 
+func (c *Client) ResolveChatPending(chatID, userID string, approve, everyone bool) error {
+	params := url.Values{
+		"chatId":  {chatID},
+		"approve": {strconv.FormatBool(approve)},
+	}
+	if everyone {
+		params.Set("everyone", "true")
+	} else {
+		params.Set("userId", userID)
+	}
+
+	if _, err := c.Do("/chats/resolvePending", params, nil); err != nil {
+		return fmt.Errorf("error while resolving chat pendings: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatTitle(chatID, title string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"title":  {title},
+	}
+
+	if _, err := c.Do("/chats/setTitle", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat title: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatAbout(chatID, about string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"about":  {about},
+	}
+
+	if _, err := c.Do("/chats/setAbout", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat about: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatRules(chatID, rules string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"rules":  {rules},
+	}
+
+	if _, err := c.Do("/chats/setRules", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat rules: %s", err)
+	}
+	return nil
+}
+
 func (c *Client) GetFileInfo(fileID string) (*File, error) {
 	params := url.Values{
 		"fileId": {fileID},

@@ -40,11 +40,11 @@ type Chat struct {
 	// Rules of the group/channel
 	Rules string `json:"rules"`
 
-	// Flag that indicates that requested chat is the bot
-	IsBot bool `json:"isBot"`
-
 	// Title of the chat
 	Title string `json:"title"`
+
+	// Flag that indicates that requested chat is the bot
+	IsBot bool `json:"isBot"`
 
 	// Is this chat public?
 	Public bool `json:"public"`
@@ -103,4 +103,29 @@ func (c *Chat) BlockUser(userID string, deleteLastMessages bool) error {
 // Unblock user in chat (but not add him back)
 func (c *Chat) UnblockUser(userID string) error {
 	return c.client.UnblockChatUser(c.ID, userID)
+}
+
+// ResolveJoinRequest resolve specific user chat join request
+func (c *Chat) ResolveJoinRequest(userID string, accept bool) error {
+	return c.client.ResolveChatPending(c.ID, userID, accept, false)
+}
+
+// ResolveAllJoinRequest resolve all chat join requests
+func (c *Chat) ResolveAllJoinRequests(accept bool) error {
+	return c.client.ResolveChatPending(c.ID, "", accept, true)
+}
+
+// SetTitle changes chat title
+func (c *Chat) SetTitle(title string) error {
+	return c.client.SetChatTitle(c.ID, title)
+}
+
+// SetAbout changes chat about
+func (c *Chat) SetAbout(about string) error {
+	return c.client.SetChatAbout(c.ID, about)
+}
+
+// SetRules changes chat rules
+func (c *Chat) SetRules(rules string) error {
+	return c.client.SetChatRules(c.ID, rules)
 }

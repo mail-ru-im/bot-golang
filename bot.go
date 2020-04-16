@@ -79,6 +79,26 @@ func (b *Bot) UnblockChatUser(chatID, userID string) error {
 	return b.client.UnblockChatUser(chatID, userID)
 }
 
+// ResolveChatJoinRequests sends a decision to accept/decline user join to chat
+func (b *Bot) ResolveChatJoinRequests(chatID, userID string, accept, everyone bool) error {
+	return b.client.ResolveChatPending(chatID, userID, accept, everyone)
+}
+
+// SetChatTitle changes chat title
+func (b *Bot) SetChatTitle(chatID, title string) error {
+	return b.client.SetChatTitle(chatID, title)
+}
+
+// SetChatAbout changes chat about
+func (b *Bot) SetChatAbout(chatID, about string) error {
+	return b.client.SetChatAbout(chatID, about)
+}
+
+// SetChatRules changes chat rules
+func (b *Bot) SetChatRules(chatID, rules string) error {
+	return b.client.SetChatRules(chatID, rules)
+}
+
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
