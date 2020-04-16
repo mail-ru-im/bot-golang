@@ -1,6 +1,7 @@
 <img src="https://github.com/mail-ru-im/bot-python/blob/master/logo.png" width="100" height="100">
 
 # Golang interface for Mail.ru Instant Messengers bot API
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 [![CircleCI](https://circleci.com/gh/mail-ru-im/bot-golang.svg?style=svg)](https://circleci.com/gh/mail-ru-im/bot-golang)
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat)](https://pkg.go.dev/github.com/mail-ru-im/bot-golang)
 
