@@ -239,7 +239,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Payload: EventPayload{
 				CallbackData: "echo",
 				From: Contact{
-					UserID:    "1234567890",
+					User:      User{"1234567890"},
 					FirstName: "Name",
 				},
 				QueryID: "SVR:123456",
