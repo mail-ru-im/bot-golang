@@ -3,6 +3,7 @@ package botgolang
 //go:generate easyjson -all button.go
 
 // Button represents a button in inline keyboard
+// Make sure you have URL or CallbackData in your Button.
 type Button struct {
 	// Button text
 	Text string `json:"text"`

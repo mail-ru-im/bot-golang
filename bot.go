@@ -124,13 +124,13 @@ func (b *Bot) NewTextMessage(chatID, text string) *Message {
 }
 
 // NewInlineKeyboardMessage returns new text message with inline keyboard
-func (b *Bot) NewInlineKeyboardMessage(chatID, text string, keyboard [][]Button) *Message {
+func (b *Bot) NewInlineKeyboardMessage(chatID, text string, keyboard Keyboard) *Message {
 	return &Message{
 		client:         b.client,
 		Chat:           Chat{ID: chatID},
 		Text:           text,
 		ContentType:    Text,
-		InlineKeyboard: keyboard,
+		InlineKeyboard: &keyboard,
 	}
 }
 

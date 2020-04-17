@@ -59,44 +59,10 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 				in.Skip()
 				out.InlineKeyboard = nil
 			} else {
-				in.Delim('[')
 				if out.InlineKeyboard == nil {
-					if !in.IsDelim(']') {
-						out.InlineKeyboard = make([][]Button, 0, 2)
-					} else {
-						out.InlineKeyboard = [][]Button{}
-					}
-				} else {
-					out.InlineKeyboard = (out.InlineKeyboard)[:0]
+					out.InlineKeyboard = new(Keyboard)
 				}
-				for !in.IsDelim(']') {
-					var v1 []Button
-					if in.IsNull() {
-						in.Skip()
-						v1 = nil
-					} else {
-						in.Delim('[')
-						if v1 == nil {
-							if !in.IsDelim(']') {
-								v1 = make([]Button, 0, 1)
-							} else {
-								v1 = []Button{}
-							}
-						} else {
-							v1 = (v1)[:0]
-						}
-						for !in.IsDelim(']') {
-							var v2 Button
-							(v2).UnmarshalEasyJSON(in)
-							v1 = append(v1, v2)
-							in.WantComma()
-						}
-						in.Delim(']')
-					}
-					out.InlineKeyboard = append(out.InlineKeyboard, v1)
-					in.WantComma()
-				}
-				in.Delim(']')
+				easyjson4086215fDecodeGithubComMailRuImBotGolang1(in, out.InlineKeyboard)
 			}
 		default:
 			in.SkipRecursive()
@@ -160,28 +126,10 @@ func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Me
 	{
 		const prefix string = ",\"inlineKeyboardMarkup\":"
 		out.RawString(prefix)
-		if in.InlineKeyboard == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		if in.InlineKeyboard == nil {
 			out.RawString("null")
 		} else {
-			out.RawByte('[')
-			for v3, v4 := range in.InlineKeyboard {
-				if v3 > 0 {
-					out.RawByte(',')
-				}
-				if v4 == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-					out.RawString("null")
-				} else {
-					out.RawByte('[')
-					for v5, v6 := range v4 {
-						if v5 > 0 {
-							out.RawByte(',')
-						}
-						(v6).MarshalEasyJSON(out)
-					}
-					out.RawByte(']')
-				}
-			}
-			out.RawByte(']')
+			easyjson4086215fEncodeGithubComMailRuImBotGolang1(out, *in.InlineKeyboard)
 		}
 	}
 	out.RawByte('}')
@@ -209,4 +157,110 @@ func (v *Message) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Message) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson4086215fDecodeGithubComMailRuImBotGolang(l, v)
+}
+func easyjson4086215fDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Keyboard) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "Rows":
+			if in.IsNull() {
+				in.Skip()
+				out.Rows = nil
+			} else {
+				in.Delim('[')
+				if out.Rows == nil {
+					if !in.IsDelim(']') {
+						out.Rows = make([][]Button, 0, 2)
+					} else {
+						out.Rows = [][]Button{}
+					}
+				} else {
+					out.Rows = (out.Rows)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v1 []Button
+					if in.IsNull() {
+						in.Skip()
+						v1 = nil
+					} else {
+						in.Delim('[')
+						if v1 == nil {
+							if !in.IsDelim(']') {
+								v1 = make([]Button, 0, 1)
+							} else {
+								v1 = []Button{}
+							}
+						} else {
+							v1 = (v1)[:0]
+						}
+						for !in.IsDelim(']') {
+							var v2 Button
+							(v2).UnmarshalEasyJSON(in)
+							v1 = append(v1, v2)
+							in.WantComma()
+						}
+						in.Delim(']')
+					}
+					out.Rows = append(out.Rows, v1)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4086215fEncodeGithubComMailRuImBotGolang1(out *jwriter.Writer, in Keyboard) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"Rows\":"
+		out.RawString(prefix[1:])
+		if in.Rows == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v3, v4 := range in.Rows {
+				if v3 > 0 {
+					out.RawByte(',')
+				}
+				if v4 == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+					out.RawString("null")
+				} else {
+					out.RawByte('[')
+					for v5, v6 := range v4 {
+						if v5 > 0 {
+							out.RawByte(',')
+						}
+						(v6).MarshalEasyJSON(out)
+					}
+					out.RawByte(']')
+				}
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
 }

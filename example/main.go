@@ -20,7 +20,7 @@ func main() {
 
 	log.Println(bot.Info)
 
-	message := bot.NewTextMessage("d.dorofeev@corp.mail.ru", "Hi")
+	message := bot.NewTextMessage("bulletmys", "Hi")
 	if err = message.Send(); err != nil {
 		log.Fatalf("failed to send message: %s", err)
 	}
@@ -30,7 +30,7 @@ func main() {
 		log.Fatalf("cannot open file: %s", err)
 	}
 
-	fileMessage := bot.NewFileMessage("d.dorofeev@corp.mail.ru", file)
+	fileMessage := bot.NewFileMessage("bulletmys", file)
 	if err := fileMessage.Send(); err != nil {
 		log.Println(err)
 	}
@@ -49,7 +49,7 @@ func main() {
 	}
 	defer file.Close()
 
-	voiceMessage := bot.NewVoiceMessage("g.gabolaev@corp.mail.ru", file)
+	voiceMessage := bot.NewVoiceMessage("bulletmys", file)
 	if err := voiceMessage.Send(); err != nil {
 		log.Println(err)
 	}
@@ -66,7 +66,11 @@ func main() {
 
 			helloBtn := botgolang.NewCallbackButton("Hello", "echo")
 			goBtn := botgolang.NewURLButton("go", "https://golang.org/")
-			message.AttachInlineKeyboard([][]botgolang.Button{{helloBtn, goBtn}})
+
+			keyboard := botgolang.NewKeyboard()
+			keyboard.AddRow(helloBtn, goBtn)
+
+			message.AttachInlineKeyboard(keyboard)
 
 			if err := message.Send(); err != nil {
 				log.Printf("failed to send message: %s", err)
