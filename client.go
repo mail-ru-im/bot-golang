@@ -127,25 +127,196 @@ func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 		return nil, fmt.Errorf("error while receiving information: %s", err)
 	}
 
-	chat := &Chat{}
+	chat := &Chat{
+		client: c,
+		ID:     chatID,
+	}
 	if err := json.Unmarshal(response, chat); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling information: %s", err)
 	}
 
-	if chat.Group != "group" {
+	if chat.Type == Private {
 		return chat, nil
 	}
+	return chat, nil
+}
 
-	response, err = c.Do("/chats/getAdmins", params, nil)
+func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
+	actionsMap := make(map[ChatAction]bool)
+	filteredActions := make([]ChatAction, 0)
+	for _, action := range actions {
+		if _, has := actionsMap[action]; !has {
+			filteredActions = append(filteredActions, action)
+			actionsMap[action] = true
+		}
+	}
+	params := url.Values{
+		"chatId":  {chatID},
+		"actions": filteredActions,
+	}
+	_, err := c.Do("/chats/sendActions", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while receiving information: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) GetChatAdmins(chatID string) ([]ChatMember, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getAdmins", params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error while receiving admins: %s", err)
 	}
 
-	if err := json.Unmarshal(response, chat); err != nil {
+	admins := new(AdminsListResponse)
+	if err := json.Unmarshal(response, admins); err != nil {
 		return nil, fmt.Errorf("error while unmarshalling admins: %s", err)
 	}
+	return admins.List, nil
+}
 
-	return chat, nil
+func (c *Client) GetChatMembers(chatID string) ([]ChatMember, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getMembers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving members: %s", err)
+	}
+
+	members := new(MembersListResponse)
+	if err := json.Unmarshal(response, members); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling members: %s", err)
+	}
+	return members.List, nil
+}
+
+func (c *Client) GetChatBlockedUsers(chatID string) ([]User, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getBlockedUsers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving blocked users: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling blocked users: %s", err)
+	}
+	return users.List, nil
+}
+
+func (c *Client) GetChatPendingUsers(chatID string) ([]User, error) {
+	params := url.Values{
+		"chatId": {chatID},
+	}
+
+	response, err := c.Do("/chats/getPendingUsers", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while receiving pending users: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling pending users: %s", err)
+	}
+	return users.List, nil
+}
+
+func (c *Client) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
+	params := url.Values{
+		"chatId":          {chatID},
+		"userId":          {userID},
+		"delLastMessages": {strconv.FormatBool(deleteLastMessages)},
+	}
+
+	response, err := c.Do("/chats/blockUser", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while blocking user: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return fmt.Errorf("error while blocking user: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) UnblockChatUser(chatID, userID string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"userId": {userID},
+	}
+
+	response, err := c.Do("/chats/unblockUser", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while unblocking user: %s", err)
+	}
+
+	users := new(UsersListResponse)
+	if err := json.Unmarshal(response, users); err != nil {
+		return fmt.Errorf("error while unblocking user: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) ResolveChatPending(chatID, userID string, approve, everyone bool) error {
+	params := url.Values{
+		"chatId":  {chatID},
+		"approve": {strconv.FormatBool(approve)},
+	}
+	if everyone {
+		params.Set("everyone", "true")
+	} else {
+		params.Set("userId", userID)
+	}
+
+	if _, err := c.Do("/chats/resolvePending", params, nil); err != nil {
+		return fmt.Errorf("error while resolving chat pendings: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatTitle(chatID, title string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"title":  {title},
+	}
+
+	if _, err := c.Do("/chats/setTitle", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat title: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatAbout(chatID, about string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"about":  {about},
+	}
+
+	if _, err := c.Do("/chats/setAbout", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat about: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) SetChatRules(chatID, rules string) error {
+	params := url.Values{
+		"chatId": {chatID},
+		"rules":  {rules},
+	}
+
+	if _, err := c.Do("/chats/setRules", params, nil); err != nil {
+		return fmt.Errorf("error while setting chat rules: %s", err)
+	}
+	return nil
 }
 
 func (c *Client) GetFileInfo(fileID string) (*File, error) {

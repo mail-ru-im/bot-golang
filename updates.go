@@ -29,7 +29,7 @@ func (u *Updater) NewMessageFromPayload(message EventPayload) *Message {
 	return &Message{
 		client:    u.client,
 		ID:        message.MsgID,
-		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
+		Chat:      Chat{ID: message.From.User.ID, Title: message.From.FirstName},
 		Text:      message.Text,
 		Timestamp: message.Timestamp,
 	}

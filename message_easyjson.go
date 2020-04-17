@@ -54,6 +54,50 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 			out.ForwardChatID = string(in.String())
 		case "timestamp":
 			out.Timestamp = int(in.Int())
+		case "inlineKeyboardMarkup":
+			if in.IsNull() {
+				in.Skip()
+				out.InlineKeyboard = nil
+			} else {
+				in.Delim('[')
+				if out.InlineKeyboard == nil {
+					if !in.IsDelim(']') {
+						out.InlineKeyboard = make([][]Button, 0, 2)
+					} else {
+						out.InlineKeyboard = [][]Button{}
+					}
+				} else {
+					out.InlineKeyboard = (out.InlineKeyboard)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v1 []Button
+					if in.IsNull() {
+						in.Skip()
+						v1 = nil
+					} else {
+						in.Delim('[')
+						if v1 == nil {
+							if !in.IsDelim(']') {
+								v1 = make([]Button, 0, 1)
+							} else {
+								v1 = []Button{}
+							}
+						} else {
+							v1 = (v1)[:0]
+						}
+						for !in.IsDelim(']') {
+							var v2 Button
+							(v2).UnmarshalEasyJSON(in)
+							v1 = append(v1, v2)
+							in.WantComma()
+						}
+						in.Delim(']')
+					}
+					out.InlineKeyboard = append(out.InlineKeyboard, v1)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -112,6 +156,33 @@ func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Me
 		const prefix string = ",\"timestamp\":"
 		out.RawString(prefix)
 		out.Int(int(in.Timestamp))
+	}
+	{
+		const prefix string = ",\"inlineKeyboardMarkup\":"
+		out.RawString(prefix)
+		if in.InlineKeyboard == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v3, v4 := range in.InlineKeyboard {
+				if v3 > 0 {
+					out.RawByte(',')
+				}
+				if v4 == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+					out.RawString("null")
+				} else {
+					out.RawByte('[')
+					for v5, v6 := range v4 {
+						if v5 > 0 {
+							out.RawByte(',')
+						}
+						(v6).MarshalEasyJSON(out)
+					}
+					out.RawByte(']')
+				}
+			}
+			out.RawByte(']')
+		}
 	}
 	out.RawByte('}')
 }

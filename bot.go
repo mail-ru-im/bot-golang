@@ -39,6 +39,66 @@ func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
 	return b.client.GetChatInfo(chatID)
 }
 
+// SendChatActions sends an actions like "typing, looking"
+func (b *Bot) SendChatActions(chatID string, actions ...ChatAction) error {
+	return b.client.SendChatActions(chatID, actions...)
+}
+
+// GetChatAdmins returns chat admins list with fields:
+// userID, creator flag
+func (b *Bot) GetChatAdmins(chatID string) ([]ChatMember, error) {
+	return b.client.GetChatAdmins(chatID)
+}
+
+// GetChatMem returns chat members list with fields:
+// userID, creator flag, admin flag
+func (b *Bot) GetChatMembers(chatID string) ([]ChatMember, error) {
+	return b.client.GetChatMembers(chatID)
+}
+
+// GetChatBlockedUsers returns chat blocked users list:
+// userID
+func (b *Bot) GetChatBlockedUsers(chatID string) ([]User, error) {
+	return b.client.GetChatBlockedUsers(chatID)
+}
+
+// GetChatPendingUsers returns chat join pending users list:
+// userID
+func (b *Bot) GetChatPendingUsers(chatID string) ([]User, error) {
+	return b.client.GetChatPendingUsers(chatID)
+}
+
+// BlockChatUser blocks user and removes him from chat.
+// If deleteLastMessages is true, the messages written recently will be deleted
+func (b *Bot) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
+	return b.client.BlockChatUser(chatID, userID, deleteLastMessages)
+}
+
+// UnblockChatUser unblocks user in chat
+func (b *Bot) UnblockChatUser(chatID, userID string) error {
+	return b.client.UnblockChatUser(chatID, userID)
+}
+
+// ResolveChatJoinRequests sends a decision to accept/decline user join to chat
+func (b *Bot) ResolveChatJoinRequests(chatID, userID string, accept, everyone bool) error {
+	return b.client.ResolveChatPending(chatID, userID, accept, everyone)
+}
+
+// SetChatTitle changes chat title
+func (b *Bot) SetChatTitle(chatID, title string) error {
+	return b.client.SetChatTitle(chatID, title)
+}
+
+// SetChatAbout changes chat about
+func (b *Bot) SetChatAbout(chatID, about string) error {
+	return b.client.SetChatAbout(chatID, about)
+}
+
+// SetChatRules changes chat rules
+func (b *Bot) SetChatRules(chatID, rules string) error {
+	return b.client.SetChatRules(chatID, rules)
+}
+
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
@@ -119,7 +179,7 @@ func (b *Bot) NewMessageFromPart(message PartMessage) *Message {
 	return &Message{
 		client:    b.client,
 		ID:        message.MsgID,
-		Chat:      Chat{ID: message.From.UserID, Title: message.From.FirstName},
+		Chat:      Chat{ID: message.From.User.ID, Title: message.From.FirstName},
 		Text:      message.Text,
 		Timestamp: message.Timestamp,
 	}

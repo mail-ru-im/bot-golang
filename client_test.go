@@ -67,7 +67,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					Title: "The best channel",
 				},
 				From: Contact{
-					UserID:    "1234567890",
+					User:      User{"1234567890"},
 					FirstName: "Name",
 					LastName:  "SurName",
 				},
@@ -134,7 +134,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					Title: "The best channel",
 				},
 				From: Contact{
-					UserID:    "1234567890",
+					User:      User{"1234567890"},
 					FirstName: "Name",
 					LastName:  "SurName",
 				},
@@ -166,7 +166,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 					Title: "The best group",
 				},
 				From: Contact{
-					UserID:    "9876543210",
+					User:      User{"9876543210"},
 					FirstName: "Name",
 					LastName:  "SurName",
 				},
@@ -198,13 +198,13 @@ func TestClient_GetEvents_OK(t *testing.T) {
 				},
 				NewMembers: []Contact{
 					{
-						UserID:    "1234567890",
+						User:      User{"1234567890"},
 						FirstName: "Name",
 						LastName:  "SurName",
 					},
 				},
 				AddedBy: Contact{
-					UserID:    "9876543210",
+					User:      User{"9876543210"},
 					FirstName: "Name",
 					LastName:  "SurName",
 				},
@@ -221,13 +221,13 @@ func TestClient_GetEvents_OK(t *testing.T) {
 				},
 				LeftMembers: []Contact{
 					{
-						UserID:    "1234567890",
+						User:      User{"1234567890"},
 						FirstName: "Name",
 						LastName:  "SurName",
 					},
 				},
 				RemovedBy: Contact{
-					UserID:    "9876543210",
+					User:      User{"9876543210"},
 					FirstName: "Name",
 					LastName:  "SurName",
 				},
@@ -239,7 +239,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 			Payload: EventPayload{
 				CallbackData: "echo",
 				From: Contact{
-					UserID:    "1234567890",
+					User:      User{"1234567890"},
 					FirstName: "Name",
 				},
 				QueryID: "SVR:123456",
