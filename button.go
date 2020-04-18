@@ -2,6 +2,15 @@ package botgolang
 
 //go:generate easyjson -all button.go
 
+// ButtonStyle represents a style attribute of a button
+type ButtonStyle string
+
+const (
+	PRIMARY   ButtonStyle = "primary"
+	ATTENTION ButtonStyle = "attention"
+	BASE      ButtonStyle = "base"
+)
+
 // Button represents a button in inline keyboard
 // Make sure you have URL or CallbackData in your Button.
 type Button struct {
@@ -15,6 +24,14 @@ type Button struct {
 	// Data that identify the button
 	// You can't use it with URL
 	CallbackData string `json:"callbackData,omitempty"`
+
+	// Style of the text on the button
+	Style ButtonStyle `json:"style,omitempty"`
+}
+
+// AddStyle adds style attribute to the button
+func (b *Button) AddStyle(style ButtonStyle) {
+	b.Style = style
 }
 
 // NewURLButton returns new button with URL field

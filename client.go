@@ -357,7 +357,6 @@ func (c *Client) SendTextMessage(message *Message) error {
 
 	if message.InlineKeyboard != nil {
 		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
-		fmt.Println("THIS IS KEYBOARD::::", string(data))
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}

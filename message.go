@@ -76,6 +76,9 @@ func (m *Message) AttachExistingVoice(fileID string) {
 	m.ContentType = Voice
 }
 
+// AttachInlineKeyboard adds a keyboard to the message.
+// Note - at least one row should be in the keyboard
+// and there should be no empty rows
 func (m *Message) AttachInlineKeyboard(keyboard Keyboard) {
 	m.InlineKeyboard = &keyboard
 }
