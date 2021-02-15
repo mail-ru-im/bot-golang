@@ -226,6 +226,11 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 	return updates
 }
 
+// DeleteMessage delete a message passed as an argument.
+func(b *Bot) DeleteMessage(message *Message) error {
+	return b.client.DeleteMessage(message)
+}
+
 // NewBot returns new bot object.
 // All communications with bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
