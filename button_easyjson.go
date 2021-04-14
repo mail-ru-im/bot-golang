@@ -136,6 +136,8 @@ func easyjsonF248ab8DecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *But
 			out.URL = string(in.String())
 		case "callbackData":
 			out.CallbackData = string(in.String())
+		case "style":
+			out.Style = ButtonStyle(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -164,6 +166,11 @@ func easyjsonF248ab8EncodeGithubComMailRuImBotGolang1(out *jwriter.Writer, in Bu
 		const prefix string = ",\"callbackData\":"
 		out.RawString(prefix)
 		out.String(string(in.CallbackData))
+	}
+	if in.Style != "" {
+		const prefix string = ",\"style\":"
+		out.RawString(prefix)
+		out.String(string(in.Style))
 	}
 	out.RawByte('}')
 }
