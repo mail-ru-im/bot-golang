@@ -27,11 +27,10 @@ const (
 	ButtonAttention ButtonStyle = "attention"
 )
 
-// StyledButton returns baseButton with provided ButtonStyle
-func StyledButton(baseButton Button, style ButtonStyle) Button {
-	baseButton.Style = style
-
-	return baseButton
+// WithStyle sets ButtonStyle for Button
+func (v Button) WithStyle(style ButtonStyle) Button {
+	v.Style = style
+	return v
 }
 
 // NewURLButton returns new button with URL field
