@@ -14,6 +14,23 @@ type Button struct {
 	// Data that identify the button
 	// You can't use it with URL
 	CallbackData string `json:"callbackData,omitempty"`
+
+	// Style of a button
+	Style ButtonStyle `json:"style,omitempty"`
+}
+
+// ButtonStyle represent a style of a Button
+type ButtonStyle string
+
+const (
+	ButtonPrimary   ButtonStyle = "primary"
+	ButtonAttention ButtonStyle = "attention"
+)
+
+// WithStyle sets ButtonStyle for Button
+func (v Button) WithStyle(style ButtonStyle) Button {
+	v.Style = style
+	return v
 }
 
 // NewURLButton returns new button with URL field
