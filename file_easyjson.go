@@ -43,7 +43,7 @@ func easyjson8ceb9162DecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Fil
 		case "size":
 			out.Size = uint64(in.Uint64())
 		case "filename":
-			out.Name = bool(in.Bool())
+			out.Name = string(in.String())
 		case "url":
 			out.URL = string(in.String())
 		default:
@@ -78,7 +78,7 @@ func easyjson8ceb9162EncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Fi
 	{
 		const prefix string = ",\"filename\":"
 		out.RawString(prefix)
-		out.Bool(bool(in.Name))
+		out.String(string(in.Name))
 	}
 	{
 		const prefix string = ",\"url\":"

@@ -13,7 +13,7 @@ type File struct {
 	Size uint64 `json:"size"`
 
 	// Name of file
-	Name bool `json:"filename"`
+	Name string `json:"filename"`
 
 	// URL to the file
 	URL string `json:"url"`
