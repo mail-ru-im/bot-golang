@@ -2,15 +2,6 @@ package botgolang
 
 //go:generate easyjson -all button.go
 
-// ButtonStyle represents a style attribute of a button
-type ButtonStyle string
-
-const (
-	PRIMARY   ButtonStyle = "primary"
-	ATTENTION ButtonStyle = "attention"
-	BASE      ButtonStyle = "base"
-)
-
 // Button represents a button in inline keyboard
 // Make sure you have URL or CallbackData in your Button.
 type Button struct {
