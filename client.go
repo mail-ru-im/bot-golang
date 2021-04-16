@@ -356,7 +356,7 @@ func (c *Client) SendTextMessage(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}
@@ -384,7 +384,7 @@ func (c *Client) EditMessage(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}
@@ -434,7 +434,7 @@ func (c *Client) SendFileMessage(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}
@@ -471,7 +471,7 @@ func (c *Client) SendVoiceMessage(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}
@@ -498,7 +498,7 @@ func (c *Client) UploadFile(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}
@@ -525,7 +525,7 @@ func (c *Client) UploadVoice(message *Message) error {
 	}
 
 	if message.InlineKeyboard != nil {
-		data, err := json.Marshal(message.InlineKeyboard)
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
 		if err != nil {
 			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
 		}

@@ -66,7 +66,11 @@ func main() {
 
 			helloBtn := botgolang.NewCallbackButton("Hello", "echo")
 			goBtn := botgolang.NewURLButton("go", "https://golang.org/")
-			message.AttachInlineKeyboard([][]botgolang.Button{{helloBtn, goBtn}})
+
+			keyboard := botgolang.NewKeyboard()
+			keyboard.AddRow(helloBtn, goBtn)
+
+			message.AttachInlineKeyboard(keyboard)
 
 			if err := message.Send(); err != nil {
 				log.Printf("failed to send message: %s", err)

@@ -53,7 +53,7 @@ type Message struct {
 	Timestamp int `json:"timestamp"`
 
 	// The markup for the inline keyboard
-	InlineKeyboard [][]Button `json:"inlineKeyboardMarkup"`
+	InlineKeyboard *Keyboard `json:"inlineKeyboardMarkup"`
 }
 
 func (m *Message) AttachNewFile(file *os.File) {
@@ -76,8 +76,11 @@ func (m *Message) AttachExistingVoice(fileID string) {
 	m.ContentType = Voice
 }
 
-func (m *Message) AttachInlineKeyboard(keyboard [][]Button) {
-	m.InlineKeyboard = keyboard
+// AttachInlineKeyboard adds a keyboard to the message.
+// Note - at least one row should be in the keyboard
+// and there should be no empty rows
+func (m *Message) AttachInlineKeyboard(keyboard Keyboard) {
+	m.InlineKeyboard = &keyboard
 }
 
 // Send method sends your message.
