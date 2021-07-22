@@ -83,12 +83,37 @@ type Contact struct {
 	LastName  string `json:"lastName"`
 }
 
+type CallbackQueryEventMsg struct {
+	// Chat info.
+	// Presented in all events.
+	Chat Chat `json:"chat"`
+
+	// Id of the message.
+	// Presented in newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage events.
+	MsgID string `json:"msgId"`
+
+	// Author of the message
+	// Presented in newMessage and editedMessage events.
+	From Contact `json:"from"`
+
+	// Text of the message.
+	// Presented in newMessage, editedMessage and pinnedMessage events.
+	Text string `json:"text"`
+
+	// Timestamp of the event.
+	Timestamp int `json:"timestamp"`
+}
+
 type EventPayload struct {
 	client *Client
 
 	// Id of the message.
 	// Presented in newMessage, editedMessage, deletedMessage, pinnedMessage, unpinnedMessage events.
 	MsgID string `json:"msgId"`
+
+	// Message itself
+	// Presented in callbackQuery events.
+	ButtonClickEventMsg CallbackQueryEventMsg `json:"message"`
 
 	// Chat info.
 	// Presented in all events.
