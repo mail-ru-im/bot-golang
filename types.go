@@ -113,7 +113,7 @@ type EventPayload struct {
 
 	// Message itself
 	// Presented in callbackQuery events.
-	ButtonClickEventMsg CallbackQueryEventMsg `json:"message"`
+	Msg CallbackQueryEventMsg `json:"message"`
 
 	// Chat info.
 	// Presented in all events.

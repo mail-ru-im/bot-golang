@@ -825,7 +825,7 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *Ev
 		case "msgId":
 			out.MsgID = string(in.String())
 		case "message":
-			(out.ButtonClickEventMsg).UnmarshalEasyJSON(in)
+			(out.Msg).UnmarshalEasyJSON(in)
 		case "chat":
 			(out.Chat).UnmarshalEasyJSON(in)
 		case "from":
@@ -933,7 +933,7 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in E
 	{
 		const prefix string = ",\"message\":"
 		out.RawString(prefix)
-		(in.ButtonClickEventMsg).MarshalEasyJSON(out)
+		(in.Msg).MarshalEasyJSON(out)
 	}
 	{
 		const prefix string = ",\"chat\":"
