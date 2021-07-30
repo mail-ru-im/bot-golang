@@ -822,12 +822,6 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *Ev
 			continue
 		}
 		switch key {
-		case "queryId":
-			out.QueryID = string(in.String())
-		case "message":
-			(out.CallbackMsg).UnmarshalEasyJSON(in)
-		case "callbackData":
-			out.CallbackData = string(in.String())
 		case "parts":
 			if in.IsNull() {
 				in.Skip()
@@ -851,6 +845,12 @@ func easyjson6601e8cdDecodeGithubComMailRuImBotGolang9(in *jlexer.Lexer, out *Ev
 				}
 				in.Delim(']')
 			}
+		case "queryId":
+			out.QueryID = string(in.String())
+		case "message":
+			(out.CallbackMsg).UnmarshalEasyJSON(in)
+		case "callbackData":
+			out.CallbackData = string(in.String())
 		case "leftMembers":
 			if in.IsNull() {
 				in.Skip()
@@ -926,23 +926,8 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in E
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"queryId\":"
-		out.RawString(prefix[1:])
-		out.String(string(in.QueryID))
-	}
-	{
-		const prefix string = ",\"message\":"
-		out.RawString(prefix)
-		(in.CallbackMsg).MarshalEasyJSON(out)
-	}
-	{
-		const prefix string = ",\"callbackData\":"
-		out.RawString(prefix)
-		out.String(string(in.CallbackData))
-	}
-	{
 		const prefix string = ",\"parts\":"
-		out.RawString(prefix)
+		out.RawString(prefix[1:])
 		if in.Parts == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 			out.RawString("null")
 		} else {
@@ -955,6 +940,21 @@ func easyjson6601e8cdEncodeGithubComMailRuImBotGolang9(out *jwriter.Writer, in E
 			}
 			out.RawByte(']')
 		}
+	}
+	{
+		const prefix string = ",\"queryId\":"
+		out.RawString(prefix)
+		out.String(string(in.QueryID))
+	}
+	{
+		const prefix string = ",\"message\":"
+		out.RawString(prefix)
+		(in.CallbackMsg).MarshalEasyJSON(out)
+	}
+	{
+		const prefix string = ",\"callbackData\":"
+		out.RawString(prefix)
+		out.String(string(in.CallbackData))
 	}
 	{
 		const prefix string = ",\"leftMembers\":"
