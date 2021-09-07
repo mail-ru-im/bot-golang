@@ -193,6 +193,7 @@ type Part struct {
 
 func (ep *EventPayload) CallbackQuery() *ButtonResponse {
 	return &ButtonResponse{
+		client:       ep.client,
 		QueryID:      ep.QueryID,
 		CallbackData: ep.CallbackData,
 	}
