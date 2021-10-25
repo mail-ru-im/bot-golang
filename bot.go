@@ -8,6 +8,7 @@ Crafted with love in @mail for your awesome bots.
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -229,7 +230,7 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 // NewBot returns new bot object.
 // All communications with bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
-func NewBot(token string, opts ...BotOption) (*Bot, error) {
+func NewBot(client *http.Client, token string, opts ...BotOption) (*Bot, error) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:   true,
@@ -250,16 +251,16 @@ func NewBot(token string, opts ...BotOption) (*Bot, error) {
 		logger.SetLevel(logrus.DebugLevel)
 	}
 
-	client := NewClient(apiURL, token, logger)
-	updater := NewUpdater(client, 0, logger)
+	tgClient := NewClient(client, apiURL, token, logger)
+	updater := NewUpdater(tgClient, 0, logger)
 
-	info, err := client.GetInfo()
+	info, err := tgClient.GetInfo()
 	if err != nil {
 		return nil, fmt.Errorf("cannot get info about bot: %s", err)
 	}
 
 	return &Bot{
-		client:  client,
+		client:  tgClient,
 		updater: updater,
 		logger:  logger,
 		Info:    info,

@@ -36,7 +36,7 @@ package main
 import "github.com/mail-ru-im/bot-golang"
 
 func main() {
-    bot, err := botgolang.NewBot(BOT_TOKEN)
+    bot, err := botgolang.NewBot(nil, BOT_TOKEN)
     if err != nil {
         log.Println("wrong token")
     }

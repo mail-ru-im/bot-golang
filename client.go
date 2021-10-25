@@ -618,11 +618,15 @@ func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
 	return nil
 }
 
-func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
+func NewClient(client *http.Client, baseURL string, token string, logger *logrus.Logger) *Client {
+	if client == nil {
+		client = http.DefaultClient
+	}
+
 	return &Client{
 		token:   token,
 		baseURL: baseURL,
-		client:  http.DefaultClient,
+		client:  client,
 		logger:  logger,
 	}
 }
