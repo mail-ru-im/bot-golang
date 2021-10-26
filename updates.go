@@ -36,7 +36,7 @@ func (u *Updater) NewMessageFromPayload(message EventPayload) *Message {
 }
 
 func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
-	_, err := u.GetLastEvents(0)
+	_, err := u.GetLastEvents(ctx, 0)
 	if err != nil {
 		u.logger.WithFields(logrus.Fields{
 			"err": err,
@@ -49,7 +49,7 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 			close(ch)
 			return
 		default:
-			events, err := u.GetLastEvents(u.PollTime)
+			events, err := u.GetLastEvents(ctx, u.PollTime)
 			if err != nil {
 				u.logger.WithFields(logrus.Fields{
 					"err":            err,
@@ -70,8 +70,8 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 	}
 }
 
-func (u *Updater) GetLastEvents(pollTime int) ([]*Event, error) {
-	events, err := u.client.GetEvents(u.lastEventID, pollTime)
+func (u *Updater) GetLastEvents(ctx context.Context, pollTime int) ([]*Event, error) {
+	events, err := u.client.GetEvents(ctx, u.lastEventID, pollTime)
 	if err != nil {
 		u.logger.WithFields(logrus.Fields{
 			"err":    err,
