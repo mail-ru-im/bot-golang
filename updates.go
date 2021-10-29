@@ -70,7 +70,11 @@ func (u *Updater) RunUpdatesCheck(ctx context.Context, ch chan<- Event) {
 	}
 }
 
-func (u *Updater) GetLastEvents(ctx context.Context, pollTime int) ([]*Event, error) {
+func (u *Updater) GetLastEvents(pollTime int) ([]*Event, error) {
+	return u.GetLastEventsWithContext(context.Background(), pollTime)
+}
+
+func (u *Updater) GetLastEventsWithContext(ctx context.Context, pollTime int) ([]*Event, error) {
 	events, err := u.client.GetEvents(ctx, u.lastEventID, pollTime)
 	if err != nil {
 		u.logger.WithFields(logrus.Fields{
