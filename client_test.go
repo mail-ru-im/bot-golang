@@ -1,7 +1,6 @@
 package botgolang
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -284,7 +283,7 @@ func TestClient_GetEvents_OK(t *testing.T) {
 		logger:  &logrus.Logger{},
 	}
 
-	events, err := client.GetEvents(context.Background(), 0, 0)
+	events, err := client.GetEvents(0, 0)
 
 	require.NoError(err)
 	assert.Equal(events, expected)
