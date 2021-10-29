@@ -13,7 +13,7 @@ import (
 func main() {
 	token := os.Getenv("TOKEN")
 
-	bot, err := botgolang.NewBot(nil, token, botgolang.BotDebug(true))
+	bot, err := botgolang.NewBot(token, botgolang.BotDebug(true))
 	if err != nil {
 		log.Fatalf("cannot connect to bot: %s", err)
 	}
