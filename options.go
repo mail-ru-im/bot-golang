@@ -1,5 +1,7 @@
 package botgolang
 
+import "net/http"
+
 type BotOption interface {
 	Type() string
 	Value() interface{}
@@ -23,4 +25,14 @@ func (o BotDebug) Type() string {
 
 func (o BotDebug) Value() interface{} {
 	return bool(o)
+}
+
+type BotHTTPClient http.Client
+
+func (o BotHTTPClient) Type() string {
+	return "http_client"
+}
+
+func (o BotHTTPClient) Value() interface{} {
+	return http.Client(o)
 }

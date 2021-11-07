@@ -8,6 +8,7 @@ Crafted with love in @mail for your awesome bots.
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -236,13 +237,17 @@ func NewBot(token string, opts ...BotOption) (*Bot, error) {
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 
-	apiURL, debug := defaultAPIURL, defaultDebug
+	apiURL := defaultAPIURL
+	debug := defaultDebug
+	client := *http.DefaultClient
 	for _, option := range opts {
 		switch option.Type() {
 		case "api_url":
 			apiURL = option.Value().(string)
 		case "debug":
 			debug = option.Value().(bool)
+		case "http_client":
+			client = option.Value().(http.Client)
 		}
 	}
 
@@ -250,16 +255,16 @@ func NewBot(token string, opts ...BotOption) (*Bot, error) {
 		logger.SetLevel(logrus.DebugLevel)
 	}
 
-	client := NewClient(apiURL, token, logger)
-	updater := NewUpdater(client, 0, logger)
+	tgClient := NewCustomClient(&client, apiURL, token, logger)
+	updater := NewUpdater(tgClient, 0, logger)
 
-	info, err := client.GetInfo()
+	info, err := tgClient.GetInfo()
 	if err != nil {
 		return nil, fmt.Errorf("cannot get info about bot: %s", err)
 	}
 
 	return &Bot{
-		client:  client,
+		client:  tgClient,
 		updater: updater,
 		logger:  logger,
 		Info:    info,
