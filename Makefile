@@ -1,10 +1,12 @@
 all: generate test
 
+GOPATH := $(shell go env GOPATH)
+
 $(GOPATH)/bin/easyjson:
-	go build -o $(GOPATH)/bin/easyjson github.com/mailru/easyjson/easyjson
+	go build -mod mod -o $(GOPATH)/bin/easyjson github.com/mailru/easyjson/easyjson
 
 $(GOPATH)/bin/golangci-lint:
-	go build -o $(GOPATH)/bin/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint
+	go build -mod mod -o $(GOPATH)/bin/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint
 
 .PHONY: test
 test:
@@ -12,7 +14,7 @@ test:
 
 .PHONY: lint
 lint: $(GOPATH)/bin/golangci-lint
-	golangci-lint run
+	$(GOPATH)/bin/golangci-lint run
 
 .PHONY: generate
 generate: $(GOPATH)/bin/easyjson
