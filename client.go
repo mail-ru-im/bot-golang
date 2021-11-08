@@ -2,6 +2,7 @@ package botgolang
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,6 +24,10 @@ type Client struct {
 }
 
 func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, error) {
+	return c.DoWithContext(context.Background(), path, params, file)
+}
+
+func (c *Client) DoWithContext(ctx context.Context, path string, params url.Values, file *os.File) ([]byte, error) {
 	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
@@ -31,7 +36,7 @@ func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, erro
 	}
 
 	apiURL.RawQuery = params.Encode()
-	req, err := http.NewRequest(http.MethodGet, apiURL.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiURL.String(), nil)
 	if err != nil || req == nil {
 		return nil, fmt.Errorf("cannot init http request: %s", err)
 	}
@@ -558,13 +563,17 @@ func (c *Client) UploadVoice(message *Message) error {
 }
 
 func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
+	return c.GetEventsWithContext(context.Background(), lastEventID, pollTime)
+}
+
+func (c *Client) GetEventsWithContext(ctx context.Context, lastEventID int, pollTime int) ([]*Event, error) {
 	params := url.Values{
 		"lastEventId": {strconv.Itoa(lastEventID)},
 		"pollTime":    {strconv.Itoa(pollTime)},
 	}
 	events := &eventsResponse{}
 
-	response, err := c.Do("/events/get", params, nil)
+	response, err := c.DoWithContext(ctx, "/events/get", params, nil)
 	if err != nil {
 		return events.Events, fmt.Errorf("error while making request: %s", err)
 	}
