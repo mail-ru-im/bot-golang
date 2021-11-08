@@ -563,10 +563,10 @@ func (c *Client) UploadVoice(message *Message) error {
 }
 
 func (c *Client) GetEvents(lastEventID int, pollTime int) ([]*Event, error) {
-	return c.GetLastEventsWithContext(context.Background(), lastEventID, pollTime)
+	return c.GetEventsWithContext(context.Background(), lastEventID, pollTime)
 }
 
-func (c *Client) GetLastEventsWithContext(ctx context.Context, lastEventID int, pollTime int) ([]*Event, error) {
+func (c *Client) GetEventsWithContext(ctx context.Context, lastEventID int, pollTime int) ([]*Event, error) {
 	params := url.Values{
 		"lastEventId": {strconv.Itoa(lastEventID)},
 		"pollTime":    {strconv.Itoa(pollTime)},

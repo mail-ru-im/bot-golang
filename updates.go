@@ -75,7 +75,7 @@ func (u *Updater) GetLastEvents(pollTime int) ([]*Event, error) {
 }
 
 func (u *Updater) GetLastEventsWithContext(ctx context.Context, pollTime int) ([]*Event, error) {
-	events, err := u.client.GetLastEventsWithContext(ctx, u.lastEventID, pollTime)
+	events, err := u.client.GetEventsWithContext(ctx, u.lastEventID, pollTime)
 	if err != nil {
 		u.logger.WithFields(logrus.Fields{
 			"err":    err,
