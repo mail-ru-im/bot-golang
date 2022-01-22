@@ -30,80 +30,200 @@ type Bot struct {
 
 // GetInfo returns information about bot:
 // id, name, about, avatar
+//
+// GetInfo uses context.Background internally; to specify the context, use
+// GetInfoWithContext.
 func (b *Bot) GetInfo() (*BotInfo, error) {
-	return b.client.GetInfo()
+	return b.GetInfoWithContext(context.Background())
+}
+
+// GetInfoWithContext returns information about bot:
+// id, name, about, avatar
+func (b *Bot) GetInfoWithContext(ctx context.Context) (*BotInfo, error) {
+	return b.client.GetInfoWithContext(ctx)
 }
 
 // GetChatInfo returns information about chat:
 // id, type, title, public, group, inviteLink, admins
+//
+// GetChatInfo uses context.Background internally; to specify the context, use
+// GetChatInfoWithContext.
 func (b *Bot) GetChatInfo(chatID string) (*Chat, error) {
-	return b.client.GetChatInfo(chatID)
+	return b.GetChatInfoWithContext(context.Background(), chatID)
+}
+
+// GetChatInfoWithContext returns information about chat:
+// id, type, title, public, group, inviteLink, admins
+func (b *Bot) GetChatInfoWithContext(ctx context.Context, chatID string) (*Chat, error) {
+	return b.client.GetChatInfoWithContext(ctx, chatID)
 }
 
 // SendChatActions sends an actions like "typing, looking"
+//
+// SendChatActions uses context.Background internally; to specify the context, use
+// SendChatActionsWithContext.
 func (b *Bot) SendChatActions(chatID string, actions ...ChatAction) error {
-	return b.client.SendChatActions(chatID, actions...)
+	return b.SendChatActionsWithContext(context.Background(), chatID, actions...)
+}
+
+// SendChatActionsWithContext sends an actions like "typing, looking"
+func (b *Bot) SendChatActionsWithContext(ctx context.Context, chatID string, actions ...ChatAction) error {
+	return b.client.SendChatActionsWithContext(ctx, chatID, actions...)
 }
 
 // GetChatAdmins returns chat admins list with fields:
 // userID, creator flag
+//
+// GetChatAdmins uses context.Background internally; to specify the context, use
+// GetChatAdminsWithContext.
 func (b *Bot) GetChatAdmins(chatID string) ([]ChatMember, error) {
-	return b.client.GetChatAdmins(chatID)
+	return b.GetChatAdminsWithContext(context.Background(), chatID)
+}
+
+// GetChatAdminsWithContext returns chat admins list with fields:
+// userID, creator flag
+func (b *Bot) GetChatAdminsWithContext(ctx context.Context, chatID string) ([]ChatMember, error) {
+	return b.client.GetChatAdminsWithContext(ctx, chatID)
 }
 
 // GetChatMem returns chat members list with fields:
 // userID, creator flag, admin flag
+//
+// GetChatMembers uses context.Background internally; to specify the context, use
+// GetChatMembersWithContext.
 func (b *Bot) GetChatMembers(chatID string) ([]ChatMember, error) {
-	return b.client.GetChatMembers(chatID)
+	return b.GetChatMembersWithContext(context.Background(), chatID)
+}
+
+// GetChatMembersWithContext returns chat members list with fields:
+// userID, creator flag, admin flag
+func (b *Bot) GetChatMembersWithContext(ctx context.Context, chatID string) ([]ChatMember, error) {
+	return b.client.GetChatMembersWithContext(ctx, chatID)
 }
 
 // GetChatBlockedUsers returns chat blocked users list:
 // userID
+//
+// GetChatBlockedUsers uses context.Background internally; to specify the context, use
+// GetChatBlockedUsersWithContext.
 func (b *Bot) GetChatBlockedUsers(chatID string) ([]User, error) {
-	return b.client.GetChatBlockedUsers(chatID)
+	return b.GetChatBlockedUsersWithContext(context.Background(), chatID)
+}
+
+// GetChatBlockedUsersWithContext returns chat blocked users list:
+// userID
+func (b *Bot) GetChatBlockedUsersWithContext(ctx context.Context, chatID string) ([]User, error) {
+	return b.client.GetChatBlockedUsersWithContext(ctx, chatID)
 }
 
 // GetChatPendingUsers returns chat join pending users list:
 // userID
+//
+// GetChatPendingUsers uses context.Background internally; to specify the context, use
+// GetChatPendingUsersWithContext.
 func (b *Bot) GetChatPendingUsers(chatID string) ([]User, error) {
-	return b.client.GetChatPendingUsers(chatID)
+	return b.GetChatPendingUsersWithContext(context.Background(), chatID)
+}
+
+// GetChatPendingUsersWithContext returns chat join pending users list:
+// userID
+func (b *Bot) GetChatPendingUsersWithContext(ctx context.Context, chatID string) ([]User, error) {
+	return b.client.GetChatPendingUsersWithContext(ctx, chatID)
 }
 
 // BlockChatUser blocks user and removes him from chat.
 // If deleteLastMessages is true, the messages written recently will be deleted
+//
+// BlockChatUser uses context.Background internally; to specify the context, use
+// BlockChatUserWithContext.
 func (b *Bot) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
-	return b.client.BlockChatUser(chatID, userID, deleteLastMessages)
+	return b.BlockChatUserWithContext(context.Background(), chatID, userID, deleteLastMessages)
+}
+
+// BlockChatUserWithContext blocks user and removes him from chat.
+// If deleteLastMessages is true, the messages written recently will be deleted
+func (b *Bot) BlockChatUserWithContext(ctx context.Context, chatID, userID string, deleteLastMessages bool) error {
+	return b.client.BlockChatUserWithContext(ctx, chatID, userID, deleteLastMessages)
 }
 
 // UnblockChatUser unblocks user in chat
+//
+// UnblockChatUser uses context.Background internally; to specify the context, use
+// UnblockChatUserWithContext.
 func (b *Bot) UnblockChatUser(chatID, userID string) error {
-	return b.client.UnblockChatUser(chatID, userID)
+	return b.UnblockChatUserWithContext(context.Background(), chatID, userID)
+}
+
+// UnblockChatUserWithContext unblocks user in chat
+func (b *Bot) UnblockChatUserWithContext(ctx context.Context, chatID, userID string) error {
+	return b.client.UnblockChatUserWithContext(ctx, chatID, userID)
 }
 
 // ResolveChatJoinRequests sends a decision to accept/decline user join to chat
+//
+// ResolveChatJoinRequests uses context.Background internally; to specify the context, use
+// ResolveChatJoinRequestsWithContext.
 func (b *Bot) ResolveChatJoinRequests(chatID, userID string, accept, everyone bool) error {
-	return b.client.ResolveChatPending(chatID, userID, accept, everyone)
+	return b.ResolveChatJoinRequestsWithContext(context.Background(), chatID, userID, accept, everyone)
+}
+
+// ResolveChatJoinRequestsWithContext sends a decision to accept/decline user join to chat
+func (b *Bot) ResolveChatJoinRequestsWithContext(ctx context.Context, chatID, userID string, accept, everyone bool) error {
+	return b.client.ResolveChatPendingWithContext(ctx, chatID, userID, accept, everyone)
 }
 
 // SetChatTitle changes chat title
+//
+// SetChatTitle uses context.Background internally; to specify the context, use
+// SetChatTitleWithContext.
 func (b *Bot) SetChatTitle(chatID, title string) error {
-	return b.client.SetChatTitle(chatID, title)
+	return b.SetChatTitleWithContext(context.Background(), chatID, title)
+}
+
+// SetChatTitleWithContext changes chat title
+func (b *Bot) SetChatTitleWithContext(ctx context.Context, chatID, title string) error {
+	return b.client.SetChatTitleWithContext(ctx, chatID, title)
 }
 
 // SetChatAbout changes chat about
+//
+// SetChatAbout uses context.Background internally; to specify the context, use
+// SetChatAboutWithContext.
 func (b *Bot) SetChatAbout(chatID, about string) error {
-	return b.client.SetChatAbout(chatID, about)
+	return b.SetChatAboutWithContext(context.Background(), chatID, about)
+}
+
+// SetChatAboutWithContext changes chat about
+func (b *Bot) SetChatAboutWithContext(ctx context.Context, chatID, about string) error {
+	return b.client.SetChatAboutWithContext(ctx, chatID, about)
 }
 
 // SetChatRules changes chat rules
+//
+// SetChatRules uses context.Background internally; to specify the context, use
+// SetChatRulesWithContext.
 func (b *Bot) SetChatRules(chatID, rules string) error {
-	return b.client.SetChatRules(chatID, rules)
+	return b.SetChatRulesWithContext(context.Background(), chatID, rules)
+}
+
+// SetChatRulesWithContext changes chat rules
+func (b *Bot) SetChatRulesWithContext(ctx context.Context, chatID, rules string) error {
+	return b.client.SetChatRulesWithContext(ctx, chatID, rules)
 }
 
 // GetFileInfo returns information about file:
 // id, type, size, filename, url
+//
+// GetFileInfo uses context.Background internally; to specify the context, use
+// GetFileInfoWithContext.
 func (b *Bot) GetFileInfo(fileID string) (*File, error) {
-	return b.client.GetFileInfo(fileID)
+	return b.GetFileInfoWithContext(context.Background(), fileID)
+}
+
+// GetFileInfoWithContext returns information about file:
+// id, type, size, filename, url
+func (b *Bot) GetFileInfoWithContext(ctx context.Context, fileID string) (*File, error) {
+	return b.client.GetFileInfoWithContext(ctx, fileID)
 }
 
 // NewMessage returns new message
@@ -206,14 +326,31 @@ func (b *Bot) NewChat(id string) *Chat {
 
 // SendMessage sends a message, passed as an argument.
 // This method fills the argument with ID of sent message and returns an error if any.
+//
+// SendMessage uses context.Background internally; to specify the context, use
+// SendMessageWithContext.
 func (b *Bot) SendMessage(message *Message) error {
+	return b.SendMessageWithContext(context.Background(), message)
+}
+
+// SendMessageWithContext sends a message, passed as an argument.
+// This method fills the argument with ID of sent message and returns an error if any.
+func (b *Bot) SendMessageWithContext(ctx context.Context, message *Message) error {
 	message.client = b.client
-	return message.Send()
+	return message.SendWithContext(ctx)
 }
 
 // EditMessage edit a message passed as an argument.
+//
+// EditMessage uses context.Background internally; to specify the context, use
+// EditMessageWithContext.
 func (b *Bot) EditMessage(message *Message) error {
-	return b.client.EditMessage(message)
+	return b.EditMessageWithContext(context.Background(), message)
+}
+
+// EditMessageWithContext edit a message passed as an argument.
+func (b *Bot) EditMessageWithContext(ctx context.Context, message *Message) error {
+	return b.client.EditMessageWithContext(ctx, message)
 }
 
 // GetUpdatesChannel returns a channel, which will be filled with events.

@@ -1,6 +1,7 @@
 package botgolang
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -101,7 +102,16 @@ func (m *Message) AttachInlineKeyboard(keyboard Keyboard) {
 
 // Send method sends your message.
 // Make sure you have Text or FileID in your message.
+//
+// Send uses context.Background internally; to specify the context, use
+// SendWithContext.
 func (m *Message) Send() error {
+	return m.SendWithContext(context.Background())
+}
+
+// SendWithContext method sends your message.
+// Make sure you have Text or FileID in your message.
+func (m *Message) SendWithContext(ctx context.Context) error {
 	if m.client == nil {
 		return fmt.Errorf("client is not inited, create message with constructor NewMessage, NewTextMessage, etc")
 	}
@@ -113,41 +123,41 @@ func (m *Message) Send() error {
 	switch m.ContentType {
 	case Voice:
 		if m.FileID != "" {
-			return m.client.SendVoiceMessage(m)
+			return m.client.SendVoiceMessageWithContext(ctx, m)
 		}
 
 		if m.File != nil {
-			return m.client.UploadVoice(m)
+			return m.client.UploadVoiceWithContext(ctx, m)
 		}
 	case OtherFile:
 		if m.FileID != "" {
-			return m.client.SendFileMessage(m)
+			return m.client.SendFileMessageWithContext(ctx, m)
 		}
 
 		if m.File != nil {
-			return m.client.UploadFile(m)
+			return m.client.UploadFileWithContext(ctx, m)
 		}
 	case Text:
-		return m.client.SendTextMessage(m)
+		return m.client.SendTextMessageWithContext(ctx, m)
 	case Unknown:
 		// need to autodetect
 		if m.FileID != "" {
 			// voice message's fileID always starts with 'I'
 			if m.FileID[0] == voiceMessageLeadingRune {
-				return m.client.SendVoiceMessage(m)
+				return m.client.SendVoiceMessageWithContext(ctx, m)
 			}
-			return m.client.SendFileMessage(m)
+			return m.client.SendFileMessageWithContext(ctx, m)
 		}
 
 		if m.File != nil {
 			if voiceMessageSupportedExtensions[filepath.Ext(m.File.Name())] {
-				return m.client.UploadVoice(m)
+				return m.client.UploadVoiceWithContext(ctx, m)
 			}
-			return m.client.UploadFile(m)
+			return m.client.UploadFileWithContext(ctx, m)
 		}
 
 		if m.Text != "" {
-			return m.client.SendTextMessage(m)
+			return m.client.SendTextMessageWithContext(ctx, m)
 		}
 	}
 
@@ -156,26 +166,53 @@ func (m *Message) Send() error {
 
 // Edit method edits your message.
 // Make sure you have ID in your message.
+//
+// Edit uses context.Background internally; to specify the context, use
+// EditWithContext.
 func (m *Message) Edit() error {
+	return m.EditWithContext(context.Background())
+}
+
+// EditWithContext method edits your message.
+// Make sure you have ID in your message.
+func (m *Message) EditWithContext(ctx context.Context) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot edit message without id")
 	}
-	return m.client.EditMessage(m)
+	return m.client.EditMessageWithContext(ctx, m)
 }
 
 // Delete method deletes your message.
 // Make sure you have ID in your message.
+//
+// Delete uses context.Background internally; to specify the context, use
+// DeleteWithContext.
 func (m *Message) Delete() error {
+	return m.DeleteWithContext(context.Background())
+}
+
+// DeleteWithContext method deletes your message.
+// Make sure you have ID in your message.
+func (m *Message) DeleteWithContext(ctx context.Context) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot delete message without id")
 	}
 
-	return m.client.DeleteMessage(m)
+	return m.client.DeleteMessageWithContext(ctx, m)
 }
 
 // Reply method replies to the message.
 // Make sure you have ID in the message.
+//
+// Reply uses context.Background internally; to specify the context, use
+// ReplyWithContext.
 func (m *Message) Reply(text string) error {
+	return m.ReplyWithContext(context.Background(), text)
+}
+
+// ReplyWithContext method replies to the message.
+// Make sure you have ID in the message.
+func (m *Message) ReplyWithContext(ctx context.Context, text string) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot reply to message without id")
 	}
@@ -183,12 +220,21 @@ func (m *Message) Reply(text string) error {
 	m.ReplyMsgID = m.ID
 	m.Text = text
 
-	return m.client.SendTextMessage(m)
+	return m.client.SendTextMessageWithContext(ctx, m)
 }
 
 // Forward method forwards your message to chat.
 // Make sure you have ID in your message.
+//
+// Forward uses context.Background internally; to specify the context, use
+// ForwardWithContext.
 func (m *Message) Forward(chatID string) error {
+	return m.ForwardWithContext(context.Background(), chatID)
+}
+
+// ForwardWithContext method forwards your message to chat.
+// Make sure you have ID in your message.
+func (m *Message) ForwardWithContext(ctx context.Context, chatID string) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot forward message without id")
 	}
@@ -197,25 +243,43 @@ func (m *Message) Forward(chatID string) error {
 	m.ForwardMsgID = m.ID
 	m.Chat.ID = chatID
 
-	return m.client.SendTextMessage(m)
+	return m.client.SendTextMessageWithContext(ctx, m)
 }
 
 // Pin message in chat
 // Make sure you are admin in this chat
+//
+// Pin uses context.Background internally; to specify the context, use
+// PinWithContext.
 func (m *Message) Pin() error {
+	return m.PinWithContext(context.Background())
+}
+
+// PinWithContext message in chat
+// Make sure you are admin in this chat
+func (m *Message) PinWithContext(ctx context.Context) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot pin message without id")
 	}
 
-	return m.client.PinMessage(m)
+	return m.client.PinMessageWithContext(ctx, m)
 }
 
 // Unpin message in chat
 // Make sure you are admin in this chat
+//
+// Unpin uses context.Background internally; to specify the context, use
+// UnpinWithContext.
 func (m *Message) Unpin() error {
+	return m.UnpinWithContext(context.Background())
+}
+
+// Unpin message in chat
+// Make sure you are admin in this chat
+func (m *Message) UnpinWithContext(ctx context.Context) error {
 	if m.ID == "" {
 		return fmt.Errorf("cannot unpin message without id")
 	}
 
-	return m.client.UnpinMessage(m)
+	return m.client.UnpinMessageWithContext(ctx, m)
 }
