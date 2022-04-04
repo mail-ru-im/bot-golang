@@ -84,6 +84,10 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 	}()
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error status from API: %s", resp.Status)
+	}
+
 	responseBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
@@ -347,8 +351,9 @@ func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
 
 func (c *Client) SendTextMessage(message *Message) error {
 	params := url.Values{
-		"chatId": {message.Chat.ID},
-		"text":   {message.Text},
+		"chatId":     {message.Chat.ID},
+		"text":       {message.Text},
+		"request-id": {message.RequestID},
 	}
 
 	if message.ReplyMsgID != "" {

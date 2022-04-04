@@ -124,6 +124,17 @@ func (b *Bot) NewTextMessage(chatID, text string) *Message {
 	}
 }
 
+// NewTextMessageWithRequestID returns new text message with client requestID
+func (b *Bot) NewTextMessageWithRequestID(chatID, text, requestID string) *Message {
+	return &Message{
+		client:      b.client,
+		Chat:        Chat{ID: chatID},
+		Text:        text,
+		ContentType: Text,
+		RequestID: requestID,
+	}
+}
+
 // NewInlineKeyboardMessage returns new text message with inline keyboard
 func (b *Bot) NewInlineKeyboardMessage(chatID, text string, keyboard Keyboard) *Message {
 	return &Message{

@@ -57,6 +57,9 @@ type Message struct {
 
 	// The parse mode (HTML/MarkdownV2)
 	ParseMode ParseMode `json:"parseMode"`
+
+	// RequestID from library clients that is used in my-team logs
+	RequestID string `json:"requestID"`
 }
 
 func (m *Message) AttachNewFile(file *os.File) {
