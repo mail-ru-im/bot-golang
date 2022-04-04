@@ -84,10 +84,6 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 	}()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error status from API: %s", resp.Status)
-	}
-
 	responseBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
@@ -96,9 +92,15 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		return []byte{}, fmt.Errorf("cannot read body: %s", err)
 	}
 
-	c.logger.WithFields(logrus.Fields{
-		"response": string(responseBody),
-	}).Debug("got response from API")
+	if c.logger.IsLevelEnabled(logrus.DebugLevel) {
+		c.logger.WithFields(logrus.Fields{
+			"response": responseBody,
+		}).Debug("got response from API")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error status from API: %s", resp.Status)
+	}
 
 	response := &Response{}
 

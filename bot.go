@@ -131,7 +131,7 @@ func (b *Bot) NewTextMessageWithRequestID(chatID, text, requestID string) *Messa
 		Chat:        Chat{ID: chatID},
 		Text:        text,
 		ContentType: Text,
-		RequestID: requestID,
+		RequestID:   requestID,
 	}
 }
 
