@@ -92,9 +92,15 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		return []byte{}, fmt.Errorf("cannot read body: %s", err)
 	}
 
-	c.logger.WithFields(logrus.Fields{
-		"response": string(responseBody),
-	}).Debug("got response from API")
+	if c.logger.IsLevelEnabled(logrus.DebugLevel) {
+		c.logger.WithFields(logrus.Fields{
+			"response": responseBody,
+		}).Debug("got response from API")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error status from API: %s", resp.Status)
+	}
 
 	response := &Response{}
 
@@ -347,8 +353,9 @@ func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
 
 func (c *Client) SendTextMessage(message *Message) error {
 	params := url.Values{
-		"chatId": {message.Chat.ID},
-		"text":   {message.Text},
+		"chatId":     {message.Chat.ID},
+		"text":       {message.Text},
+		"request-id": {message.RequestID},
 	}
 
 	if message.ReplyMsgID != "" {
