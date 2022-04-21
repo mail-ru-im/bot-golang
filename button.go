@@ -1,5 +1,7 @@
 package botgolang
 
+import "context"
+
 //go:generate easyjson -all button.go
 
 // Button represents a button in inline keyboard
@@ -72,6 +74,15 @@ type ButtonResponse struct {
 
 // Send method sends your response message.
 // Make sure you have QueryID in your ButtonResponse.
+//
+// Send uses context.Background internally; to specify the context, use
+// SendWithContext.
 func (cl *ButtonResponse) Send() error {
-	return cl.client.SendAnswerCallbackQuery(cl)
+	return cl.SendWithContext(context.Background())
+}
+
+// Send method sends your response message.
+// Make sure you have QueryID in your ButtonResponse.
+func (cl *ButtonResponse) SendWithContext(ctx context.Context) error {
+	return cl.client.SendAnswerCallbackQueryWithContext(ctx, cl)
 }
