@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -59,7 +58,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 
 		req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
-		req.Body = ioutil.NopCloser(buffer)
+		req.Body = io.NopCloser(buffer)
 		req.Method = http.MethodPost
 	}
 
@@ -83,7 +82,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 	}()
 
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
 			"err": err,
@@ -635,7 +634,6 @@ func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
 
 func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
 	return NewCustomClient(http.DefaultClient, baseURL, token, logger)
-
 }
 
 func NewCustomClient(client *http.Client, baseURL string, token string, logger *logrus.Logger) *Client {
