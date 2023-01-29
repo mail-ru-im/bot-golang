@@ -10,7 +10,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -23,11 +22,11 @@ type Client struct {
 	logger  *logrus.Logger
 }
 
-func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, error) {
+func (c *Client) Do(path string, params url.Values, file *MessageFile) ([]byte, error) {
 	return c.DoWithContext(context.Background(), path, params, file)
 }
 
-func (c *Client) DoWithContext(ctx context.Context, path string, params url.Values, file *os.File) ([]byte, error) {
+func (c *Client) DoWithContext(ctx context.Context, path string, params url.Values, file *MessageFile) ([]byte, error) {
 	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
