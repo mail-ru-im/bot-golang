@@ -15,6 +15,7 @@ const (
 	Text
 	OtherFile
 	Voice
+	Deeplink
 )
 
 // Message represents a text message
@@ -60,6 +61,9 @@ type Message struct {
 
 	// RequestID from library clients that is used in my-team logs
 	RequestID string `json:"requestID"`
+
+	// Use it only with content type Deeplink
+	Deeplink string `json:"deeplink"`
 }
 
 func (m *Message) AttachNewFile(file *os.File) {
@@ -132,6 +136,8 @@ func (m *Message) Send() error {
 		}
 	case Text:
 		return m.client.SendTextMessage(m)
+	case Deeplink:
+		return m.client.SendTextWithDeeplinkMessage(m)
 	case Unknown:
 		// need to autodetect
 		if m.FileID != "" {
