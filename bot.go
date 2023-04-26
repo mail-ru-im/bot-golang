@@ -146,6 +146,18 @@ func (b *Bot) NewInlineKeyboardMessage(chatID, text string, keyboard Keyboard) *
 	}
 }
 
+// NewDeeplinkMessage returns new text message with inline keyboard and deeplink
+func (b *Bot) NewDeeplinkMessage(chatID, text string, keyboard Keyboard, deeplink string) *Message {
+	return &Message{
+		client:         b.client,
+		Chat:           Chat{ID: chatID},
+		Text:           text,
+		ContentType:    Deeplink,
+		InlineKeyboard: &keyboard,
+		Deeplink:       deeplink,
+	}
+}
+
 // NewFileMessage returns new file message
 func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
 	return &Message{

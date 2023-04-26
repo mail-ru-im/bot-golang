@@ -392,6 +392,52 @@ func (c *Client) SendTextMessage(message *Message) error {
 	return nil
 }
 
+func (c *Client) SendTextWithDeeplinkMessage(message *Message) error {
+	params := url.Values{
+		"chatId":     {message.Chat.ID},
+		"text":       {message.Text},
+		"request-id": {message.RequestID},
+	}
+
+	if message.ReplyMsgID != "" {
+		params.Set("replyMsgId", message.ReplyMsgID)
+	}
+
+	if message.ForwardMsgID != "" {
+		params.Set("forwardMsgId", message.ForwardMsgID)
+		params.Set("forwardChatId", message.ForwardChatID)
+	}
+
+	if message.InlineKeyboard != nil {
+		data, err := json.Marshal(message.InlineKeyboard.GetKeyboard())
+		if err != nil {
+			return fmt.Errorf("cannot marshal inline keyboard markup: %s", err)
+		}
+
+		params.Set("inlineKeyboardMarkup", string(data))
+	}
+
+	if len(message.Deeplink) == 0 {
+		return fmt.Errorf("deeplink can't be empty for SendTextWithDeeplink")
+	}
+	params.Set("deeplink", message.Deeplink)
+
+	if message.ParseMode != "" {
+		params.Set("parseMode", string(message.ParseMode))
+	}
+
+	response, err := c.Do("/messages/sendTextWithDeeplink", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while sending text: %s", err)
+	}
+
+	if err := json.Unmarshal(response, message); err != nil {
+		return fmt.Errorf("cannot unmarshal response from API: %s", err)
+	}
+
+	return nil
+}
+
 func (c *Client) EditMessage(message *Message) error {
 	params := url.Values{
 		"msgId":  {message.ID},

@@ -66,6 +66,10 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 			}
 		case "parseMode":
 			out.ParseMode = ParseMode(in.String())
+		case "requestID":
+			out.RequestID = string(in.String())
+		case "deeplink":
+			out.Deeplink = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -138,6 +142,16 @@ func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Me
 		const prefix string = ",\"parseMode\":"
 		out.RawString(prefix)
 		out.String(string(in.ParseMode))
+	}
+	{
+		const prefix string = ",\"requestID\":"
+		out.RawString(prefix)
+		out.String(string(in.RequestID))
+	}
+	{
+		const prefix string = ",\"deeplink\":"
+		out.RawString(prefix)
+		out.String(string(in.Deeplink))
 	}
 	out.RawByte('}')
 }
