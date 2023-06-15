@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -23,11 +21,11 @@ type Client struct {
 	logger  *logrus.Logger
 }
 
-func (c *Client) Do(path string, params url.Values, file *os.File) ([]byte, error) {
+func (c *Client) Do(path string, params url.Values, file *MessageFile) ([]byte, error) {
 	return c.DoWithContext(context.Background(), path, params, file)
 }
 
-func (c *Client) DoWithContext(ctx context.Context, path string, params url.Values, file *os.File) ([]byte, error) {
+func (c *Client) DoWithContext(ctx context.Context, path string, params url.Values, file *MessageFile) ([]byte, error) {
 	apiURL, err := url.Parse(c.baseURL + path)
 	params.Set("token", c.token)
 
@@ -60,7 +58,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 
 		req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
-		req.Body = ioutil.NopCloser(buffer)
+		req.Body = io.NopCloser(buffer)
 		req.Method = http.MethodPost
 	}
 
@@ -84,7 +82,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 		}
 	}()
 
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
 			"err": err,
@@ -682,7 +680,6 @@ func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
 
 func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
 	return NewCustomClient(http.DefaultClient, baseURL, token, logger)
-
 }
 
 func NewCustomClient(client *http.Client, baseURL string, token string, logger *logrus.Logger) *Client {

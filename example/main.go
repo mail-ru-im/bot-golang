@@ -30,7 +30,7 @@ func main() {
 		log.Fatalf("cannot open file: %s", err)
 	}
 
-	fileMessage := bot.NewFileMessage("d.dorofeev@corp.mail.ru", file)
+	fileMessage := bot.NewFileMessage("d.dorofeev@corp.mail.ru", botgolang.NewMessageFile(file.Name(), file))
 	if err := fileMessage.Send(); err != nil {
 		log.Println(err)
 	}
@@ -49,7 +49,7 @@ func main() {
 	}
 	defer file.Close()
 
-	voiceMessage := bot.NewVoiceMessage("g.gabolaev@corp.mail.ru", file)
+	voiceMessage := bot.NewVoiceMessage("g.gabolaev@corp.mail.ru", botgolang.NewMessageFile(file.Name(), file))
 	if err := voiceMessage.Send(); err != nil {
 		log.Println(err)
 	}

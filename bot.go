@@ -9,7 +9,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/sirupsen/logrus"
 )
@@ -159,7 +158,7 @@ func (b *Bot) NewDeeplinkMessage(chatID, text string, keyboard Keyboard, deeplin
 }
 
 // NewFileMessage returns new file message
-func (b *Bot) NewFileMessage(chatID string, file *os.File) *Message {
+func (b *Bot) NewFileMessage(chatID string, file *MessageFile) *Message {
 	return &Message{
 		client:      b.client,
 		Chat:        Chat{ID: chatID},
@@ -179,7 +178,7 @@ func (b *Bot) NewFileMessageByFileID(chatID, fileID string) *Message {
 }
 
 // NewVoiceMessage returns new voice message
-func (b *Bot) NewVoiceMessage(chatID string, file *os.File) *Message {
+func (b *Bot) NewVoiceMessage(chatID string, file *MessageFile) *Message {
 	return &Message{
 		client:      b.client,
 		Chat:        Chat{ID: chatID},
