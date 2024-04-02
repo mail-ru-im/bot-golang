@@ -258,6 +258,43 @@ func (h *MockHandler) GetEvents(w http.ResponseWriter) {
 	}
 }
 
+func (h *MockHandler) SelfGet(w http.ResponseWriter, r *http.Request) {
+
+	encoder := json.NewEncoder(w)
+
+	if r.FormValue("chatId") == "" {
+		err := encoder.Encode(&Response{
+			OK:          false,
+			Description: "Missing required parameter 'chatId'",
+		})
+
+		if err != nil {
+			h.logger.WithFields(logrus.Fields{
+				"err": err,
+			}).Error("cannot encode json")
+		}
+	}
+
+	chats_getInfo := `{
+		"about": "about user",
+		"firstName": "User",
+		"language": "en",
+		"lastName": "Userov",
+		"photo": [
+			{
+				"url": "https://rapi.myteaminternal/avatar/get?targetSn=test@test&size=1024"
+			}
+		],
+		"type": "private",
+		"ok": true
+	}`
+
+	_, err := w.Write([]byte(chats_getInfo))
+	if err != nil {
+		h.logger.Fatal("failed to write events")
+	}
+}
+
 func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.FormValue("token") == "":
@@ -268,6 +305,9 @@ func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case r.URL.Path == "/events/get":
 		h.GetEvents(w)
+		return
+	case r.URL.Path == "/self/get":
+		h.SelfGet(w, r)
 		return
 	default:
 		encoder := json.NewEncoder(w)

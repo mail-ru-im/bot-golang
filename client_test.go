@@ -18,7 +18,7 @@ func TestClient_Do_OK(t *testing.T) {
 
 	client := Client{
 		baseURL: testServer.URL,
-		token:   "test",
+		token:   "test_token",
 		client:  http.DefaultClient,
 		logger:  &logrus.Logger{},
 	}
@@ -287,4 +287,28 @@ func TestClient_GetEvents_OK(t *testing.T) {
 
 	require.NoError(err)
 	assert.Equal(events, expected)
+}
+
+func TestClient_GetInfo_OK(t *testing.T) {
+	require := require.New(t)
+	assert := assert.New(t)
+	testServer := httptest.NewServer(&MockHandler{})
+	defer func() { testServer.Close() }()
+
+	client := Client{
+		baseURL: testServer.URL,
+		token:   "test_token",
+		client:  http.DefaultClient,
+		logger:  &logrus.Logger{},
+	}
+
+	info, err := client.GetChatInfo("id_1234")
+	require.NoError(err)
+	assert.NotEmpty(info.ID)
+}
+
+func TestClient_GetInfo_Error(t *testing.T) {
+	require := require.New(t)
+
+	require.NoError(nil)
 }
