@@ -1,21 +1,19 @@
-<img src="https://github.com/mail-ru-im/bot-python/blob/master/logo.png" width="100" height="100">
+<img src="logo_bot.png" width="100" height="100">
 
-# Golang interface for Mail.ru Instant Messengers bot API
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-[![CircleCI](https://circleci.com/gh/mail-ru-im/bot-golang.svg?style=svg)](https://circleci.com/gh/mail-ru-im/bot-golang)
+# VK Teams Bot API for Golang
+[![Go](https://github.com/mail-ru-im/bot-golang/actions/workflows/go.yml/badge.svg)](https://github.com/mail-ru-im/bot-golang/actions/workflows/go.yml)
+[![codecov](https://codecov.io/github/mail-ru-im/bot-golang/graph/badge.svg?token=0HX8DY24SR)](https://codecov.io/github/mail-ru-im/bot-golang)
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat)](https://pkg.go.dev/github.com/mail-ru-im/bot-golang)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
- - *Brand new Bot API!*
+### [<img src="logo_msg.png" width="16"> VK Teams API Specification](https://teams.vk.com/botapi/)
 
- - *Zero-configuration library*
+## Getting started
 
- - *Simple and clear interface*
-
-## API specification:
-### [<img src="https://icq.com/cached/img/landing/icon_and_192.png" width="15"> ICQ New ](https://icq.com/botapi/)
-### [<img src="https://is3-ssl.mzstatic.com/image/thumb/Purple123/v4/e8/4f/1b/e84f1b57-206f-7750-ac5a-27f93ff4a0d8/icons-bundle.png/460x0w.png" width="16"> Myteam ](https://myteam.mail.ru/botapi/)
-
-### [<img src="https://agent.mail.ru/img/agent2014/common/2x/button_logo.png" width="16"> Agent Mail.ru](https://agent.mail.ru/botapi/) 
+* Create your own bot by sending the _/newbot_ command to _Metabot_ and follow the instructions.
+    >Note: a bot can only reply after the user has added it to his contact list, or if the user was the first to start a dialogue.
+* You can configure the domain that hosts your VK Teams server. When instantiating the Bot class, add the address of your domain.
+* An example of how to use the framework can be seen in _example/main.go_
 
 ## Install
 ```bash
@@ -24,8 +22,7 @@ go get github.com/mail-ru-im/bot-golang
 
 ## Usage
 
-Create your own bot by sending the /newbot command to Metabot and follow the instructions.
-
+Create your own bot by sending the /newbot command to _Metabot_ and follow the instructions.
 Note a bot can only reply after the user has added it to his contacts list, or if the user was the first to start a dialogue.
 
 ### Create your bot
@@ -41,7 +38,7 @@ func main() {
         log.Println("wrong token")
     }
 
-    message := bot.NewTextMessage("awesomechat@agent.chat", "text")
+    message := bot.NewTextMessage("some@mail.com", "text")
     message.Send()
 }
 ```
@@ -51,18 +48,13 @@ func main() {
 You can create, edit and reply to messages like a piece of cake.
 
 ```go
-message := bot.NewTextMessage("awesomechat@agent.chat", "text")
+message := bot.NewTextMessage("some@mail.com", "text")
 message.Send()
-
-fmt.Println(message.MsgID)
 
 message.Text = "new text"
 
 message.Edit()
-// AWESOME!
-
-message.Reply("hey, what did you write before???")
-// SO HOT!
+message.Reply("I changed my text")
 ```
 
 ### Subscribe events
@@ -73,7 +65,7 @@ Get all updates from the channel. Use context for cancellation.
 ctx, finish := context.WithCancel(context.Background())
 updates := bot.GetUpdatesChannel(ctx)
 for update := range updates {
-	// your awesome logic here
+	// your logic here
 }
 ```
 
@@ -83,7 +75,7 @@ You don't need this.
 But if you do, you can override bot's API URL:
 
 ```go
-bot := botgolang.NewBot(BOT_TOKEN, botgolang.BotApiURL("https://agent.mail.ru/bot/v1"))
+bot := botgolang.NewBot(BOT_TOKEN, botgolang.BotApiURL("https://vkteams.com/bot/v1"))
 ```
 And debug all api requests and responses:
 
