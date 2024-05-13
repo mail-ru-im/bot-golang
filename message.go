@@ -2,7 +2,7 @@ package botgolang
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"path/filepath"
 )
 
@@ -27,7 +27,7 @@ type Message struct {
 	ID string `json:"msgId"`
 
 	// File contains file attachment of the message
-	File *os.File `json:"-"`
+	File *MessageFile `json:"-"`
 
 	// Id of file to send
 	FileID string `json:"fileId"`
@@ -66,7 +66,26 @@ type Message struct {
 	Deeplink string `json:"deeplink"`
 }
 
-func (m *Message) AttachNewFile(file *os.File) {
+// MessageFile represents a file to send
+type MessageFile struct {
+	io.Reader
+	name string
+}
+
+// Name returns a name of file to be compatible with *os.File
+func (f *MessageFile) Name() string {
+	return f.name
+}
+
+// NewMessageFile returns *MessageFile from name and reader
+func NewMessageFile(name string, reader io.Reader) *MessageFile {
+	return &MessageFile{
+		name:   name,
+		Reader: reader,
+	}
+}
+
+func (m *Message) AttachNewFile(file *MessageFile) {
 	m.File = file
 	m.ContentType = OtherFile
 }
@@ -76,7 +95,7 @@ func (m *Message) AttachExistingFile(fileID string) {
 	m.ContentType = OtherFile
 }
 
-func (m *Message) AttachNewVoice(file *os.File) {
+func (m *Message) AttachNewVoice(file *MessageFile) {
 	m.File = file
 	m.ContentType = Voice
 }
