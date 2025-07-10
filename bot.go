@@ -45,6 +45,11 @@ func (b *Bot) SendChatActions(chatID string, actions ...ChatAction) error {
 	return b.client.SendChatActions(chatID, actions...)
 }
 
+// SendChatNoAction sends an empty action to signal that all actions are done.
+func (b *Bot) SendChatNoAction(chatID string) error {
+	return b.client.SendChatNoAction(chatID)
+}
+
 // GetChatAdmins returns chat admins list with fields:
 // userID, creator flag
 func (b *Bot) GetChatAdmins(chatID string) ([]ChatMember, error) {
