@@ -171,6 +171,18 @@ func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
 	return nil
 }
 
+func (c *Client) SendChatNoAction(chatID string) error {
+	params := url.Values{
+		"chatId":  {chatID},
+		"actions": {""},
+	}
+	_, err := c.Do("/chats/sendActions", params, nil)
+	if err != nil {
+		return fmt.Errorf("error while sending no action: %s", err)
+	}
+	return nil
+}
+
 func (c *Client) GetChatAdmins(chatID string) ([]ChatMember, error) {
 	params := url.Values{
 		"chatId": {chatID},

@@ -312,3 +312,18 @@ func TestClient_GetInfo_Error(t *testing.T) {
 
 	require.NoError(nil)
 }
+
+func TestClient_SendChatNoAction(t *testing.T) {
+	testServer := httptest.NewServer(&MockHandler{})
+	defer func() { testServer.Close() }()
+
+	client := Client{
+		baseURL: testServer.URL,
+		token:   "test_token",
+		client:  http.DefaultClient,
+		logger:  &logrus.Logger{},
+	}
+
+	err := client.SendChatNoAction("chat_id")
+	require.NoError(t, err)
+}

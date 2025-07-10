@@ -295,6 +295,17 @@ func (h *MockHandler) SelfGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *MockHandler) HandleActions(w http.ResponseWriter, r *http.Request) {
+	response := `{
+		"ok": true
+	}`
+
+	_, err := w.Write([]byte(response))
+	if err != nil {
+		h.logger.Fatal("failed to write actions response")
+	}
+}
+
 func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.FormValue("token") == "":
@@ -308,6 +319,9 @@ func (h *MockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case r.URL.Path == "/self/get":
 		h.SelfGet(w, r)
+		return
+	case r.URL.Path == "/chats/sendActions":
+		h.HandleActions(w, r)
 		return
 	default:
 		encoder := json.NewEncoder(w)
