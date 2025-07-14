@@ -114,6 +114,64 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 	return responseBody, nil
 }
 
+func (c *Client) AutosubscribeToThreads(chatID string, enable, withExisting bool) error {
+	params := url.Values{
+		"chatId":       {chatID},
+		"enable":       {strconv.FormatBool(enable)},
+		"withExisting": {strconv.FormatBool(withExisting)},
+	}
+
+	if _, err := c.Do("/threads/autosubscribe", params, nil); err != nil {
+		return fmt.Errorf("error while requesting threads autosubscribe: %s", err)
+	}
+
+	return nil
+}
+
+func (c *Client) AddThread(chatID, msgID string) (*Thread, error) {
+	params := url.Values{
+		"chatId": {chatID},
+		"msgId":  {msgID},
+	}
+
+	response, err := c.Do("/threads/add", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while adding thread: %s", err)
+	}
+
+	thread := &Thread{}
+	if err := json.Unmarshal(response, thread); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling thread response: %s", err)
+	}
+
+	return thread, nil
+}
+
+func (c *Client) GetThreadSubscribers(threadID string, cursor string, pageSize int) (*ThreadSubscribers, error) {
+	params := url.Values{
+		"threadId": {threadID},
+	}
+
+	if cursor != "" {
+		params.Set("cursor", cursor)
+	}
+	if pageSize > 0 {
+		params.Set("pageSize", strconv.Itoa(pageSize))
+	}
+
+	response, err := c.Do("/threads/subscribers/get", params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting thread subscribers: %s", err)
+	}
+
+	threadSubscribers := &ThreadSubscribers{}
+	if err := json.Unmarshal(response, threadSubscribers); err != nil {
+		return nil, fmt.Errorf("error while unmarshalling thread subscribers response: %s", err)
+	}
+
+	return threadSubscribers, nil
+}
+
 func (c *Client) GetInfo() (*BotInfo, error) {
 	response, err := c.Do("/self/get", url.Values{}, nil)
 	if err != nil {
@@ -289,6 +347,50 @@ func (c *Client) ResolveChatPending(chatID, userID string, approve, everyone boo
 
 	if _, err := c.Do("/chats/resolvePending", params, nil); err != nil {
 		return fmt.Errorf("error while resolving chat pendings: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) DeleteChatMembers(chatID string, members []string) error {
+	membersList := make([]map[string]string, len(members))
+	for i, member := range members {
+		membersList[i] = map[string]string{"sn": member}
+	}
+
+	membersJSON, err := json.Marshal(membersList)
+	if err != nil {
+		return fmt.Errorf("error while marshalling members list: %s", err)
+	}
+
+	params := url.Values{
+		"chatId":  {chatID},
+		"members": {string(membersJSON)},
+	}
+
+	if _, err := c.Do("/chats/members/delete", params, nil); err != nil {
+		return fmt.Errorf("error while deleting chat members: %s", err)
+	}
+	return nil
+}
+
+func (c *Client) AddChatMembers(chatID string, members []string) error {
+	membersList := make([]map[string]string, len(members))
+	for i, member := range members {
+		membersList[i] = map[string]string{"sn": member}
+	}
+
+	membersJSON, err := json.Marshal(membersList)
+	if err != nil {
+		return fmt.Errorf("error while marshalling members list: %s", err)
+	}
+
+	params := url.Values{
+		"chatId":  {chatID},
+		"members": {string(membersJSON)},
+	}
+
+	if _, err := c.Do("/chats/members/add", params, nil); err != nil {
+		return fmt.Errorf("error while adding chat members: %s", err)
 	}
 	return nil
 }

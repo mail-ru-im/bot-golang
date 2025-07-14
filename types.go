@@ -29,6 +29,24 @@ type Response struct {
 	Description string `json:"description,omitempty"`
 }
 
+type Thread struct {
+	ThreadID string `json:"threadId"`
+}
+
+type UserState struct {
+	Lastseen int `json:"lastseen"`
+}
+
+type Subscriber struct {
+	SN        string    `json:"sn"`
+	UserState UserState `json:"userState"`
+}
+
+type ThreadSubscribers struct {
+	Cursor      string       `json:"cursor"`
+	Subscribers []Subscriber `json:"subscribers"`
+}
+
 type Photo struct {
 	URL string `json:"url"`
 }
@@ -102,6 +120,8 @@ type BaseEventPayload struct {
 
 	// Timestamp of the event.
 	Timestamp int `json:"timestamp"`
+
+	ParentMessage *ParentMessage `json:"parent_topic"`
 }
 
 type EventPayload struct {
@@ -144,11 +164,12 @@ func (ep *EventPayload) CallbackMessage() *Message {
 func message(client *Client, msg BaseEventPayload) *Message {
 	msg.Chat.client = client
 	return &Message{
-		client:    client,
-		ID:        msg.MsgID,
-		Text:      msg.Text,
-		Chat:      msg.Chat,
-		Timestamp: msg.Timestamp,
+		client:        client,
+		ID:            msg.MsgID,
+		Text:          msg.Text,
+		Chat:          msg.Chat,
+		Timestamp:     msg.Timestamp,
+		ParentMessage: msg.ParentMessage,
 	}
 }
 
