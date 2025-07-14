@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Message) {
+func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *ParentMessage) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -28,7 +28,87 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 	}
 	in.Delim('{')
 	for !in.IsDelim('}') {
-		key := in.UnsafeString()
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "chatId":
+			out.ChatID = string(in.String())
+		case "messageId":
+			out.MsgID = int64(in.Int64())
+		case "type":
+			out.Type = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in ParentMessage) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"chatId\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.ChatID))
+	}
+	{
+		const prefix string = ",\"messageId\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.MsgID))
+	}
+	{
+		const prefix string = ",\"type\":"
+		out.RawString(prefix)
+		out.String(string(in.Type))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v ParentMessage) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4086215fEncodeGithubComMailRuImBotGolang(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v ParentMessage) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4086215fEncodeGithubComMailRuImBotGolang(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *ParentMessage) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4086215fDecodeGithubComMailRuImBotGolang(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *ParentMessage) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4086215fDecodeGithubComMailRuImBotGolang(l, v)
+}
+func easyjson4086215fDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Message) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
 		in.WantColon()
 		if in.IsNull() {
 			in.Skip()
@@ -54,6 +134,16 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 			out.ForwardChatID = string(in.String())
 		case "timestamp":
 			out.Timestamp = int(in.Int())
+		case "parent_topic":
+			if in.IsNull() {
+				in.Skip()
+				out.ParentMessage = nil
+			} else {
+				if out.ParentMessage == nil {
+					out.ParentMessage = new(ParentMessage)
+				}
+				(*out.ParentMessage).UnmarshalEasyJSON(in)
+			}
 		case "inlineKeyboardMarkup":
 			if in.IsNull() {
 				in.Skip()
@@ -62,7 +152,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 				if out.InlineKeyboard == nil {
 					out.InlineKeyboard = new(Keyboard)
 				}
-				easyjson4086215fDecodeGithubComMailRuImBotGolang1(in, out.InlineKeyboard)
+				easyjson4086215fDecodeGithubComMailRuImBotGolang2(in, out.InlineKeyboard)
 			}
 		case "parseMode":
 			out.ParseMode = ParseMode(in.String())
@@ -80,7 +170,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang(in *jlexer.Lexer, out *Mes
 		in.Consumed()
 	}
 }
-func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Message) {
+func easyjson4086215fEncodeGithubComMailRuImBotGolang1(out *jwriter.Writer, in Message) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -130,12 +220,21 @@ func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Me
 		out.Int(int(in.Timestamp))
 	}
 	{
+		const prefix string = ",\"parent_topic\":"
+		out.RawString(prefix)
+		if in.ParentMessage == nil {
+			out.RawString("null")
+		} else {
+			(*in.ParentMessage).MarshalEasyJSON(out)
+		}
+	}
+	{
 		const prefix string = ",\"inlineKeyboardMarkup\":"
 		out.RawString(prefix)
 		if in.InlineKeyboard == nil {
 			out.RawString("null")
 		} else {
-			easyjson4086215fEncodeGithubComMailRuImBotGolang1(out, *in.InlineKeyboard)
+			easyjson4086215fEncodeGithubComMailRuImBotGolang2(out, *in.InlineKeyboard)
 		}
 	}
 	{
@@ -159,27 +258,27 @@ func easyjson4086215fEncodeGithubComMailRuImBotGolang(out *jwriter.Writer, in Me
 // MarshalJSON supports json.Marshaler interface
 func (v Message) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson4086215fEncodeGithubComMailRuImBotGolang(&w, v)
+	easyjson4086215fEncodeGithubComMailRuImBotGolang1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Message) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson4086215fEncodeGithubComMailRuImBotGolang(w, v)
+	easyjson4086215fEncodeGithubComMailRuImBotGolang1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Message) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson4086215fDecodeGithubComMailRuImBotGolang(&r, v)
+	easyjson4086215fDecodeGithubComMailRuImBotGolang1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Message) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson4086215fDecodeGithubComMailRuImBotGolang(l, v)
+	easyjson4086215fDecodeGithubComMailRuImBotGolang1(l, v)
 }
-func easyjson4086215fDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Keyboard) {
+func easyjson4086215fDecodeGithubComMailRuImBotGolang2(in *jlexer.Lexer, out *Keyboard) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -190,7 +289,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Ke
 	}
 	in.Delim('{')
 	for !in.IsDelim('}') {
-		key := in.UnsafeString()
+		key := in.UnsafeFieldName(false)
 		in.WantColon()
 		if in.IsNull() {
 			in.Skip()
@@ -252,7 +351,7 @@ func easyjson4086215fDecodeGithubComMailRuImBotGolang1(in *jlexer.Lexer, out *Ke
 		in.Consumed()
 	}
 }
-func easyjson4086215fEncodeGithubComMailRuImBotGolang1(out *jwriter.Writer, in Keyboard) {
+func easyjson4086215fEncodeGithubComMailRuImBotGolang2(out *jwriter.Writer, in Keyboard) {
 	out.RawByte('{')
 	first := true
 	_ = first
