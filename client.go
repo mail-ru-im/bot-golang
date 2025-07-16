@@ -115,6 +115,10 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 }
 
 func (c *Client) AutosubscribeToThreads(chatID string, enable, withExisting bool) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":       {chatID},
 		"enable":       {strconv.FormatBool(enable)},
@@ -129,6 +133,13 @@ func (c *Client) AutosubscribeToThreads(chatID string, enable, withExisting bool
 }
 
 func (c *Client) AddThread(chatID, msgID string) (*Thread, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+	if msgID == "" {
+		return nil, fmt.Errorf("msgID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 		"msgId":  {msgID},
@@ -148,6 +159,10 @@ func (c *Client) AddThread(chatID, msgID string) (*Thread, error) {
 }
 
 func (c *Client) GetThreadSubscribers(threadID string, cursor string, pageSize int) (*ThreadSubscribers, error) {
+	if threadID == "" {
+		return nil, fmt.Errorf("threadID cannot be empty")
+	}
+
 	params := url.Values{
 		"threadId": {threadID},
 	}
@@ -187,6 +202,10 @@ func (c *Client) GetInfo() (*BotInfo, error) {
 }
 
 func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 	}
@@ -210,6 +229,13 @@ func (c *Client) GetChatInfo(chatID string) (*Chat, error) {
 }
 
 func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if len(actions) == 0 {
+		return fmt.Errorf("actions cannot be empty")
+	}
+
 	actionsMap := make(map[ChatAction]bool)
 	filteredActions := make([]ChatAction, 0)
 	for _, action := range actions {
@@ -230,6 +256,10 @@ func (c *Client) SendChatActions(chatID string, actions ...ChatAction) error {
 }
 
 func (c *Client) GetChatAdmins(chatID string) ([]ChatMember, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 	}
@@ -247,6 +277,10 @@ func (c *Client) GetChatAdmins(chatID string) ([]ChatMember, error) {
 }
 
 func (c *Client) GetChatMembers(chatID string) ([]ChatMember, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 	}
@@ -264,6 +298,10 @@ func (c *Client) GetChatMembers(chatID string) ([]ChatMember, error) {
 }
 
 func (c *Client) GetChatBlockedUsers(chatID string) ([]User, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 	}
@@ -281,6 +319,10 @@ func (c *Client) GetChatBlockedUsers(chatID string) ([]User, error) {
 }
 
 func (c *Client) GetChatPendingUsers(chatID string) ([]User, error) {
+	if chatID == "" {
+		return nil, fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 	}
@@ -298,6 +340,13 @@ func (c *Client) GetChatPendingUsers(chatID string) ([]User, error) {
 }
 
 func (c *Client) BlockChatUser(chatID, userID string, deleteLastMessages bool) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if userID == "" {
+		return fmt.Errorf("userID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":          {chatID},
 		"userId":          {userID},
@@ -317,6 +366,13 @@ func (c *Client) BlockChatUser(chatID, userID string, deleteLastMessages bool) e
 }
 
 func (c *Client) UnblockChatUser(chatID, userID string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if userID == "" {
+		return fmt.Errorf("userID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 		"userId": {userID},
@@ -335,6 +391,10 @@ func (c *Client) UnblockChatUser(chatID, userID string) error {
 }
 
 func (c *Client) ResolveChatPending(chatID, userID string, approve, everyone bool) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":  {chatID},
 		"approve": {strconv.FormatBool(approve)},
@@ -352,6 +412,13 @@ func (c *Client) ResolveChatPending(chatID, userID string, approve, everyone boo
 }
 
 func (c *Client) DeleteChatMembers(chatID string, members []string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if len(members) == 0 {
+		return fmt.Errorf("members list cannot be empty")
+	}
+
 	membersList := make([]map[string]string, len(members))
 	for i, member := range members {
 		membersList[i] = map[string]string{"sn": member}
@@ -374,6 +441,13 @@ func (c *Client) DeleteChatMembers(chatID string, members []string) error {
 }
 
 func (c *Client) AddChatMembers(chatID string, members []string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if len(members) == 0 {
+		return fmt.Errorf("members list cannot be empty")
+	}
+
 	membersList := make([]map[string]string, len(members))
 	for i, member := range members {
 		membersList[i] = map[string]string{"sn": member}
@@ -396,6 +470,13 @@ func (c *Client) AddChatMembers(chatID string, members []string) error {
 }
 
 func (c *Client) SetChatTitle(chatID, title string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if title == "" {
+		return fmt.Errorf("title cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 		"title":  {title},
@@ -408,6 +489,10 @@ func (c *Client) SetChatTitle(chatID, title string) error {
 }
 
 func (c *Client) SetChatAbout(chatID, about string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 		"about":  {about},
@@ -420,6 +505,10 @@ func (c *Client) SetChatAbout(chatID, about string) error {
 }
 
 func (c *Client) SetChatRules(chatID, rules string) error {
+	if chatID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {chatID},
 		"rules":  {rules},
@@ -432,6 +521,10 @@ func (c *Client) SetChatRules(chatID, rules string) error {
 }
 
 func (c *Client) GetFileInfo(fileID string) (*File, error) {
+	if fileID == "" {
+		return nil, fmt.Errorf("fileID cannot be empty")
+	}
+
 	params := url.Values{
 		"fileId": {fileID},
 	}
@@ -453,6 +546,16 @@ func (c *Client) GetVoiceInfo(fileID string) (*File, error) {
 }
 
 func (c *Client) SendTextMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.Text == "" {
+		return fmt.Errorf("text cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":     {message.Chat.ID},
 		"text":       {message.Text},
@@ -494,6 +597,16 @@ func (c *Client) SendTextMessage(message *Message) error {
 }
 
 func (c *Client) SendTextWithDeeplinkMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.Text == "" {
+		return fmt.Errorf("text cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":     {message.Chat.ID},
 		"text":       {message.Text},
@@ -540,6 +653,19 @@ func (c *Client) SendTextWithDeeplinkMessage(message *Message) error {
 }
 
 func (c *Client) EditMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.ID == "" {
+		return fmt.Errorf("message ID cannot be empty")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.Text == "" {
+		return fmt.Errorf("text cannot be empty")
+	}
+
 	params := url.Values{
 		"msgId":  {message.ID},
 		"chatId": {message.Chat.ID},
@@ -572,6 +698,16 @@ func (c *Client) EditMessage(message *Message) error {
 }
 
 func (c *Client) DeleteMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.ID == "" {
+		return fmt.Errorf("message ID cannot be empty")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+
 	params := url.Values{
 		"msgId":  {message.ID},
 		"chatId": {message.Chat.ID},
@@ -585,6 +721,16 @@ func (c *Client) DeleteMessage(message *Message) error {
 }
 
 func (c *Client) SendFileMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.FileID == "" {
+		return fmt.Errorf("fileID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
@@ -626,6 +772,16 @@ func (c *Client) SendFileMessage(message *Message) error {
 }
 
 func (c *Client) SendVoiceMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.FileID == "" {
+		return fmt.Errorf("fileID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
@@ -663,6 +819,16 @@ func (c *Client) SendVoiceMessage(message *Message) error {
 }
 
 func (c *Client) UploadFile(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.File == nil {
+		return fmt.Errorf("file cannot be nil")
+	}
+
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
@@ -690,6 +856,16 @@ func (c *Client) UploadFile(message *Message) error {
 }
 
 func (c *Client) UploadVoice(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.File == nil {
+		return fmt.Errorf("file cannot be nil")
+	}
+
 	params := url.Values{
 		"chatId":  {message.Chat.ID},
 		"caption": {message.Text},
@@ -740,6 +916,16 @@ func (c *Client) GetEventsWithContext(ctx context.Context, lastEventID int, poll
 }
 
 func (c *Client) PinMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.ID == "" {
+		return fmt.Errorf("message ID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {message.Chat.ID},
 		"msgId":  {message.ID},
@@ -753,6 +939,16 @@ func (c *Client) PinMessage(message *Message) error {
 }
 
 func (c *Client) UnpinMessage(message *Message) error {
+	if message == nil {
+		return fmt.Errorf("message cannot be nil")
+	}
+	if message.Chat.ID == "" {
+		return fmt.Errorf("chatID cannot be empty")
+	}
+	if message.ID == "" {
+		return fmt.Errorf("message ID cannot be empty")
+	}
+
 	params := url.Values{
 		"chatId": {message.Chat.ID},
 		"msgId":  {message.ID},
@@ -766,6 +962,13 @@ func (c *Client) UnpinMessage(message *Message) error {
 }
 
 func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
+	if answer == nil {
+		return fmt.Errorf("answer cannot be nil")
+	}
+	if answer.QueryID == "" {
+		return fmt.Errorf("queryID cannot be empty")
+	}
+
 	params := url.Values{
 		"queryId":   {answer.QueryID},
 		"text":      {answer.Text},
@@ -783,7 +986,6 @@ func (c *Client) SendAnswerCallbackQuery(answer *ButtonResponse) error {
 
 func NewClient(baseURL string, token string, logger *logrus.Logger) *Client {
 	return NewCustomClient(http.DefaultClient, baseURL, token, logger)
-
 }
 
 func NewCustomClient(client *http.Client, baseURL string, token string, logger *logrus.Logger) *Client {
