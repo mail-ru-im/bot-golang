@@ -126,7 +126,7 @@ func (c *Client) AutosubscribeToThreads(chatID string, enable, withExisting bool
 	}
 
 	if _, err := c.Do("/threads/autosubscribe", params, nil); err != nil {
-		return fmt.Errorf("error while requesting threads autosubscribe: %s", err)
+		return fmt.Errorf("error while requesting threads autosubscribe: %w", err)
 	}
 
 	return nil
@@ -147,12 +147,12 @@ func (c *Client) AddThread(chatID, msgID string) (*Thread, error) {
 
 	response, err := c.Do("/threads/add", params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error while adding thread: %s", err)
+		return nil, fmt.Errorf("error while adding thread: %w", err)
 	}
 
 	thread := &Thread{}
 	if err := json.Unmarshal(response, thread); err != nil {
-		return nil, fmt.Errorf("error while unmarshalling thread response: %s", err)
+		return nil, fmt.Errorf("error while unmarshalling thread response: %w", err)
 	}
 
 	return thread, nil
@@ -176,12 +176,12 @@ func (c *Client) GetThreadSubscribers(threadID string, cursor string, pageSize i
 
 	response, err := c.Do("/threads/subscribers/get", params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error while getting thread subscribers: %s", err)
+		return nil, fmt.Errorf("error while getting thread subscribers: %w", err)
 	}
 
 	threadSubscribers := &ThreadSubscribers{}
 	if err := json.Unmarshal(response, threadSubscribers); err != nil {
-		return nil, fmt.Errorf("error while unmarshalling thread subscribers response: %s", err)
+		return nil, fmt.Errorf("error while unmarshalling thread subscribers response: %w", err)
 	}
 
 	return threadSubscribers, nil
