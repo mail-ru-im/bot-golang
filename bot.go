@@ -28,6 +28,24 @@ type Bot struct {
 	Info    *BotInfo
 }
 
+// AutosubscribeToThreads toggles thread auto-subscription behaviour for the specified chat.
+// enable – turn the feature on/off.
+// withExisting – if true, the bot will also subscribe to already existing threads.
+func (b *Bot) AutosubscribeToThreads(chatID string, enable, withExisting bool) error {
+	return b.client.AutosubscribeToThreads(chatID, enable, withExisting)
+}
+
+// AddThread adds a new thread to the specified chat and returns the thread ID.
+func (b *Bot) AddThread(chatID, msgID string) (*Thread, error) {
+	return b.client.AddThread(chatID, msgID)
+}
+
+// GetThreadSubscribers gets the subscribers list for a thread.
+// Either cursor or pageSize must be provided.
+func (b *Bot) GetThreadSubscribers(threadID string, cursor string, pageSize int) (*ThreadSubscribers, error) {
+	return b.client.GetThreadSubscribers(threadID, cursor, pageSize)
+}
+
 // GetInfo returns information about bot:
 // id, name, about, avatar
 func (b *Bot) GetInfo() (*BotInfo, error) {
@@ -80,7 +98,17 @@ func (b *Bot) UnblockChatUser(chatID, userID string) error {
 	return b.client.UnblockChatUser(chatID, userID)
 }
 
-// ResolveChatJoinRequests sends a decision to accept/decline user join to chat
+// DeleteChatMembers removes multiple members from chat
+func (b *Bot) DeleteChatMembers(chatID string, members []string) error {
+	return b.client.DeleteChatMembers(chatID, members)
+}
+
+// AddChatMembers adds multiple members to chat
+func (b *Bot) AddChatMembers(chatID string, members []string) error {
+	return b.client.AddChatMembers(chatID, members)
+}
+
+// ResolveChatJoinRequests resolves pending join requests for specified user or all pending users
 func (b *Bot) ResolveChatJoinRequests(chatID, userID string, accept, everyone bool) error {
 	return b.client.ResolveChatPending(chatID, userID, accept, everyone)
 }

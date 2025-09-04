@@ -94,6 +94,16 @@ func (c *Chat) GetPendingUsers() ([]User, error) {
 	return c.client.GetChatPendingUsers(c.ID)
 }
 
+// DeleteMembers removes members from chat
+func (c *Chat) DeleteMembers(members []string) error {
+	return c.client.DeleteChatMembers(c.ID, members)
+}
+
+// AddMembers adds members to chat
+func (c *Chat) AddMembers(members []string) error {
+	return c.client.AddChatMembers(c.ID, members)
+}
+
 // Block user and remove him from chat.
 // If deleteLastMessages is true, the messages written recently will be deleted
 func (c *Chat) BlockUser(userID string, deleteLastMessages bool) error {
@@ -128,4 +138,14 @@ func (c *Chat) SetAbout(about string) error {
 // SetRules changes chat rules
 func (c *Chat) SetRules(rules string) error {
 	return c.client.SetChatRules(c.ID, rules)
+}
+
+// AddThread adds a new thread to the specified chat and returns the thread ID
+func (c *Chat) AddThread(msgID string) (*Thread, error) {
+	return c.client.AddThread(c.ID, msgID)
+}
+
+// AutosubscribeToThreads toggles thread auto-subscription for the chat
+func (c *Chat) AutosubscribeToThreads(enable, withExisting bool) error {
+	return c.client.AutosubscribeToThreads(c.ID, enable, withExisting)
 }

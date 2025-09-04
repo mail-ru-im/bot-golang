@@ -53,6 +53,8 @@ type Message struct {
 
 	Timestamp int `json:"timestamp"`
 
+	ParentMessage *ParentMessage `json:"parent_topic"`
+
 	// The markup for the inline keyboard
 	InlineKeyboard *Keyboard `json:"inlineKeyboardMarkup"`
 
@@ -84,6 +86,12 @@ func (m *Message) AttachNewVoice(file *os.File) {
 func (m *Message) AttachExistingVoice(fileID string) {
 	m.FileID = fileID
 	m.ContentType = Voice
+}
+
+type ParentMessage struct {
+	ChatID string `json:"chatId"`
+	MsgID  int64  `json:"messageId"`
+	Type   string `json:"type"`
 }
 
 // ParseMode represent a type of text formatting
